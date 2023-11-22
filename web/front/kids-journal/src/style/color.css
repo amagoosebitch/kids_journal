@@ -1,0 +1,17 @@
+:root {
+  --color-lightorange_main: rgba(255, 182, 115, 0.5);
+  --color-brown_main: #a65000;
+  --color-orang_main: #ff9b40;
+  --color-orang_accent: #ff7a00;
+  --color-brown_accent: #bf7530;
+
+  --color-darkgrey: #a3a3a3;
+  --color-lightgrey: #e6e6e6;
+
+  --color-red: #d53f8c;
+  --color-lightred: #e895c0;
+  --color-lightred-hover: #f2bfda;
+
+  --color-bg-input: rgba(236, 241, 247, 1);
+  --color-bg-input-hover: rgba(228, 235, 247, 1);
+}

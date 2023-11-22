@@ -16,7 +16,7 @@ black-lint:
 	$(VENV)/bin/black --check .
 
 flake8:
-	$(VENV)/bin/flake8 --jobs $(JOBS) --statistics --show-source .
+	$(VENV)/bin/flake8 --statistics --show-source .
 
 pretty:
 	$(VENV)/bin/isort .
@@ -27,4 +27,4 @@ plint: pretty lint
 lint:  black-lint flake8
 
 lock:
-	$(VENV)/bin/pogetry lock
+	$(VENV)/bin/poetry lock

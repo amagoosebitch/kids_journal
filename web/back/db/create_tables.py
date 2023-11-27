@@ -229,7 +229,10 @@ def create_tables(session_pool, path):
             .with_primary_keys("tg_user_id")
             .with_columns(
                 ydb.Column("tg_user_id", ydb.PrimitiveType.Uint64),
-                ydb.Column("name", ydb.PrimitiveType.Utf8),
+                ydb.Column("first_name",  ydb.OptionalType(ydb.PrimitiveType.Utf8)),
+                ydb.Column("last_name",  ydb.OptionalType(ydb.PrimitiveType.Utf8)),
+                ydb.Column("username",  ydb.OptionalType(ydb.PrimitiveType.Utf8)),
+                ydb.Column("photo_url",  ydb.OptionalType(ydb.PrimitiveType.Utf8)),
             )
         )
 

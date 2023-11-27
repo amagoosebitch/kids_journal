@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Authorization Page</title>
+     <style>
+        .centered-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            text-align: center;
+        }
+        .content-below {
+        margin-top: 20px;
+}
+    </style>
+</head>
+<script type="text/javascript">
+    function onTelegramAuth(user) {
+    alert(
+    'Logged in as ' + user.first_name + ' ' + user.last_name + '!');
+    }
+</script>
+
+<body>
+        <div class="centered-content">
+            <h2>Redirect login Widget</h2>
+        <form>
+            <div>
+                 {{ callback_telegram_login_widget|safe }}
+            </div>
+            <div class="content-below">
+                 {{ redirect_telegram_login_widget|safe }}
+            </div>
+        </form>
+        </div>
+
+</body>
+</html>

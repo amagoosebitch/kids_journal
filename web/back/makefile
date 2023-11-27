@@ -16,7 +16,7 @@ black-lint:
 	$(VENV)/bin/black --check .
 
 flake8:
-	$(VENV)/bin/flake8 --jobs $(JOBS) --statistics --show-source .
+	$(VENV)/bin/flake8 --statistics --show-source .
 
 pretty:
 	$(VENV)/bin/isort .

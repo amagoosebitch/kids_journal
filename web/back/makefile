@@ -27,4 +27,4 @@ plint: pretty lint
 lint:  black-lint flake8
 
 lock:
-	$(VENV)/bin/pogetry lock
+	$(VENV)/bin/poetry lock

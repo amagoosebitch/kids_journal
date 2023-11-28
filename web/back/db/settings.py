@@ -6,4 +6,4 @@ class YDBSettings(BaseSettings):
     database: str = "/local"
 
     class Config:
-        env_prefix = 'YDB_'
+        env_prefix = "YDB_"

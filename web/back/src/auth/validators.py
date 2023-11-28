@@ -1,11 +1,8 @@
 import hashlib
 import hmac
 import time
-from typing import Any
 
-from pydantic import BaseModel
-
-from auth.exceptions import TelegramDataIsOutdated, TelegramDataError
+from auth.exceptions import TelegramDataError, TelegramDataIsOutdated
 from auth.schemes import TelegramAuth
 
 
@@ -55,9 +52,10 @@ def _verify_telegram_session_outdate(auth_date: str) -> bool:
 
 
 def _generate_hash(data: dict, token: str) -> str:
-    data_check_string = ['{}={}'.format(k, v)
-                         for k, v in data.items() if k != 'hash' and v is not None]
-    data_check_string = '\n'.join(sorted(data_check_string))
+    data_check_string = [
+        "{}={}".format(k, v) for k, v in data.items() if k != "hash" and v is not None
+    ]
+    data_check_string = "\n".join(sorted(data_check_string))
 
     secret_key = hashlib.sha256(token.encode()).digest()
     generated_hash = hmac.new(

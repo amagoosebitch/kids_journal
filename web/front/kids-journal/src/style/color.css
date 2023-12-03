@@ -1,11 +1,20 @@
 :root {
+  --color-background: rgba(250, 213, 180, 0.2);
   --color-lightorange_main: rgba(255, 182, 115, 0.5);
+  --color-brown_table: rgba(191, 117, 48, 0.2);
+  --color-lightorange: #FAD5B4;
   --color-brown_main: #a65000;
   --color-orang_main: #ff9b40;
   --color-orang_accent: #ff7a00;
   --color-brown_accent: #bf7530;
 
+  --color-green: #6FCF97;
+
+  --color-black: #2D3748;
+  --color-img: #D9D9D9;
+  --color-darkgrey-back: rgba(217, 217, 217, 0.5);
   --color-darkgrey: #a3a3a3;
+  --color-grey-border: #E2E8F0;
   --color-lightgrey: #e6e6e6;
 
   --color-red: #d53f8c;

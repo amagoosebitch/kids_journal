@@ -1,0 +1,20 @@
+.creat__text {
+  font-family: "Inter", sans-serif;
+  font-size: 32px;
+  padding-top: 122px;
+  padding-left: 40px;
+}
+
+.creat__form-select {
+  width: 361px;
+  height: 40px;
+  padding-left: 16px;
+
+  margin-top: 20px;
+  margin-left: 40px;
+}
+
+.creat__form-button {
+  margin-top: 26px;
+  margin-left: 40px;
+}

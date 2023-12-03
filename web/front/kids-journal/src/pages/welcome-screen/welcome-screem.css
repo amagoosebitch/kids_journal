@@ -1,0 +1,55 @@
+@import "../../style/index.css";
+
+.home {
+  height: 100vh;
+}
+
+.home {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+}
+
+.home-text {
+  width: 625px;
+}
+
+.text-title {
+  font-family: "Architects Daughter", sans-serif;
+  color: var(--color-brown_main);
+  font-size: 100px;
+  font-weight: 400;
+}
+
+.text-description {
+  font-family: "Inter", sans-serif;
+  color: #000;
+  font-size: 32px;
+}
+
+.home-buttons {
+  width: 316px;
+}
+
+.home-button {
+  height: 65px;
+}
+
+@media screen and (max-width: 960px) {
+  .home {
+    flex-direction: column;
+  }
+
+  .home-text {
+    width: 100%;
+  }
+
+  .text-title, .text-description{
+    text-align: center;
+  }
+
+  .home-buttons {
+    margin-top: 40px;
+  }
+}

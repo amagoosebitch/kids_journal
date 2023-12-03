@@ -1,0 +1,62 @@
+@import "../../style/index.css";
+
+.employees_title {
+  display: flex;
+  justify-content: space-between;
+
+  padding-top: 122px;
+
+  padding-left: 32px;
+  padding-right: 32px;
+}
+
+.employees_label {
+  font-family: "Inter", sans-serif;
+  font-size: 32px;
+}
+
+.employees {
+  background-color: white;
+  margin-left: 32px;
+  margin-right: 32px;
+  margin-top: 20px;
+  font-family: "Inter", sans-serif;
+}
+
+.employees__table {
+  width: 100%;
+}
+
+.employees-title {
+  font-size: 20px;
+  height: 40px;
+  margin-left: 12px;
+  padding-left: 24px;
+}
+
+.employees-body {
+  font-size: 14px;
+}
+
+.employees-item {
+  width: 100%;
+  height: 52px;
+  padding-left: 24px;
+}
+
+.employees-item_name,
+.employees-title_name {
+  padding-left: 24px;
+}
+
+.employees-item:nth-child(odd) {
+  background: var(--color-brown_table);
+}
+
+.employees__table tbody tr {
+  transition: all 0.3s;
+}
+
+.employees__table tbody tr:hover {
+  background-color: var(--color-lightgrey);
+}

@@ -2,8 +2,6 @@
 
 .Button {
   padding: 10px 10px;
-  height: 44px;
-  width: 183px;
   border-radius: 10px;
   color: white;
   background-color: var(--color-orang_main);

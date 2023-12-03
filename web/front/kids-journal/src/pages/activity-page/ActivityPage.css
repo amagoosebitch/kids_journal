@@ -1,0 +1,33 @@
+.activity_container {
+
+    padding-top: 121px;
+    display: flex;
+    justify-content: space-around;
+}
+
+.activity_item {
+    font-family: "Inter", sans-serif;
+    font-size: 32px;
+
+    background: white;
+    height: 235px;
+    width: 440px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+@media screen and (max-width: 1370px) {
+    .activity_container {
+        width: 100%;
+    }
+
+    .activity_container {
+        margin-top: 10px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+    }
+}

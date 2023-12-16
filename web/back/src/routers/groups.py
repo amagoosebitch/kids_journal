@@ -5,7 +5,7 @@ from starlette.responses import Response
 
 from db.services.groups import GroupModel
 from src.dependencies import create_group_service
-from src.routers.routers import router
+from src.routers.router import router
 
 
 @router.post("/groups", status_code=201)

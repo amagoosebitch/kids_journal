@@ -5,7 +5,7 @@ from starlette.responses import Response
 
 from db.services.organization import OrganizationModel
 from src.dependencies import create_organization_service
-from src.routers.routers import router
+from src.routers.router import router
 
 
 @router.post("/organizations", status_code=201)

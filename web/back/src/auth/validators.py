@@ -2,8 +2,7 @@ import hashlib
 import hmac
 import time
 
-from auth.exceptions import TelegramDataError, TelegramDataIsOutdated
-from auth.schemes import TelegramAuth
+from src.auth import TelegramAuth, TelegramDataError, TelegramDataIsOutdated
 
 
 def validate_telegram_data(telegram_bot_token: str, data: TelegramAuth) -> dict:

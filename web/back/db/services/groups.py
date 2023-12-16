@@ -1,17 +1,18 @@
+from typing import Any
 from uuid import UUID
 
 from db.models.groups import GroupModel
 
 
 class GroupService:
-    def __init__(self, ydb_pool, db_prefix):
+    def __init__(self, ydb_pool: Any, db_prefix: str):
         self._pool = ydb_pool
         self._db_prefix = db_prefix
 
     def create_group(self, args_model: GroupModel):
         args = args_model.model_dump(exclude_none=True)
 
-        def callee(session):
+        def callee(session: Any):
             session.transaction().execute(
                 """
                 PRAGMA TablePathPrefix("{db_prefix}");
@@ -28,7 +29,7 @@ class GroupService:
         return self._pool.retry_operation_sync(callee)
 
     def get_all(self) -> list[GroupModel]:
-        def callee(session):
+        def callee(session: Any):
             session.transaction().execute(
                 """
                 PRAGMA TablePathPrefix("{db_prefix}");
@@ -46,7 +47,7 @@ class GroupService:
         ]  # мейби model_validate_json если возвращает строку
 
     def get_all_for_organization(self, organization_id: UUID) -> list[GroupModel]:
-        def callee(session):
+        def callee(session: Any):
             session.transaction().execute(
                 """
                 PRAGMA TablePathPrefix("{db_prefix}");
@@ -65,7 +66,7 @@ class GroupService:
         ]  # мейби model_validate_json если возвращает строку
 
     def get_by_id(self, group_id: UUID) -> GroupModel:
-        def callee(session):
+        def callee(session: Any):
             session.transaction().execute(
                 """
                 PRAGMA TablePathPrefix("{db_prefix}");
@@ -81,7 +82,7 @@ class GroupService:
         return self._pool.retry_operation_sync(callee)
 
     def get_id_by_name(self, name: str) -> UUID:
-        def callee(session):
+        def callee(session: Any):
             session.transaction().execute(
                 """
                 PRAGMA TablePathPrefix("{db_prefix}");

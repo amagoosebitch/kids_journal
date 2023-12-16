@@ -1,12 +1,13 @@
 import argparse
 import logging
 from pathlib import Path
+from typing import Any
 
 import ydb
 
 
-def create_tables(session_pool, path):
-    def callee(session):
+def create_tables(session_pool: Any, path: Path):
+    def callee(session: Any):
         # organization
         session.create_table(
             path / "organization",

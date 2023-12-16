@@ -1,3 +1,4 @@
+from typing import Any
 from uuid import UUID
 
 import ydb
@@ -5,8 +6,8 @@ import ydb
 from db.models.organizations import OrganizationModel
 
 
-def insert_test(pool):
-    def callee(session):
+def insert_test(pool: Any):
+    def callee(session: Any):
         session.transaction().execute(
             """
             PRAGMA TablePathPrefix("{}");
@@ -21,8 +22,8 @@ def insert_test(pool):
     return pool.retry_operation_sync(callee)
 
 
-def select_test(pool):
-    def callee(session):
+def select_test(pool: Any):
+    def callee(session: Any):
         res = session.transaction(ydb.SerializableReadWrite()).execute(
             """
             PRAGMA TablePathPrefix("{}");
@@ -47,7 +48,7 @@ class OrganizationService:
     def create_organization(self, args_model: OrganizationModel):
         args = args_model.model_dump(exclude_none=True)
 
-        def callee(session):
+        def callee(session: Any):
             session.transaction().execute(
                 """
                 PRAGMA TablePathPrefix("{db_prefix}");
@@ -64,7 +65,7 @@ class OrganizationService:
         return self._pool.retry_operation_sync(callee)
 
     def get_all(self) -> list[OrganizationModel]:
-        def callee(session):
+        def callee(session: Any):
             session.transaction().execute(
                 """
                 PRAGMA TablePathPrefix("{db_prefix}");
@@ -82,7 +83,7 @@ class OrganizationService:
         ]  # мейби model_validate_json если возвращает строку
 
     def get_by_name(self, name: str) -> OrganizationModel:
-        def callee(session):
+        def callee(session: Any):
             session.transaction().execute(
                 """
                 PRAGMA TablePathPrefix("{db_prefix}");
@@ -98,7 +99,7 @@ class OrganizationService:
         return self._pool.retry_operation_sync(callee)
 
     def get_by_id(self, organization_id: UUID) -> OrganizationModel:
-        def callee(session):
+        def callee(session: Any):
             session.transaction().execute(
                 """
                 PRAGMA TablePathPrefix("{db_prefix}");
@@ -114,7 +115,7 @@ class OrganizationService:
         return self._pool.retry_operation_sync(callee)
 
     def get_id_by_name(self, name: str) -> UUID:
-        def callee(session):
+        def callee(session: Any):
             session.transaction().execute(
                 """
                 PRAGMA TablePathPrefix("{db_prefix}");

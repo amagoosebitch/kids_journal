@@ -9,5 +9,5 @@ class BotConfig(BaseSettings):
         env_prefix = "AUTH_"
 
 
-def load_bot_config():
+def load_bot_config() -> BotConfig:
     return BotConfig()

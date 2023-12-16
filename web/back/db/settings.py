@@ -1,4 +1,4 @@
-from pydantic.env_settings import BaseSettings
+from pydantic_settings import BaseSettings
 
 
 class YDBSettings(BaseSettings):
@@ -6,4 +6,4 @@ class YDBSettings(BaseSettings):
     database: str = "/local"
 
     class Config:
-        env_prefix = 'YDB_'
+        env_prefix = "YDB_"

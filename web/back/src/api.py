@@ -1,6 +1,10 @@
 import uvicorn
 from fastapi import FastAPI
-from routers import router
+
+import routers.auth
+import routers.groups
+import routers.organization  # ToDo: Переделать на include_router()
+from routers.index import router
 
 
 def init_app() -> FastAPI:

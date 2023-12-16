@@ -1,15 +1,22 @@
 from pathlib import Path
 
-from auth import TelegramAuth, TelegramLoginWidget, WidgetSize, TelegramDataIsOutdated, TelegramDataError, \
-    validate_telegram_data
-from fastapi import APIRouter, Depends, Request, status
-from settings import BotConfig, load_bot_config
-from starlette.responses import HTMLResponse, RedirectResponse
+from fastapi import Depends, Request
+from starlette import status
+from starlette.responses import HTMLResponse
 from starlette.templating import Jinja2Templates
 
-router = APIRouter()
+from src.auth import (
+    TelegramAuth,
+    TelegramDataError,
+    TelegramDataIsOutdated,
+    TelegramLoginWidget,
+    WidgetSize,
+    validate_telegram_data,
+)
+from src.routers.router import router
+from src.settings import BotConfig, load_bot_config
 
-templates = Jinja2Templates(Path(__file__).parent / "templates")
+templates = Jinja2Templates(Path(__file__).parent.parent / "templates")
 
 
 def create_jwt_token():
@@ -22,12 +29,16 @@ def set_cookies():
     pass
 
 
-@router.get("/", name="index")
-async def index(request: Request):
-    """
-    Index page just redirects to login page.
-    """
-    return RedirectResponse(url=request.url_for("login"))
+def get_telegram_redirect_widget(request: Request, telegram_login: str):
+    login_widget = TelegramLoginWidget(
+        telegram_login=telegram_login,
+        size=WidgetSize.LARGE,
+        user_photo=False,
+        corner_radius=0,
+    )
+
+    redirect_url = str(request.url_for("login"))
+    return login_widget.redirect_telegram_login_widget(redirect_url=redirect_url)
 
 
 @router.get("/login", name="login")
@@ -38,17 +49,8 @@ async def login(
 ):
     telegram_token = config.telegram_token
     telegram_login = config.telegram_login
-
-    login_widget = TelegramLoginWidget(
-        telegram_login=telegram_login,
-        size=WidgetSize.LARGE,
-        user_photo=False,
-        corner_radius=0,
-    )
-
-    redirect_url = str(request.url_for("login"))
-    redirect_widget = login_widget.redirect_telegram_login_widget(
-        redirect_url=redirect_url
+    redirect_widget = get_telegram_redirect_widget(
+        request=request, telegram_login=telegram_login
     )
 
     if not query_params.model_dump().get("hash"):
@@ -62,10 +64,8 @@ async def login(
 
     try:
         validated_data = validate_telegram_data(telegram_token, query_params)
-
         if not validated_data:
             return
-
         create_jwt_token()
         set_cookies()
         return templates.TemplateResponse(

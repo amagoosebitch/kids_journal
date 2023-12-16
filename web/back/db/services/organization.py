@@ -1,8 +1,8 @@
-from datetime import datetime
-from uuid import UUID, uuid4
+from uuid import UUID
 
 import ydb
-from pydantic import BaseModel
+
+from db.models.organizations import OrganizationModel
 
 
 def insert_test(pool):
@@ -37,17 +37,6 @@ def select_test(pool):
             print(row)
 
     return pool.retry_operation_sync(callee)
-
-
-class OrganizationModel(BaseModel):
-    organization_id: UUID = uuid4()
-    name: str
-    description: str | None = None
-    photo_url: str | None = None
-    start_education_time: datetime
-    end_education_time: datetime
-    registration_date: datetime = datetime.utcnow()
-    updated_date: datetime = datetime.utcnow()
 
 
 class OrganizationService:

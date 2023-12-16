@@ -1,15 +1,6 @@
-from uuid import UUID, uuid4
+from uuid import UUID
 
-from pydantic import BaseModel
-
-from db.entity import AgeRanges
-
-
-class GroupModel(BaseModel):
-    group_id: UUID = uuid4()
-    organization_id: UUID = uuid4()
-    name: str
-    age_range: AgeRanges
+from db.models.groups import GroupModel
 
 
 class GroupService:

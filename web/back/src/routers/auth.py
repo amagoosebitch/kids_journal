@@ -11,8 +11,31 @@ from src.auth import (
     validate_telegram_data,
 )
 from src.routers.routers import router, templates
-from src.routers.utils import create_jwt_token, set_cookies
 from src.settings import BotConfig, load_bot_config
+
+
+def create_jwt_token():
+    # потом
+    pass
+
+
+def set_cookies():
+    # возможно потом
+    pass
+
+
+def get_telegram_redirect_widget(request: Request, telegram_login: str):
+    login_widget = TelegramLoginWidget(
+        telegram_login=telegram_login,
+        size=WidgetSize.LARGE,
+        user_photo=False,
+        corner_radius=0,
+    )
+
+    redirect_url = str(request.url_for("login"))
+    return login_widget.redirect_telegram_login_widget(
+        redirect_url=redirect_url
+    )
 
 
 @router.get("/login", name="login")
@@ -23,18 +46,7 @@ async def login(
 ):
     telegram_token = config.telegram_token
     telegram_login = config.telegram_login
-
-    login_widget = TelegramLoginWidget(
-        telegram_login=telegram_login,
-        size=WidgetSize.LARGE,
-        user_photo=False,
-        corner_radius=0,
-    )
-
-    redirect_url = str(request.url_for("login"))
-    redirect_widget = login_widget.redirect_telegram_login_widget(
-        redirect_url=redirect_url
-    )
+    redirect_widget = get_telegram_redirect_widget(request=request, telegram_login=telegram_login)
 
     if not query_params.model_dump().get("hash"):
         return templates.TemplateResponse(
@@ -47,10 +59,8 @@ async def login(
 
     try:
         validated_data = validate_telegram_data(telegram_token, query_params)
-
         if not validated_data:
             return
-
         create_jwt_token()
         set_cookies()
         return templates.TemplateResponse(

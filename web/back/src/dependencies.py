@@ -3,8 +3,10 @@ from typing import Annotated, Any
 import ydb
 from fastapi import Depends
 
+from db.services.employee import EmployeeService
 from db.services.groups import GroupService
 from db.services.organization import OrganizationService
+from db.services.parent import ParentService
 from db.settings import YDBSettings
 
 
@@ -34,3 +36,17 @@ def create_group_service(
     settings: Annotated[YDBSettings, Depends(ydb_settings)],
 ) -> GroupService:
     return GroupService(pool, settings.database)
+
+
+def create_parent_service(
+    pool: Annotated[Any, Depends(create_pool)],
+    settings: Annotated[YDBSettings, Depends(ydb_settings)],
+) -> ParentService:
+    return ParentService(pool, settings.database)
+
+
+def create_employee_service(
+    pool: Annotated[Any, Depends(create_pool)],
+    settings: Annotated[YDBSettings, Depends(ydb_settings)],
+) -> EmployeeService:
+    return EmployeeService(pool, settings.database)

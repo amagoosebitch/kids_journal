@@ -2,6 +2,7 @@ from typing import Any
 from uuid import UUID
 
 import ydb
+from pydantic import ValidationError
 
 from db.models.organizations import OrganizationModel
 
@@ -45,10 +46,31 @@ class OrganizationService:
         self._pool = ydb_pool
         self._db_prefix = db_prefix
 
+    @staticmethod
+    def _format_time(date_time: str) -> str:
+        if date_time[-1] == 'Z':
+            return date_time
+        return date_time + 'Z'
+
+    @staticmethod
+    def _format_unix_time(seconds: int | None) -> int:
+        if seconds is None:
+            return seconds
+        return int(str(seconds)[:10])  # Какая-то ydb дичь, оно высирает нули справа
+
     def create_organization(self, args_model: OrganizationModel):
+        args_model.start_education_time = args_model.start_education_time.replace(microsecond=0)
+        args_model.end_education_time = args_model.end_education_time.replace(microsecond=0)
+        args_model.registration_date = args_model.registration_date.replace(microsecond=0)
+        args_model.updated_date = args_model.updated_date.replace(microsecond=0)
         args = args_model.model_dump(exclude_none=True, mode="json")
+        args['start_education_time'] = self._format_time(args['start_education_time'])
+        args['end_education_time'] = self._format_time(args['end_education_time'])
+        args['registration_date'] = self._format_time(args['registration_date'])
+        args['updated_date'] = self._format_time(args['updated_date'])
 
         def callee(session: Any):
+            breakpoint()
             session.transaction().execute(
                 """
                 PRAGMA TablePathPrefix("{db_prefix}");
@@ -58,10 +80,10 @@ class OrganizationService:
                         "{name}",
                         "{description}",
                         "{photo_url}",
-                        "Datetime({start_education_time})",
-                        "Datetime({end_education_time})",
-                        "Datetime({registration_date})",
-                        "Datetime({updated_date})"
+                        Datetime("{start_education_time}"),
+                        Datetime("{end_education_time}"),
+                        Datetime("{registration_date}"),
+                        Datetime("{updated_date}")
                     );
                 """.format(
                     db_prefix=self._db_prefix,
@@ -75,7 +97,7 @@ class OrganizationService:
 
     def get_all(self) -> list[OrganizationModel]:
         def callee(session: Any):
-            session.transaction().execute(
+            return session.transaction().execute(
                 """
                 PRAGMA TablePathPrefix("{db_prefix}");
                 SELECT *
@@ -86,12 +108,19 @@ class OrganizationService:
                 commit_tx=True,
             )
 
-        results = self._pool.retry_operation_sync(callee)
-        if results is None:
-            return []
-        return [
-            OrganizationModel.model_validate(result) for result in results
-        ]  # мейби model_validate_json если возвращает строку
+        results = self._pool.retry_operation_sync(callee)[0]
+        response: list[OrganizationModel] = []
+        for row in results.rows:
+            row['start_education_time'] = self._format_unix_time(row['start_education_time'])
+            row['end_education_time'] = self._format_unix_time(row['end_education_time'])
+            row['registration_date'] = self._format_unix_time(row['registration_date'])
+            row['updated_date'] = self._format_unix_time(row['updated_date'])
+            try:
+                response.append(OrganizationModel.model_validate(row))
+            except ValidationError:
+                #  ToDo: Мега пепега опасное место
+                continue
+        return response
 
     def get_by_name(self, name: str) -> OrganizationModel:
         def callee(session: Any):

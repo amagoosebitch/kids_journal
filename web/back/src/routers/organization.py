@@ -16,19 +16,12 @@ async def create_organization(
 
 async def get_organizations(
     organization_service=Depends(create_organization_service),
-):
-    response = organization_service.get_all()
-
-    return response
+) -> list[OrganizationModel]:
+    return organization_service.get_all()
 
 
 async def get_organization(
     organization_id: UUID,
     organization_service=Depends(create_organization_service),
-):
-    response = organization_service.get_by_id(organization_id)
-
-    if not response:
-        return Response("Organization not found", status_code=404)
-
-    return Response(response.json(), status_code=200)
+) -> OrganizationModel | None:
+    return organization_service.get_by_id(organization_id)

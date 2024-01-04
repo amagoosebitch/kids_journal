@@ -9,3 +9,4 @@ class TelegramAuth(BaseModel):
     photo_url: str | None = None
     auth_date: str | None = None
     hash: str | None = None
+

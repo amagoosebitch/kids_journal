@@ -46,18 +46,27 @@ class OrganizationService:
         self._db_prefix = db_prefix
 
     def create_organization(self, args_model: OrganizationModel):
-        args = args_model.model_dump(exclude_none=True)
+        args = args_model.model_dump(exclude_none=True, mode='json')
 
         def callee(session: Any):
             session.transaction().execute(
                 """
                 PRAGMA TablePathPrefix("{db_prefix}");
                 UPSERT INTO organization ({keys}) VALUES
-                    ({values});
+                    (
+                        "{organization_id}",
+                        "{name}",
+                        "{description}",
+                        "{photo_url}",
+                        "Datetime({start_education_time})",
+                        "Datetime({end_education_time})",
+                        "Datetime({registration_date})",
+                        "Datetime({updated_date})"
+                    );
                 """.format(
                     db_prefix=self._db_prefix,
                     keys=", ".join(args.keys()),
-                    values=", ".join(args.values()),
+                    **args,
                 ),
                 commit_tx=True,
             )
@@ -78,6 +87,8 @@ class OrganizationService:
             )
 
         results = self._pool.retry_operation_sync(callee)
+        if results is None:
+            return []
         return [
             OrganizationModel.model_validate(result) for result in results
         ]  # мейби model_validate_json если возвращает строку

@@ -12,7 +12,7 @@ def ydb_settings() -> YDBSettings:
     return YDBSettings()
 
 
-def create_pool(settings: YDBSettings):
+def create_pool(settings: Annotated[YDBSettings, Depends(ydb_settings)]):
     driver = ydb.Driver(
         endpoint=settings.endpoint,
         database=settings.database,

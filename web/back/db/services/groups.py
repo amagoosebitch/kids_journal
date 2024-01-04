@@ -10,18 +10,23 @@ class GroupService:
         self._db_prefix = db_prefix
 
     def create_group(self, args_model: GroupModel):
-        args = args_model.model_dump(exclude_none=True)
+        args = args_model.model_dump(exclude_none=True, mode='json')
 
         def callee(session: Any):
             session.transaction().execute(
                 """
                 PRAGMA TablePathPrefix("{db_prefix}");
                 UPSERT INTO group ({keys}) VALUES
-                    ({values});
+                    (
+                        "{group_id}",
+                        "{organization_id}",
+                        "{name}",
+                        "{age_range}"
+                    );
                 """.format(
                     db_prefix=self._db_prefix,
                     keys=", ".join(args.keys()),
-                    values=", ".join(args.values()),
+                    **args,
                 ),
                 commit_tx=True,
             )
@@ -67,7 +72,7 @@ class GroupService:
 
     def get_by_id(self, group_id: UUID) -> GroupModel:
         def callee(session: Any):
-            session.transaction().execute(
+            return session.transaction().execute(
                 """
                 PRAGMA TablePathPrefix("{db_prefix}");
                 SELECT *
@@ -79,7 +84,8 @@ class GroupService:
                 commit_tx=True,
             )
 
-        return self._pool.retry_operation_sync(callee)
+        response = self._pool.retry_operation_sync(callee)[0].rows[0]
+        return GroupModel.model_validate(response)
 
     def get_id_by_name(self, name: str) -> UUID:
         def callee(session: Any):

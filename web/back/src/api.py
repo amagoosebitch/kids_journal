@@ -1,14 +1,38 @@
 import uvicorn
-from fastapi import FastAPI
+from fastapi import APIRouter, FastAPI
 
-import routers.auth
-import routers.groups
-import routers.organization  # ToDo: Переделать на include_router()
-from routers.index import router
+from src.routers.auth import login
+from src.routers.groups import (
+    add_group_to_organization,
+    get_group,
+    get_groups_by_organization,
+)
+from src.routers.index import index
+from src.routers.organization import create_organization, get_organizations, get_organization
 
 
 def init_app() -> FastAPI:
     app = FastAPI(debug=True)
+    router = APIRouter()
+
+    # Groups
+    router.add_api_route("/groups", add_group_to_organization, methods=["POST"])
+    router.add_api_route(
+        "/organizations/{organizationId}/groups",
+        get_groups_by_organization,
+        methods=["GET"],
+    )
+    router.add_api_route("/groups/{groupId}", get_group, methods=["GET"])
+
+    # Organizations
+    router.add_api_route("/organizations", create_organization, methods=["POST"])
+    router.add_api_route("/organizations", get_organizations, methods=["GET"])
+    router.add_api_route("/organizations/{organization_id}", get_organization, methods=["GET"])
+
+    # Auth
+    router.add_api_route("/login", login, methods=["GET"])
+    router.add_api_route("/", index, methods=["GET"])
+
     app.include_router(router)
     return app
 

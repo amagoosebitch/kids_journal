@@ -28,3 +28,9 @@ lint:  black-lint flake8
 
 lock:
 	$(VENV)/bin/poetry lock
+
+create-tables:
+	YDB_ANONYMOUS_CREDENTIALS=1 $(VENV)/bin/python db/create_tables.py -e grpc://localhost:2136 -d local
+
+local-api-up:
+	YDB_ANONYMOUS_CREDENTIALS=1 $(VENV)/bin/python src/api.py

@@ -13,7 +13,6 @@ from src.auth import (
     WidgetSize,
     validate_telegram_data,
 )
-from src.routers.router import router
 from src.settings import BotConfig, load_bot_config
 
 templates = Jinja2Templates(Path(__file__).parent.parent / "templates")
@@ -41,7 +40,6 @@ def get_telegram_redirect_widget(request: Request, telegram_login: str):
     return login_widget.redirect_telegram_login_widget(redirect_url=redirect_url)
 
 
-@router.get("/login", name="login")
 async def login(
     request: Request,
     query_params: TelegramAuth = Depends(TelegramAuth),

@@ -1,7 +1,6 @@
 from uuid import UUID
 
 from fastapi import Depends
-from starlette.responses import Response
 
 from db.services.organization import OrganizationModel
 from src.dependencies import create_organization_service

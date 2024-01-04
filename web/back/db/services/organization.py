@@ -48,9 +48,9 @@ class OrganizationService:
 
     @staticmethod
     def _format_time(date_time: str) -> str:
-        if date_time[-1] == 'Z':
+        if date_time[-1] == "Z":
             return date_time
-        return date_time + 'Z'
+        return date_time + "Z"
 
     @staticmethod
     def _format_unix_time(seconds: int | None) -> int:
@@ -59,18 +59,23 @@ class OrganizationService:
         return int(str(seconds)[:10])  # Какая-то ydb дичь, оно высирает нули справа
 
     def create_organization(self, args_model: OrganizationModel):
-        args_model.start_education_time = args_model.start_education_time.replace(microsecond=0)
-        args_model.end_education_time = args_model.end_education_time.replace(microsecond=0)
-        args_model.registration_date = args_model.registration_date.replace(microsecond=0)
+        args_model.start_education_time = args_model.start_education_time.replace(
+            microsecond=0
+        )
+        args_model.end_education_time = args_model.end_education_time.replace(
+            microsecond=0
+        )
+        args_model.registration_date = args_model.registration_date.replace(
+            microsecond=0
+        )
         args_model.updated_date = args_model.updated_date.replace(microsecond=0)
         args = args_model.model_dump(exclude_none=True, mode="json")
-        args['start_education_time'] = self._format_time(args['start_education_time'])
-        args['end_education_time'] = self._format_time(args['end_education_time'])
-        args['registration_date'] = self._format_time(args['registration_date'])
-        args['updated_date'] = self._format_time(args['updated_date'])
+        args["start_education_time"] = self._format_time(args["start_education_time"])
+        args["end_education_time"] = self._format_time(args["end_education_time"])
+        args["registration_date"] = self._format_time(args["registration_date"])
+        args["updated_date"] = self._format_time(args["updated_date"])
 
         def callee(session: Any):
-            breakpoint()
             session.transaction().execute(
                 """
                 PRAGMA TablePathPrefix("{db_prefix}");
@@ -111,10 +116,14 @@ class OrganizationService:
         results = self._pool.retry_operation_sync(callee)[0]
         response: list[OrganizationModel] = []
         for row in results.rows:
-            row['start_education_time'] = self._format_unix_time(row['start_education_time'])
-            row['end_education_time'] = self._format_unix_time(row['end_education_time'])
-            row['registration_date'] = self._format_unix_time(row['registration_date'])
-            row['updated_date'] = self._format_unix_time(row['updated_date'])
+            row["start_education_time"] = self._format_unix_time(
+                row["start_education_time"]
+            )
+            row["end_education_time"] = self._format_unix_time(
+                row["end_education_time"]
+            )
+            row["registration_date"] = self._format_unix_time(row["registration_date"])
+            row["updated_date"] = self._format_unix_time(row["updated_date"])
             try:
                 response.append(OrganizationModel.model_validate(row))
             except ValidationError:

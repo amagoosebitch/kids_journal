@@ -2,6 +2,7 @@ import uvicorn
 from fastapi import APIRouter, FastAPI
 
 from src.routers.auth import login
+from src.routers.employee import create_employee, get_employee_by_tg_id
 from src.routers.groups import (
     add_group_to_organization,
     get_group,
@@ -13,6 +14,7 @@ from src.routers.organization import (
     get_organization,
     get_organizations,
 )
+from src.routers.parent import create_parent, get_parent_by_tg_id
 
 
 def init_app() -> FastAPI:
@@ -38,6 +40,14 @@ def init_app() -> FastAPI:
     # Auth
     router.add_api_route("/login", login, methods=["GET"])
     router.add_api_route("/", index, methods=["GET"])
+
+    # Parent
+    router.add_api_route("/parents", create_parent, methods=["POST"])
+    router.add_api_route("/parents/{tgId}", get_parent_by_tg_id, methods=["GET"])
+
+    # Employee
+    router.add_api_route("/employee", create_employee, methods=["POST"])
+    router.add_api_route("/employee/{tgId}", get_employee_by_tg_id, methods=["GET"])
 
     app.include_router(router)
     return app

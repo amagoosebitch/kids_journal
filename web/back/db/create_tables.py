@@ -106,8 +106,8 @@ def create_tables(session_pool: Any, path: Path):
                     "end_education_time", ydb.OptionalType(ydb.PrimitiveType.Timestamp)
                 ),
                 ydb.Column("gender", ydb.OptionalType(ydb.PrimitiveType.Uint8)),
-                ydb.Column("parent_1", ydb.OptionalType(ydb.PrimitiveType.Uint8)),
-                ydb.Column("parent_2", ydb.OptionalType(ydb.PrimitiveType.Uint8)),
+                ydb.Column("parent_1_id", ydb.OptionalType(ydb.PrimitiveType.Uint8)),
+                ydb.Column("parent_2_id", ydb.OptionalType(ydb.PrimitiveType.Uint8)),
             ),
         )
 
@@ -165,11 +165,12 @@ def create_tables(session_pool: Any, path: Path):
                 ydb.Column("first_name", ydb.OptionalType(ydb.PrimitiveType.Utf8)),
                 ydb.Column("last_name", ydb.OptionalType(ydb.PrimitiveType.Utf8)),
                 ydb.Column("email", ydb.OptionalType(ydb.PrimitiveType.Utf8)),
-                ydb.Column("gender", ydb.OptionalType(ydb.PrimitiveType.Uint8)),
+                ydb.Column("gender", ydb.OptionalType(ydb.PrimitiveType.Utf8)),
                 ydb.Column("phone_number", ydb.OptionalType(ydb.PrimitiveType.Utf8)),
                 ydb.Column("avatar_url", ydb.OptionalType(ydb.PrimitiveType.Utf8)),
                 ydb.Column("tg_user_id", ydb.OptionalType(ydb.PrimitiveType.Utf8)),
                 ydb.Column("role_id", ydb.OptionalType(ydb.PrimitiveType.Utf8)),
+                ydb.Column("group_ids", ydb.OptionalType(ydb.PrimitiveType.Yson)),
             )
             .with_indexes(
                 ydb.TableIndex("tg_user_index").with_index_columns("tg_user_id"),
@@ -190,7 +191,7 @@ def create_tables(session_pool: Any, path: Path):
                 ydb.Column(
                     "email", ydb.OptionalType(ydb.PrimitiveType.Utf8)
                 ),  # почему епт фамилия не обязательна, а имейл обязателен?
-                ydb.Column("gender", ydb.OptionalType(ydb.PrimitiveType.Uint8)),
+                ydb.Column("gender", ydb.OptionalType(ydb.PrimitiveType.Utf8)),
                 ydb.Column("phone_number", ydb.OptionalType(ydb.PrimitiveType.Utf8)),
                 ydb.Column(
                     "freq_notifications", ydb.OptionalType(ydb.PrimitiveType.Uint64)

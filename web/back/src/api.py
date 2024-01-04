@@ -8,7 +8,11 @@ from src.routers.groups import (
     get_groups_by_organization,
 )
 from src.routers.index import index
-from src.routers.organization import create_organization, get_organizations, get_organization
+from src.routers.organization import (
+    create_organization,
+    get_organization,
+    get_organizations,
+)
 
 
 def init_app() -> FastAPI:
@@ -27,7 +31,9 @@ def init_app() -> FastAPI:
     # Organizations
     router.add_api_route("/organizations", create_organization, methods=["POST"])
     router.add_api_route("/organizations", get_organizations, methods=["GET"])
-    router.add_api_route("/organizations/{organization_id}", get_organization, methods=["GET"])
+    router.add_api_route(
+        "/organizations/{organization_id}", get_organization, methods=["GET"]
+    )
 
     # Auth
     router.add_api_route("/login", login, methods=["GET"])

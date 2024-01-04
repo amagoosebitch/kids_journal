@@ -10,12 +10,8 @@ from src.dependencies import create_organization_service
 async def create_organization(
     organization: OrganizationModel,
     organization_service=Depends(create_organization_service),
-):
-    response = organization_service.create_organization(organization)
-
-    return {
-        "organization_id": response.organization_id
-    }
+) -> None:
+    organization_service.create_organization(organization)
 
 
 async def get_organizations(

@@ -132,7 +132,9 @@ def create_tables(session_pool: Any, path: Path):
             .with_columns(
                 ydb.Column("child_id", ydb.PrimitiveType.Utf8),
                 ydb.Column("skill_id", ydb.PrimitiveType.Utf8),
-                ydb.Column("success_level_id", ydb.OptionalType(ydb.PrimitiveType.Utf8)),
+                ydb.Column(
+                    "success_level_id", ydb.OptionalType(ydb.PrimitiveType.Utf8)
+                ),
             )
             .with_indexes(
                 ydb.TableIndex("success_level_index").with_index_columns(

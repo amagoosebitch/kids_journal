@@ -46,7 +46,7 @@ class OrganizationService:
         self._db_prefix = db_prefix
 
     def create_organization(self, args_model: OrganizationModel):
-        args = args_model.model_dump(exclude_none=True, mode='json')
+        args = args_model.model_dump(exclude_none=True, mode="json")
 
         def callee(session: Any):
             session.transaction().execute(

@@ -10,7 +10,7 @@ class GroupService:
         self._db_prefix = db_prefix
 
     def create_group(self, args_model: GroupModel):
-        args = args_model.model_dump(exclude_none=True, mode='json')
+        args = args_model.model_dump(exclude_none=True, mode="json")
 
         def callee(session: Any):
             session.transaction().execute(
@@ -53,7 +53,7 @@ class GroupService:
 
     def get_all_for_organization(self, organization_id: UUID) -> list[GroupModel]:
         def callee(session: Any):
-            session.transaction().execute(
+            return session.transaction().execute(
                 """
                 PRAGMA TablePathPrefix("{db_prefix}");
                 SELECT *
@@ -65,12 +65,10 @@ class GroupService:
                 commit_tx=True,
             )
 
-        results = self._pool.retry_operation_sync(callee)
-        return [
-            GroupModel.model_validate(result) for result in results
-        ]  # мейби model_validate_json если возвращает строку
+        results = self._pool.retry_operation_sync(callee)[0].rows
+        return [GroupModel.model_validate(result) for result in results]
 
-    def get_by_id(self, group_id: UUID) -> GroupModel:
+    def get_by_id(self, group_id: UUID) -> GroupModel | None:
         def callee(session: Any):
             return session.transaction().execute(
                 """
@@ -84,8 +82,10 @@ class GroupService:
                 commit_tx=True,
             )
 
-        response = self._pool.retry_operation_sync(callee)[0].rows[0]
-        return GroupModel.model_validate(response)
+        rows = self._pool.retry_operation_sync(callee)[0].rows
+        if not rows:
+            return None
+        return GroupModel.model_validate(rows[0])
 
     def get_id_by_name(self, name: str) -> UUID:
         def callee(session: Any):

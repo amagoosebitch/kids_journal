@@ -9,4 +9,4 @@ class EmployeeState(enum.Enum):
 
 
 class ParentState(enum.Enum):
-    pass
+    SUBSCRIBE = 10

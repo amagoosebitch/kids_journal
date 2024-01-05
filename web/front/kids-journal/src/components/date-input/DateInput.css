@@ -1,0 +1,23 @@
+@import "../../style/index.css";
+
+
+.date__container {
+    font-family: "Inter", sans-serif;
+    font-size: 26px;
+    width: 203px;
+    height: 49px;
+
+    text-align: center;
+
+    color: black;
+    background-color: var(--color-lightorange);
+    border-radius: 10px;
+}
+
+.calendar-move {
+    visibility: hidden;
+}
+
+.calendar-move.active {
+    visibility: visible;
+}

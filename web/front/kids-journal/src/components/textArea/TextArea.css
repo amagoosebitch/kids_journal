@@ -1,0 +1,29 @@
+@import "../../style/index.css";
+
+.TextArea {
+  display: flex;
+  align-items: center;
+  padding: 18px 40px 18px 12px;
+  width: 100%;
+  background-color: white;
+  border: 1px solid var(--color-darkgrey);
+  border-radius: 10px;
+  outline: transparent;
+  transition: all 0.25s ease;
+}
+
+.TextArea:hover {
+  background-color: #a65000;
+}
+
+.TextArea.TextArea__error {
+  border: var(--color-red);
+}
+
+.TextArea.TextArea__error:hover {
+  border: var(--color-lightred);
+}
+
+.TextArea:-webkit-autofill {
+  -webkit-background-clip: text;
+}

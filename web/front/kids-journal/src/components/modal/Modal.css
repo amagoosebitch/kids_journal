@@ -1,0 +1,61 @@
+@import "../../style/index.css";
+
+.ModalDefault {
+  padding: 40px;
+  color: black;
+  border-radius: var(--background-color-calendar);
+}
+
+.react-responsive-modal-modal {
+  max-width: 872px !important;
+}
+
+.Modal__medium {
+  min-width: 872px;
+  max-width: 872px;
+  width: 100%;
+}
+
+.ModalCloseButton {
+  width: 20px;
+  height: 20px;
+}
+
+.theme-dark .ModalDefault {
+  background: rgba(31, 32, 41, 1);
+  box-shadow:
+    rgba(138, 143, 160, 0.12) 0 2px 4px 0,
+    rgba(138, 143, 160, 0.32) 0 2px 16px 0;
+}
+
+.Modal {
+  display: flex;
+}
+
+.Modal-img {
+  top: 38px;
+  left: 34px;
+  width: 324px;
+  height: 398px;
+  background: var(--color-img);
+}
+
+.Modal_content {
+  padding-left: 42px;
+}
+
+.Modal_text {
+  font-family: "Inter", sans-serif;
+  font-size: 20px;
+  padding-top: 20px;
+
+}
+
+.Modal-name {
+  font-family: "Inter", sans-serif;
+  font-size: 40px;
+}
+
+.Modal_text-parent_number {
+  padding-left: 62px;
+}

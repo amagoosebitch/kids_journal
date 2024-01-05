@@ -1,16 +1,18 @@
 from telegram.ext import (
     Application,
+    CallbackQueryHandler,
     CommandHandler,
     ConversationHandler,
     MessageHandler,
     filters,
 )
 
+from tg_bot.callbacks import ReportTypeCallback
 from tg_bot.handlers.command_handlers import start_command_handler, stop_command_handler
 from tg_bot.handlers.message.employee import (
     handle_choose_child,
     handle_choose_group,
-    handle_choose_report_type,
+    handle_single_child_report,
     handle_write_report,
 )
 from tg_bot.settings import BotSettings
@@ -24,16 +26,20 @@ def start() -> None:
     start_conv_handler = ConversationHandler(
         entry_points=[CommandHandler("start", start_command_handler)],
         states={
-            EmployeeState.CHOOSE_REPORT_TYPE: [
-                MessageHandler(filters.TEXT, handle_choose_report_type)
+            EmployeeState.CHOOSE_REPORT_TYPE.value: [
+                CallbackQueryHandler(
+                    handle_single_child_report,
+                    pattern=f"^{ReportTypeCallback.SINGLE_CHILD}$",
+                )
+                #  ToDo: Другие ветки работника
             ],
-            EmployeeState.CHOOSE_GROUP: [
+            EmployeeState.CHOOSE_GROUP.value: [
                 MessageHandler(filters.TEXT, handle_choose_group)
             ],
-            EmployeeState.CHOOSE_CHILD: [
+            EmployeeState.CHOOSE_CHILD.value: [
                 MessageHandler(filters.TEXT, handle_choose_child)
             ],
-            EmployeeState.WRITE_REPORT: [
+            EmployeeState.WRITE_REPORT.value: [
                 MessageHandler(filters.TEXT, handle_write_report)
             ],
         },

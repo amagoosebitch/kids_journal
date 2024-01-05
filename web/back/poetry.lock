@@ -237,6 +237,17 @@ urllib3 = {version = ">=1.25.4,<2.1", markers = "python_version >= \"3.10\""}
 crt = ["awscrt (==0.19.17)"]
 
 [[package]]
+name = "cachetools"
+version = "5.3.2"
+description = "Extensible memoizing collections and decorators"
+optional = false
+python-versions = ">=3.7"
+files = [
+    {file = "cachetools-5.3.2-py3-none-any.whl", hash = "sha256:861f35a13a451f94e301ce2bec7cac63e881232ccce7ed67fab9b5df4d3beaa1"},
+    {file = "cachetools-5.3.2.tar.gz", hash = "sha256:086ee420196f7b2ab9ca2db2520aca326318b68fe5ba8bc4d49cca91add450f2"},
+]
+
+[[package]]
 name = "certifi"
 version = "2023.11.17"
 description = "Python package for providing Mozilla's CA Bundle."
@@ -1829,4 +1840,4 @@ yc = ["yandexcloud"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11"
-content-hash = "67293b58782f3c1736b82c8a9d2114c109432c7bb74032efa1ba296fa838bd9a"
+content-hash = "576777966c2a0a4d86b5e627f7e412205c1921a215eb0c6a1a067f98bf6d1b71"

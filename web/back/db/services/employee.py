@@ -9,7 +9,7 @@ class EmployeeService:
         self._pool = ydb_pool
         self._db_prefix = db_prefix
 
-    def create_employee(self, args_model: EmployeeModel):
+    def create_employee(self, args_model: EmployeeModel) -> None:
         args = args_model.model_dump(exclude_none=True, mode="json")
 
         def callee(session: Any):
@@ -58,7 +58,5 @@ class EmployeeService:
         if not rows:
             return None
 
-        rows[0]["group_ids"] = json.loads(
-            rows[0]["group_ids"].decode("utf-8").replace("'", '"')
-        )
+        rows[0]["group_ids"] = json.loads(rows[0]["group_ids"].replace("'", '"'))
         return EmployeeModel.model_validate(rows[0])

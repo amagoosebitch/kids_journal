@@ -1,0 +1,85 @@
+@import "../../style/index.css";
+
+.FormField {
+  position: relative;
+  margin-bottom: 30px;
+  height: 56px;
+  width: 100%;
+  border-radius: 10px;
+  word-wrap: break-word;
+}
+
+.FormField.FormField-Label {
+  font-family: "Inter", sans-serif;
+  font-size: 14px;
+  font-weight: 400;
+  font-style: normal;
+  line-height: 1.25;
+  position: absolute;
+  top: 20px;
+  z-index: 1;
+  color: rgba(0, 0, 0, 0.54);
+  pointer-events: none;
+  transition: all 0.2s;
+}
+
+.FormField.FormField-Label.Input__error {
+  background-color: var(--color-lightred);
+}
+
+.FormField.FormField-LabelRequired {
+  color: var(--color-red);
+}
+
+.FormField-ErrorMassage {
+  font-family: "Inter", sans-serif;
+  font-size: 12px;
+  font-weight: 400;
+  font-style: normal;
+  line-height: 1.25;
+
+  display: block;
+  padding-top: 5px;
+  color: var(--color-red);
+  transition: all 0.3s;
+}
+
+.FormField__active {
+  width: 100%;
+  background-color: white;
+}
+
+.FormField__active.FormField-Label {
+  font-family: "Inter", sans-serif;
+  font-size: 12px;
+  font-weight: 400;
+  font-style: normal;
+  line-height: 1.25;
+
+  top: -7px;
+  padding: 0 5px;
+  color: var(--color-lightgrey);
+  background-color: white;
+}
+
+.FormField__active.Input__active {
+  width: 100%;
+  border: 1px solid rgba(0, 0, 0, 0.54);
+  color: var(--color-lightgrey);
+  background-color: white;
+}
+
+.FormField__active.Input__active input:hover,
+input {
+  background-color: white;
+}
+
+.FormField__active.Input__active.Input__error {
+  border: 1px solid var(--color-red);
+  background-color: white;
+}
+
+.FormField__active:hover .Input__active,
+.Input__error {
+  background-color: white;
+}

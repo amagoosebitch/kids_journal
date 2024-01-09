@@ -47,9 +47,7 @@ class GroupService:
             )
 
         results = self._pool.retry_operation_sync(callee)
-        return [
-            GroupModel.model_validate(result) for result in results
-        ]  # мейби model_validate_json если возвращает строку
+        return [GroupModel.model_validate(result) for result in results]
 
     def get_all_for_organization(self, organization_id: UUID) -> list[GroupModel]:
         def callee(session: Any):

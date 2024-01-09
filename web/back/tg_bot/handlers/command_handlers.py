@@ -21,10 +21,10 @@ async def start_command_handler(
 ) -> int:
     logger.info("User %s started a conversation", update.message.from_user.id)
 
-    employee_response = get_employee_by_tg_id(tg_id=update.message.from_user.id)
-    if employee_response:
+    employee = get_employee_by_tg_id(tg_id=update.message.from_user.id)
+    if employee:
         await update.message.reply_text(
-            START_EMPLOYEE.format(first_name=employee_response["first_name"]),
+            START_EMPLOYEE.format(first_name=employee.first_name),
             reply_markup=InlineKeyboardMarkup(
                 [
                     [
@@ -46,10 +46,10 @@ async def start_command_handler(
         )
         return EmployeeState.CHOOSE_REPORT_TYPE.value
 
-    parent_response = get_parent_by_tg_id(tg_id=update.message.from_user.id)
-    if parent_response:
+    parent = get_parent_by_tg_id(tg_id=update.message.from_user.id)
+    if parent:
         await update.message.reply_text(
-            START_PARENT.format(first_name=parent_response["first_name"])
+            START_PARENT.format(first_name=parent["first_name"])
         )
         return ParentState.SUBSCRIBE.value
 

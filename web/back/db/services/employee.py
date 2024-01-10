@@ -10,7 +10,7 @@ class EmployeeService:
         self._db_prefix = db_prefix
 
     def create_employee(self, args_model: EmployeeModel) -> None:
-        args = args_model.model_dump(exclude_none=True, mode="json")
+        args = args_model.model_dump(exclude_none=False, mode="json")
 
         def callee(session: Any):
             session.transaction().execute(

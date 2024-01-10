@@ -2,6 +2,8 @@ from uuid import UUID
 
 from fastapi import Depends
 
+from db.models.child import ChildModel
+from db.models.groups import GroupChildModel
 from db.services.groups import GroupModel, GroupService
 from src.dependencies import create_group_service
 
@@ -28,3 +30,17 @@ async def get_group(
     if not response:
         return None
     return response
+
+
+async def add_children_to_group(
+    group_child_model: GroupChildModel,
+    group_service: GroupService = Depends(create_group_service),
+) -> None:
+    return group_service.link_to_children(group_child_model)
+
+
+async def get_children_by_group_id(
+    group_id: UUID,
+    group_service: GroupService = Depends(create_group_service)
+) -> list[ChildModel]:
+    return group_service.get_children_by_group_id(group_id)

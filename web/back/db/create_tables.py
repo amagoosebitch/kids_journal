@@ -94,9 +94,9 @@ def create_tables(session_pool: Any, path: Path):
                 ydb.Column("name", ydb.OptionalType(ydb.PrimitiveType.Utf8)),
                 ydb.Column("first_name", ydb.OptionalType(ydb.PrimitiveType.Utf8)),
                 ydb.Column("last_name", ydb.OptionalType(ydb.PrimitiveType.Utf8)),
-                ydb.Column("birth_date", ydb.OptionalType(ydb.PrimitiveType.Date)),
+                ydb.Column("birth_date", ydb.OptionalType(ydb.PrimitiveType.Datetime)),
                 ydb.Column(
-                    "start_education_date", ydb.OptionalType(ydb.PrimitiveType.Date)
+                    "start_education_date", ydb.OptionalType(ydb.PrimitiveType.Datetime)
                 ),
                 ydb.Column(
                     "start_education_time",
@@ -105,7 +105,7 @@ def create_tables(session_pool: Any, path: Path):
                 ydb.Column(
                     "end_education_time", ydb.OptionalType(ydb.PrimitiveType.Timestamp)
                 ),
-                ydb.Column("gender", ydb.OptionalType(ydb.PrimitiveType.Uint8)),
+                ydb.Column("gender", ydb.OptionalType(ydb.PrimitiveType.Utf8)),
                 ydb.Column("parent_1_id", ydb.OptionalType(ydb.PrimitiveType.Utf8)),
                 ydb.Column("parent_2_id", ydb.OptionalType(ydb.PrimitiveType.Utf8)),
             ),

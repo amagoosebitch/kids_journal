@@ -34,7 +34,7 @@ def start() -> None:
                 #  ToDo: Другие ветки работника
             ],
             EmployeeState.CHOOSE_GROUP.value: [
-                CallbackQueryHandler(handle_choose_group, pattern=f"^.*$")
+                CallbackQueryHandler(handle_choose_group, pattern="^.*$")
             ],
             EmployeeState.CHOOSE_CHILD.value: [
                 MessageHandler(filters.TEXT, handle_choose_child)

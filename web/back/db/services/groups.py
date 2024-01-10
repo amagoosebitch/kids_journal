@@ -1,7 +1,9 @@
 from typing import Any
 from uuid import UUID
 
-from db.models.groups import GroupModel
+from db.models.child import ChildModel
+from db.models.groups import GroupChildModel, GroupModel
+from db.utils import _format_unix_time
 
 
 class GroupService:
@@ -10,7 +12,7 @@ class GroupService:
         self._db_prefix = db_prefix
 
     def create_group(self, args_model: GroupModel):
-        args = args_model.model_dump(exclude_none=True, mode="json")
+        args = args_model.model_dump(exclude_none=False, mode="json")
 
         def callee(session: Any):
             session.transaction().execute(
@@ -85,18 +87,52 @@ class GroupService:
             return None
         return GroupModel.model_validate(rows[0])
 
-    def get_id_by_name(self, name: str) -> UUID:
+    def link_to_children(self, group_child_model: GroupChildModel) -> None:
+        values = ", ".join(
+            f'("{group_child_model.group_id}", "{child_id}")'
+            for child_id in group_child_model.child_ids
+        )
+
         def callee(session: Any):
             session.transaction().execute(
                 """
                 PRAGMA TablePathPrefix("{db_prefix}");
-                SELECT group_id
-                FROM group
-                WHERE name = "{name}"
+                UPSERT INTO group_child {keys} VALUES {values}
                 """.format(
-                    db_prefix=self._db_prefix, name=name
+                    db_prefix=self._db_prefix,
+                    keys="(group_id, child_id)",
+                    values=values,
                 ),
                 commit_tx=True,
             )
 
         return self._pool.retry_operation_sync(callee)
+
+    def get_children_by_group_id(self, group_id: UUID) -> list[ChildModel]:
+        def callee(session: Any):
+            return session.transaction().execute(
+                """
+                PRAGMA TablePathPrefix("{db_prefix}");
+                SELECT *
+                FROM child
+                JOIN group_child on child.child_id = group_child.child_id
+                WHERE group_id = "{group_id}"
+                """.format(
+                    db_prefix=self._db_prefix,
+                    group_id=group_id,
+                ),
+                commit_tx=True,
+            )
+
+        rows = self._pool.retry_operation_sync(callee)[0].rows
+        if rows is None:
+            return []
+
+        response = []
+        for row in rows:
+            row["start_education_date"] = _format_unix_time(row["start_education_date"])
+            row["start_education_time"] = _format_unix_time(row["start_education_time"])
+            row["end_education_time"] = _format_unix_time(row["end_education_time"])
+            row["birth_date"] = _format_unix_time(row["birth_date"])
+            response.append(ChildModel.model_validate(row))
+        return response

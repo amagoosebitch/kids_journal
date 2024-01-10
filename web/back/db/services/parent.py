@@ -9,7 +9,7 @@ class ParentService:
         self._db_prefix = db_prefix
 
     def create_parent(self, args_model: ParentModel):
-        args = args_model.model_dump(exclude_none=True, mode="json")
+        args = args_model.model_dump(exclude_none=False, mode="json")
 
         def callee(session: Any):
             session.transaction().execute(
@@ -24,7 +24,7 @@ class ParentService:
                         "{email}",
                         "{gender}",
                         "{phone_number}",
-                        "{freq_notifications}",
+                        {freq_notifications},
                         "{tg_user_id}"
                     );
                 """.format(

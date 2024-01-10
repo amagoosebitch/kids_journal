@@ -10,3 +10,8 @@ class GroupModel(BaseModel):
     organization_id: UUID = uuid4()
     name: str
     age_range: AgeRanges
+
+
+class GroupChildModel(BaseModel):
+    group_id: UUID = uuid4()
+    child_ids: list[UUID] = []

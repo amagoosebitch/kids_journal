@@ -56,3 +56,57 @@ class ParentService:
         if not rows:
             return None
         return ParentModel.model_validate(rows[0])
+
+    def get_by_child_id(self, child_id: str) -> tuple[ParentModel, ParentModel] | None:
+        parent_columns = ", ".join(
+            f"parent.{column} as {column}"
+            for column in [
+                "parent_id",
+                "name",
+                "first_name",
+                "last_name",
+                "email",
+                "gender",
+                "phone_number",
+                "freq_notifications",
+                "tg_user_id",
+            ]
+        )
+
+        def callee_1(session: Any):
+            return session.transaction().execute(
+                """
+                PRAGMA TablePathPrefix("{db_prefix}");
+                SELECT {parent_columns}
+                FROM parent
+                JOIN child on child.parent_1_id = parent.parent_id
+                WHERE child_id = "{child_id}"
+                """.format(
+                    db_prefix=self._db_prefix,
+                    parent_columns=parent_columns,
+                    child_id=child_id,
+                ),
+                commit_tx=True,
+            )
+
+        def callee_2(session: Any):
+            return session.transaction().execute(
+                """
+                PRAGMA TablePathPrefix("{db_prefix}");
+                SELECT {parent_columns}
+                FROM parent
+                JOIN child on child.parent_2_id = parent.parent_id
+                WHERE child_id = "{child_id}"
+                """.format(
+                    db_prefix=self._db_prefix,
+                    parent_columns=parent_columns,
+                    child_id=child_id,
+                ),
+                commit_tx=True,
+            )
+
+        rows = self._pool.retry_operation_sync(callee_1)[0].rows or []
+        rows.extend(self._pool.retry_operation_sync(callee_2)[0].rows or [])
+        if not rows:
+            return None
+        return ParentModel.model_validate(rows[0]), ParentModel.model_validate(rows[1])

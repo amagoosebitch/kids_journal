@@ -12,7 +12,8 @@ from tg_bot.message_replies import (
     CHOOSE_GROUP,
     GROUP_INFO,
     NEXT,
-    WRITE_REPORT, SEND_PICTURE,
+    SEND_PICTURE,
+    WRITE_REPORT,
 )
 from tg_bot.states import EmployeeState
 

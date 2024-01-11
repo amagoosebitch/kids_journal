@@ -6,6 +6,7 @@ class EmployeeState(enum.Enum):
     CHOOSE_GROUP = 2
     CHOOSE_CHILD = 3
     WRITE_REPORT = 4
+    SEND_PICTURE = 5
 
 
 class ParentState(enum.Enum):

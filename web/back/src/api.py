@@ -7,8 +7,9 @@ from src.routers.employee import create_employee, get_employee_by_tg_id
 from src.routers.groups import (
     add_children_to_group,
     add_group_to_organization,
+    get_children_by_group_id,
     get_group,
-    get_groups_by_organization, get_children_by_group_id,
+    get_groups_by_organization,
 )
 from src.routers.index import index
 from src.routers.organization import (
@@ -16,7 +17,11 @@ from src.routers.organization import (
     get_organization,
     get_organizations,
 )
-from src.routers.parent import create_parent, get_parent_by_tg_id
+from src.routers.parent import (
+    create_parent,
+    get_parent_by_tg_id,
+    get_parents_by_child_id,
+)
 
 
 def init_app() -> FastAPI:
@@ -49,6 +54,9 @@ def init_app() -> FastAPI:
     # Parent
     router.add_api_route("/parents", create_parent, methods=["POST"])
     router.add_api_route("/parents/{tgId}", get_parent_by_tg_id, methods=["GET"])
+    router.add_api_route(
+        "/parents/child/{childId}", get_parents_by_child_id, methods=["GET"]
+    )
 
     # Employee
     router.add_api_route("/employee", create_employee, methods=["POST"])

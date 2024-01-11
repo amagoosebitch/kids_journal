@@ -40,7 +40,6 @@ async def add_children_to_group(
 
 
 async def get_children_by_group_id(
-    group_id: UUID,
-    group_service: GroupService = Depends(create_group_service)
+    group_id: UUID, group_service: GroupService = Depends(create_group_service)
 ) -> list[ChildModel]:
     return group_service.get_children_by_group_id(group_id)

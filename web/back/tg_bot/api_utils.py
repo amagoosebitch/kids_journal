@@ -1,6 +1,7 @@
 import requests
 from cachetools.func import ttl_cache
 
+from db.models.child import ChildModel
 from db.models.employees import EmployeeModel
 from db.models.groups import GroupModel
 from db.models.parents import ParentModel
@@ -21,6 +22,15 @@ def get_employee_by_tg_id(tg_id: int) -> EmployeeModel | None:
 
 
 @ttl_cache(ttl=3600)
+def get_children_by_group_id(group_id: str) -> list[ChildModel]:
+    response = requests.get(
+        api_settings.children_by_group_url,
+        params={"group_id": group_id},
+    ).json()
+    return [ChildModel.model_validate(row) for row in response]
+
+
+@ttl_cache(ttl=3600)
 def get_parent_by_tg_id(tg_id: int) -> ParentModel | None:
     response = requests.get(
         api_settings.parent_url,
@@ -29,6 +39,17 @@ def get_parent_by_tg_id(tg_id: int) -> ParentModel | None:
     if response is None:
         return response
     return ParentModel.model_validate(response)
+
+
+@ttl_cache(ttl=3600)
+def get_parents_by_child_id(child_id: str) -> tuple[ParentModel, ParentModel] | None:
+    response = requests.get(
+        api_settings.parents_by_child_url,
+        params={"child_id": child_id},
+    ).json()
+    if response is None:
+        return response
+    return ParentModel.model_validate(response[0]), ParentModel.model_validate(response[1])
 
 
 @ttl_cache(ttl=3600)

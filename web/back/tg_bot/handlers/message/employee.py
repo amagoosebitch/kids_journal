@@ -1,8 +1,19 @@
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup, Update
 from telegram.ext import ContextTypes
 
-from tg_bot.api_utils import get_employee_by_tg_id, get_group_by_id
-from tg_bot.message_replies import CHOOSE_GROUP, GROUP_INFO, NEXT
+from tg_bot.api_utils import (
+    get_children_by_group_id,
+    get_employee_by_tg_id,
+    get_group_by_id,
+)
+from tg_bot.message_replies import (
+    BACK,
+    CHOOSE_CHILD,
+    CHOOSE_GROUP,
+    GROUP_INFO,
+    NEXT,
+    WRITE_REPORT, SEND_PICTURE,
+)
 from tg_bot.states import EmployeeState
 
 
@@ -23,7 +34,9 @@ async def handle_single_child_report(
     for group_id in group_ids[group_page : group_page + 3]:
         group = get_group_by_id(group_id=str(group_id))
         msg = GROUP_INFO.format(group_name=group.name, group_age_range=group.age_range)
-        group_info_buttons.append([InlineKeyboardButton(msg, callback_data=group_id)])
+        group_info_buttons.append(
+            [InlineKeyboardButton(msg, callback_data=str(group_id))]
+        )
     group_info_buttons.append([InlineKeyboardButton(NEXT, callback_data=NEXT)])
 
     await update.callback_query.edit_message_text(
@@ -39,13 +52,49 @@ async def handle_choose_group(update: Update, context: ContextTypes.DEFAULT_TYPE
         return await handle_single_child_report(update=update, context=context)
 
     group_id = update.callback_query.data
+    children = get_children_by_group_id(group_id=group_id)
 
-    return EmployeeState.CHOOSE_CHILD
+    keyboard = [
+        [
+            InlineKeyboardButton(
+                children[i - 1].name, callback_data=str(children[i - 1].child_id)
+            ),
+            InlineKeyboardButton(
+                children[i].name, callback_data=str(children[i].child_id)
+            ),
+        ]
+        for i in range(1, len(children), 2)
+    ]
+    if len(children) % 2 == 1:
+        keyboard.append(
+            [
+                InlineKeyboardButton(
+                    children[-1].name, callback_data=str(children[-1].child_id)
+                )
+            ]
+        )
+    keyboard.append([InlineKeyboardButton(BACK, callback_data=BACK)])
+
+    await update.callback_query.edit_message_text(
+        CHOOSE_CHILD, reply_markup=InlineKeyboardMarkup(keyboard)
+    )
+
+    return EmployeeState.CHOOSE_CHILD.value
 
 
 async def handle_choose_child(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    pass
+    context.chat_data["child_id"] = update.callback_query.data
+
+    await update.callback_query.edit_message_text(WRITE_REPORT)
+    return EmployeeState.WRITE_REPORT.value
 
 
 async def handle_write_report(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    context.chat_data["report_text"] = update.message.text
+
+    await update.message.reply_text(SEND_PICTURE)
+    return EmployeeState.SEND_PICTURE.value
+
+
+async def handle_send_picture(update: Update, context: ContextTypes.DEFAULT_TYPE):
     pass

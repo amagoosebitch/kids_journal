@@ -9,6 +9,11 @@ class ApiClientSettings(BaseSettings):
     employee_endpoint: str = "employee/{tgId}"
     parent_endpoint: str = "parents/{tgId}"
     group_endpoint: str = "groups/{groupId}"
+    children_by_group_endpoint: str = "child/{groupId}"
+
+    @property
+    def children_by_group_url(self) -> URL:
+        return self.url / self.children_by_group_endpoint
 
     @property
     def employee_url(self) -> URL:

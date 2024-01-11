@@ -15,6 +15,7 @@ from tg_bot.handlers.message.employee import (
     handle_single_child_report,
     handle_write_report,
 )
+from tg_bot.message_replies import BACK
 from tg_bot.settings import BotSettings
 from tg_bot.states import EmployeeState
 
@@ -37,11 +38,13 @@ def start() -> None:
                 CallbackQueryHandler(handle_choose_group, pattern="^.*$")
             ],
             EmployeeState.CHOOSE_CHILD.value: [
-                MessageHandler(filters.TEXT, handle_choose_child)
+                CallbackQueryHandler(handle_single_child_report, pattern=f"^{BACK}$"),
+                CallbackQueryHandler(handle_choose_child, pattern="^.*$"),
             ],
             EmployeeState.WRITE_REPORT.value: [
                 MessageHandler(filters.TEXT, handle_write_report)
             ],
+            EmployeeState.SEND_PICTURE.value: [],
         },
         fallbacks=[CommandHandler("stop", stop_command_handler)],
     )

@@ -7,8 +7,9 @@ from src.routers.employee import create_employee, get_employee_by_tg_id
 from src.routers.groups import (
     add_children_to_group,
     add_group_to_organization,
+    get_children_by_group_id,
     get_group,
-    get_groups_by_organization, get_children_by_group_id,
+    get_groups_by_organization,
 )
 from src.routers.index import index
 from src.routers.organization import (

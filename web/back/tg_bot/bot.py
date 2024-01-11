@@ -13,7 +13,7 @@ from tg_bot.handlers.message.employee import (
     handle_choose_child,
     handle_choose_group,
     handle_single_child_report,
-    handle_write_report,
+    handle_write_report, handle_send_picture,
 )
 from tg_bot.message_replies import BACK
 from tg_bot.settings import BotSettings
@@ -44,7 +44,9 @@ def start() -> None:
             EmployeeState.WRITE_REPORT.value: [
                 MessageHandler(filters.TEXT, handle_write_report)
             ],
-            EmployeeState.SEND_PICTURE.value: [],
+            EmployeeState.SEND_PICTURE.value: [
+                MessageHandler(filters.ATTACHMENT | filters.Document.IMAGE, handle_send_picture)
+            ],
         },
         fallbacks=[CommandHandler("stop", stop_command_handler)],
     )

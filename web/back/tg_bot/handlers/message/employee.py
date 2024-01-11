@@ -1,10 +1,12 @@
+from io import BytesIO
+
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup, Update
 from telegram.ext import ContextTypes
 
 from tg_bot.api_utils import (
     get_children_by_group_id,
     get_employee_by_tg_id,
-    get_group_by_id,
+    get_group_by_id, get_parents_by_child_id,
 )
 from tg_bot.message_replies import (
     BACK,
@@ -98,4 +100,13 @@ async def handle_write_report(update: Update, context: ContextTypes.DEFAULT_TYPE
 
 
 async def handle_send_picture(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    pass
+    parent_1, parent_2 = get_parents_by_child_id(context.chat_data["child_id"])
+
+    file = await update.message.photo[-1].get_file()
+    picture = await file.download_as_bytearray()
+
+    await context.bot.send_photo(parent_1.tg_user_id, BytesIO(picture))
+    await context.bot.send_message(chat_id=parent_1.tg_user_id, text=context.chat_data["report_text"])
+
+    await context.bot.send_photo(parent_2.tg_user_id, BytesIO(picture))
+    await context.bot.send_message(chat_id=parent_2.tg_user_id, text=context.chat_data["report_text"])

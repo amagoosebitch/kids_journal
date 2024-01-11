@@ -8,8 +8,13 @@ class ApiClientSettings(BaseSettings):
     url: URL = URL("http://127.0.0.1:8000")
     employee_endpoint: str = "employee/{tgId}"
     parent_endpoint: str = "parents/{tgId}"
+    parents_by_child_endpoint: str = "parents/child/{childId}"
     group_endpoint: str = "groups/{groupId}"
     children_by_group_endpoint: str = "child/{groupId}"
+
+    @property
+    def parents_by_child_url(self) -> URL:
+        return self.url / self.parents_by_child_endpoint
 
     @property
     def children_by_group_url(self) -> URL:

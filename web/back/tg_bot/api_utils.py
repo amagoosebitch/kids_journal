@@ -42,6 +42,17 @@ def get_parent_by_tg_id(tg_id: int) -> ParentModel | None:
 
 
 @ttl_cache(ttl=3600)
+def get_parents_by_child_id(child_id: str) -> tuple[ParentModel, ParentModel] | None:
+    response = requests.get(
+        api_settings.parents_by_child_url,
+        params={"child_id": child_id},
+    ).json()
+    if response is None:
+        return response
+    return ParentModel.model_validate(response[0]), ParentModel.model_validate(response[1])
+
+
+@ttl_cache(ttl=3600)
 def get_group_by_id(group_id: str) -> GroupModel | None:
     response = requests.get(
         api_settings.group_url,

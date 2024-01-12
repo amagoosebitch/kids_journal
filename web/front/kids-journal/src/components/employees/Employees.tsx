@@ -1,25 +1,33 @@
 import React, { useState } from "react";
-import { Button } from "../button/Button";
-import { AppRoute, infoEmployees } from "../../const";
+import { ButtonMain } from "../button/ButtonMain";
+import {AppRoute, infoEmployees, infoGroups} from "../../const";
 import { Link } from "react-router-dom";
 
 import "./Employees.css";
 
-export const Employees = () => {
-  const [employees, setEmployees] = useState(infoEmployees);
+export type EmployeesProps = {
+  organization: string | undefined;
+};
+
+export const Employees = ({ organization }: EmployeesProps) => {
+  const currentEmployees = infoEmployees.filter((employee) => {
+    return organization ? employee.organization.includes(organization) : null
+  })
+
+  const [employees, setEmployees] = useState(currentEmployees);
 
   return (
     <>
       <div className="employees_title">
         <div className="employees_label">Сотрудники</div>
         <div>
-          <Button
+          <ButtonMain
             height="44px"
             width="211px"
-            linkButton={AppRoute.CreateGroups}
+            linkButton={AppRoute.CreateEmployees}
           >
             Добавить сотрудника
-          </Button>
+          </ButtonMain>
         </div>
       </div>
 

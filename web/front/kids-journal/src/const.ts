@@ -3,12 +3,13 @@ export const AppRoute = {
   Main: "/main",
   SignIn: "/login",
   SignUp: "/sign-up",
-  Organizations: "/Organizations",
+  Organizations: "/:organization",
   Groups: "/groups",
   Activity: "/activity",
   Employees: "/employees",
   CreateActivity: "/createActivity",
   CreateGroups: "/createGroups",
+  CreateEmployees: "/createEmployees",
   AddChild: "/addChild",
   Error: "/*",
 };
@@ -21,6 +22,7 @@ export enum AuthorizationStatus {
 
 export const infoGroups = [
   {
+    organization: "Садик №1",
     carouselLabel: "Одуванчики",
     carouselAge: "0-3",
     carouselAction: [
@@ -59,6 +61,7 @@ export const infoGroups = [
     ],
   },
   {
+    organization: "Садик №1",
     carouselLabel: "Ромашки",
     carouselAge: "3-6",
     carouselAction: [
@@ -83,6 +86,7 @@ export const infoGroups = [
     ],
   },
   {
+    organization: "Садик №1",
     carouselLabel: "Васильки",
     carouselAge: "6-9",
     carouselAction: [
@@ -93,6 +97,7 @@ export const infoGroups = [
     ],
   },
   {
+    organization: "Садик №1",
     carouselLabel: "Васильки",
     carouselAge: "6-9",
     carouselAction: [
@@ -120,11 +125,13 @@ export const infoGroups = [
 
 export const infoEmployees = [
   {
+    organization: 'Садик №1',
     name: "Болтов Егор",
     role_id: "Администратор",
     phone_number: "+79998887766",
   },
   {
+    organization: 'Садик Вишенка',
     name: "Викулова Света",
     role_id: "Педагог",
     phone_number: "+79998887766",

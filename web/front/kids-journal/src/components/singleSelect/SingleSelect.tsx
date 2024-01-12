@@ -9,7 +9,7 @@ export type SelectOption = {
 
 type SingleSelectProps = {
   value?: SelectOption;
-  onChange: (value: SelectOption | undefined) => void;
+  onChange: (value: SelectOption) => void;
 };
 
 type SelectProps = {
@@ -21,9 +21,8 @@ export function Select({ value, onChange, options }: SelectProps) {
   const [highlightedIndex, setHighlightedIndex] = useState(0);
   const containerRef = useRef<HTMLDivElement>(null);
 
-  function clearOptions() {
-    onChange(undefined);
-  }
+  console.log(highlightedIndex)
+
 
   function selectOption(option: SelectOption) {
     if (option !== value) onChange(option);
@@ -32,6 +31,7 @@ export function Select({ value, onChange, options }: SelectProps) {
   function isOptionSelected(option: SelectOption) {
     return option === value;
   }
+
 
   useEffect(() => {
     if (isOpen) setHighlightedIndex(0);
@@ -65,6 +65,8 @@ export function Select({ value, onChange, options }: SelectProps) {
       }
     };
     containerRef.current?.addEventListener("keydown", handler);
+
+
 
     return () => {
       containerRef.current?.removeEventListener("keydown", handler);

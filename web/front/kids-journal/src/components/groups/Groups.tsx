@@ -1,11 +1,19 @@
 import React, { useState } from "react";
 import { AppRoute, infoGroups } from "../../const";
-import { Button } from "../button/Button";
+import { ButtonMain } from "../button/ButtonMain";
 import "./Groups.css";
 import { Link } from "react-router-dom";
 
-export const Groups = () => {
-  const [groups, setGroups] = useState(infoGroups);
+export type GroupProps = {
+  organization: string | undefined;
+};
+
+export const Groups = ({ organization }: GroupProps) => {
+  const currentGroup = infoGroups.filter((group) => {
+    return organization ? group.organization.includes(organization) : null
+  })
+
+  const [groups, setGroups] = useState(currentGroup);
 
   const [value, setValue] = useState("");
   const filteredGroups = groups.filter((group) => {
@@ -28,13 +36,13 @@ export const Groups = () => {
           </form>
         </div>
         <div>
-          <Button
+          <ButtonMain
             height="44px"
             width="211px"
             linkButton={AppRoute.CreateGroups}
           >
             Создать группу
-          </Button>
+          </ButtonMain>
         </div>
       </div>
 

@@ -1,3 +1,7 @@
+.creat__form {
+  display: flex;
+}
+
 .creat__text {
   font-family: "Inter", sans-serif;
   font-size: 32px;
@@ -17,4 +21,25 @@
 .creat__form-button {
   margin-top: 26px;
   margin-left: 40px;
+}
+
+.Close-Button {
+  margin: auto auto;
+}
+
+.add_children {
+  margin: 0 auto;
+  padding: 0;
+}
+
+.add_children-item {
+  margin-bottom: 20px;
+}
+.childrenScroll {
+  max-height: 585px;
+  overflow-y: scroll;
+}
+
+.button-addChild {
+  text-align: center;
 }

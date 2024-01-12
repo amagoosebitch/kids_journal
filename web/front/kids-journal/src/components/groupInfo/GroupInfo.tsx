@@ -1,5 +1,5 @@
 import React, { MouseEventHandler, useState } from "react";
-import { Button } from "../button/Button";
+import { ButtonMain } from "../button/ButtonMain";
 import { AppRoute, infoGroups } from "../../const";
 import { Link } from "react-router-dom";
 
@@ -8,9 +8,10 @@ import { Modal } from "../modal/Modal";
 
 export type GroupInfoProps = {
   groupId: string | undefined;
+  organization: string | undefined;
 };
 
-export const GroupInfo = ({ groupId }: GroupInfoProps) => {
+export const GroupInfo = ({ organization, groupId }: GroupInfoProps) => {
   const [groups, setGroups] = useState(infoGroups);
 
   const currentGroup = groups.filter((group) => {
@@ -40,13 +41,13 @@ export const GroupInfo = ({ groupId }: GroupInfoProps) => {
       <div className="group_title">
         <div className="group_name">Группа {groupId}</div>
         <div>
-          <Button
+          <ButtonMain
             height="44px"
             width="211px"
-            linkButton={AppRoute.CreateGroups}
+            linkButton={AppRoute.AddChild}
           >
             Добавить ребенка
-          </Button>
+          </ButtonMain>
         </div>
       </div>
 

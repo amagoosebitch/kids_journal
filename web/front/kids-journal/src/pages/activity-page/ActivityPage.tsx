@@ -1,10 +1,12 @@
 import React from "react";
 import './ActivityPage.css'
 import {Header} from "../../components/header/Header";
+import {useParams} from "react-router-dom";
 
 type ActivityPageProps = {};
 
 function ActivityPage({}: ActivityPageProps): JSX.Element {
+    const { organization } = useParams();
     return (
         <div>
             <Header/>

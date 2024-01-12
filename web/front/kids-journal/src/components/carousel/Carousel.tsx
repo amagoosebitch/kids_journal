@@ -8,15 +8,11 @@ import { useState } from "react";
 import {infoGroups} from "../../const";
 
 export type CarouselProps = {
-  carouselLabel: string;
-  carouselAge: string;
-  carouselAction?: [
-    { carouselActionTitle: string; carouselActionCategory: string },
-  ];
+  organization: string | undefined;
 };
 
 
-export const Carousel = () => {
+export const Carousel = ({organization}:CarouselProps) => {
   let settings = {
     dots: true,
     infinite: true,
@@ -53,10 +49,17 @@ export const Carousel = () => {
   };
 
   const [carousels, setCarousels] = useState(infoGroups);
+
+  const currentCarousel = carousels.filter((carousel) => {
+    if (organization !== undefined)
+      return carousel.organization.toLowerCase().includes(organization.toLowerCase());
+    return {};
+  });
+
   return (
     <div className="carousel">
       <Slider {...settings}>
-        {carousels.map((carousel) => (
+        {currentCarousel.map((carousel) => (
           <div className="carousel_box">
             <div className="carousel_box-title">
               <div className="carousel_box-name">Группа {carousel.carouselLabel}</div>

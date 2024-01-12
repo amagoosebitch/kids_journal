@@ -1,13 +1,13 @@
 import React, { useState, useEffect, useRef } from "react";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { Avatar } from "@chakra-ui/react";
+import Select from "react-select";
+
 import { useClickOutside } from "../../hooks/useClickOutside";
-import { BsFillPersonFill, BsBoxArrowRight } from "react-icons/bs";
 import { MenuButton } from "../menuButton/MenuButton";
 import "../menuButton/MenuButton.css";
 import "../menuList/MenuList.css";
 import "./Header.css";
-import { Select, SelectOption } from "../singleSelect/SingleSelect";
 import { AppRoute } from "../../const";
 
 const options = [
@@ -26,6 +26,11 @@ export type MenuListOption = {
 };
 
 export const Header = () => {
+  const { organization } = useParams();
+
+  console.log(organization);
+  console.log(`${organization}/main`);
+
   const [valueMenu, setValueMenu] = useState<MenuListOption | undefined>(
     optionsMenu[0],
   );
@@ -39,7 +44,9 @@ export const Header = () => {
     return option === valueMenu;
   }
 
-  const [value, setValue] = useState<SelectOption | undefined>(options[0]);
+  const [value, setValue] = useState(
+    options.find((obj) => obj.label === organization),
+  );
 
   const [isOpenMenu, setOpenMenu] = useState(false);
 
@@ -79,26 +86,43 @@ export const Header = () => {
     });
   }, []);
 
+  // @ts-ignore
   return (
     <header className="header">
-      <Link to="/" className="header__logo" onClick={closeMobileMenu}>
+      <Link
+        to={`/${organization}/main`}
+        className="header__logo"
+        onClick={closeMobileMenu}
+      >
         Kids Journal
       </Link>
 
       <div className="organization">
-        <Select options={options} value={value} onChange={(o) => setValue(o)} />
+        <Select
+          options={options}
+          value={value}
+          onChange={(event) =>
+            event
+              ? setValue({ label: event.label, value: event.value })
+              : setValue(options.find((obj) => obj.label === organization))
+          }
+        />
       </div>
 
       <nav className={`header__nav ${isOpen ? "active" : ""}`} ref={menuRef}>
         <ul className="header__nav-list">
           <li className="header__nav-item">
-            <Link to="/groups" className="nav-links" onClick={closeMobileMenu}>
+            <Link
+              to={`/${value?.label}/groups`}
+              className="nav-links"
+              onClick={closeMobileMenu}
+            >
               Группы
             </Link>
           </li>
           <li className="header__nav-item">
             <Link
-              to="/employees"
+              to={`/${value?.label}/employees`}
               className="nav-links"
               onClick={closeMobileMenu}
             >
@@ -107,7 +131,7 @@ export const Header = () => {
           </li>
           <li className="header__nav-item">
             <Link
-              to="/activity"
+              to={`/${value?.label}/activity`}
               className="nav-links"
               onClick={closeMobileMenu}
             >

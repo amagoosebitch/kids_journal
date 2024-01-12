@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-import { Button } from "../../components/button/Button";
+import { ButtonMain } from "../../components/button/ButtonMain";
 import { AppRoute } from "../../const";
 import "./welcome-screem.css";
 
@@ -34,14 +34,14 @@ function WelcomeScreen({}: WelcomeScreenProps): JSX.Element {
       </div>
       <div className="home-buttons">
         <div className='home-button'>
-          <Button linkButton={AppRoute.SignIn} height="44px" width="316px">
+          <ButtonMain linkButton={`/Садик №1${AppRoute.Main}`} height="44px" width="316px">
             Войти
-          </Button>
+          </ButtonMain>
         </div>
         <div className='home-button'>
-          <Button linkButton={AppRoute.SignUp} height="44px" width="316px">
+          <ButtonMain linkButton={AppRoute.SignUp} height="44px" width="316px">
             Зарегистрироваться
-          </Button>
+          </ButtonMain>
         </div>
       </div>
     </div>

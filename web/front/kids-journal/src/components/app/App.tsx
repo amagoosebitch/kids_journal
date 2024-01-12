@@ -8,8 +8,11 @@ import GroupsPage from "../../pages/groups-page/GroupsPage";
 import MainPage from "../../pages/main-page/MainPage";
 import GroupInfoPage from "../../pages/groupInfo-page/GroupInfoPage";
 import EmployeesPage from "../../pages/employees-page/EmployeesPage";
+import CreateEmployeesPage from "../../pages/createEmployees-page/CreateEmployeesPage";
+import AddChildPage from "../../pages/addChild-page/AddChildPage";
 import ActivityPage from "../../pages/activity-page/ActivityPage";
 import CreateGroupsPage from "../../pages/createGroups-page/CreateGroupsPage";
+import { Header } from "../header/Header";
 
 function App() {
   return (
@@ -17,15 +20,29 @@ function App() {
       <Router>
         <Routes>
           <Route path={AppRoute.WelcomeScreen} element={<WelcomeScreen />} />
-          <Route path={AppRoute.Main} element={<MainPage />} />
-          <Route path={AppRoute.Groups} element={<GroupsPage />} />
           <Route
-            path={`${AppRoute.Groups}/:groupId`}
-            element={<GroupInfoPage />}
+            path={`:organization${AppRoute.Main}`}
+            element={<MainPage />}
           />
-          <Route path={AppRoute.Employees} element={<EmployeesPage />} />
-          <Route path={AppRoute.Activity} element={<ActivityPage />} />
+          <Route
+            path={`:organization${AppRoute.Groups}`}
+            element={<GroupsPage />}
+          />
+          <Route path={`:organization/:groupId`} element={<GroupInfoPage />} />
+          <Route
+            path={`:organization${AppRoute.Employees}`}
+            element={<EmployeesPage />}
+          />
+          <Route
+            path={`:organization${AppRoute.Activity}`}
+            element={<ActivityPage />}
+          />
           <Route path={AppRoute.CreateGroups} element={<CreateGroupsPage />} />
+          <Route
+            path={AppRoute.CreateEmployees}
+            element={<CreateEmployeesPage />}
+          />
+          <Route path={`${AppRoute.AddChild}`} element={<AddChildPage />} />
         </Routes>
       </Router>
     </div>

@@ -12,12 +12,14 @@ from tg_bot.handlers.command_handlers import start_command_handler, stop_command
 from tg_bot.handlers.message.employee import (
     handle_choose_child,
     handle_choose_group,
+    handle_send_picture,
     handle_single_child_report,
-    handle_write_report, handle_send_picture,
+    handle_write_report, handle_employee_start,
 )
+from tg_bot.handlers.message.parent import handle_subscribe
 from tg_bot.message_replies import BACK
 from tg_bot.settings import BotSettings
-from tg_bot.states import EmployeeState
+from tg_bot.states import EmployeeState, ParentState
 
 
 def start() -> None:
@@ -35,6 +37,7 @@ def start() -> None:
                 #  ToDo: Другие ветки работника
             ],
             EmployeeState.CHOOSE_GROUP.value: [
+                CallbackQueryHandler(handle_employee_start, pattern=f"^{BACK}$"),
                 CallbackQueryHandler(handle_choose_group, pattern="^.*$")
             ],
             EmployeeState.CHOOSE_CHILD.value: [
@@ -45,7 +48,12 @@ def start() -> None:
                 MessageHandler(filters.TEXT, handle_write_report)
             ],
             EmployeeState.SEND_PICTURE.value: [
-                MessageHandler(filters.ATTACHMENT | filters.Document.IMAGE, handle_send_picture)
+                MessageHandler(
+                    filters.ATTACHMENT | filters.Document.IMAGE, handle_send_picture
+                )
+            ],
+            ParentState.SUBSCRIBE.value: [
+                CallbackQueryHandler(handle_subscribe, pattern="^.*$")
             ],
         },
         fallbacks=[CommandHandler("stop", stop_command_handler)],

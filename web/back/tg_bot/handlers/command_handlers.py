@@ -23,6 +23,7 @@ async def start_command_handler(
 
     employee = get_employee_by_tg_id(tg_id=update.message.from_user.id)
     if employee:
+        context.chat_data['first_name'] = employee.first_name
         await update.message.reply_text(
             START_EMPLOYEE.format(first_name=employee.first_name),
             reply_markup=InlineKeyboardMarkup(
@@ -60,3 +61,5 @@ async def start_command_handler(
 async def stop_command_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
     logger.info("User %s stopped a conversation", update.message.from_user.id)
     await update.message.reply_text(STOP_COMMAND_REPLY)
+
+    return ConversationHandler.END

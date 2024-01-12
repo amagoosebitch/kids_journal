@@ -49,7 +49,9 @@ def get_parents_by_child_id(child_id: str) -> tuple[ParentModel, ParentModel] | 
     ).json()
     if response is None:
         return response
-    return ParentModel.model_validate(response[0]), ParentModel.model_validate(response[1])
+    return ParentModel.model_validate(response[0]), ParentModel.model_validate(
+        response[1]
+    )
 
 
 @ttl_cache(ttl=3600)

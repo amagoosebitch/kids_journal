@@ -6,8 +6,10 @@ from telegram.ext import ContextTypes
 from tg_bot.api_utils import (
     get_children_by_group_id,
     get_employee_by_tg_id,
-    get_group_by_id, get_parents_by_child_id,
+    get_group_by_id,
+    get_parents_by_child_id,
 )
+from tg_bot.callbacks import ReportTypeCallback
 from tg_bot.message_replies import (
     BACK,
     CHOOSE_CHILD,
@@ -15,9 +17,35 @@ from tg_bot.message_replies import (
     GROUP_INFO,
     NEXT,
     SEND_PICTURE,
-    WRITE_REPORT,
+    SUCCESSFULLY_SENT,
+    WRITE_REPORT, START_EMPLOYEE,
 )
 from tg_bot.states import EmployeeState
+
+
+async def handle_employee_start(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    await update.callback_query.edit_message_text(
+        START_EMPLOYEE.format(first_name=context.chat_data['first_name']),
+        reply_markup=InlineKeyboardMarkup(
+            [
+                [
+                    InlineKeyboardButton(
+                        ReportTypeCallback.OBSERVATION,
+                        callback_data=ReportTypeCallback.OBSERVATION,
+                    ),
+                    InlineKeyboardButton(
+                        ReportTypeCallback.COMMON,
+                        callback_data=ReportTypeCallback.COMMON,
+                    ),
+                    InlineKeyboardButton(
+                        ReportTypeCallback.SINGLE_CHILD,
+                        callback_data=ReportTypeCallback.SINGLE_CHILD,
+                    ),
+                ]
+            ]
+        ),
+    )
+    return EmployeeState.CHOOSE_REPORT_TYPE.value
 
 
 async def handle_single_child_report(
@@ -41,6 +69,7 @@ async def handle_single_child_report(
             [InlineKeyboardButton(msg, callback_data=str(group_id))]
         )
     group_info_buttons.append([InlineKeyboardButton(NEXT, callback_data=NEXT)])
+    group_info_buttons.append([InlineKeyboardButton(BACK, callback_data=BACK)])
 
     await update.callback_query.edit_message_text(
         CHOOSE_GROUP,
@@ -106,7 +135,35 @@ async def handle_send_picture(update: Update, context: ContextTypes.DEFAULT_TYPE
     picture = await file.download_as_bytearray()
 
     await context.bot.send_photo(parent_1.tg_user_id, BytesIO(picture))
-    await context.bot.send_message(chat_id=parent_1.tg_user_id, text=context.chat_data["report_text"])
+    await context.bot.send_message(
+        chat_id=parent_1.tg_user_id, text=context.chat_data["report_text"]
+    )
 
     await context.bot.send_photo(parent_2.tg_user_id, BytesIO(picture))
-    await context.bot.send_message(chat_id=parent_2.tg_user_id, text=context.chat_data["report_text"])
+    await context.bot.send_message(
+        chat_id=parent_2.tg_user_id, text=context.chat_data["report_text"]
+    )
+
+    await update.message.reply_text(
+        SUCCESSFULLY_SENT,
+        reply_markup=InlineKeyboardMarkup(
+            [
+                [
+                    InlineKeyboardButton(
+                        ReportTypeCallback.OBSERVATION,
+                        callback_data=ReportTypeCallback.OBSERVATION,
+                    ),
+                    InlineKeyboardButton(
+                        ReportTypeCallback.COMMON,
+                        callback_data=ReportTypeCallback.COMMON,
+                    ),
+                    InlineKeyboardButton(
+                        ReportTypeCallback.SINGLE_CHILD,
+                        callback_data=ReportTypeCallback.SINGLE_CHILD,
+                    ),
+                ]
+            ]
+        ),
+    )
+
+    return EmployeeState.CHOOSE_REPORT_TYPE.value

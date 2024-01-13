@@ -1,6 +1,6 @@
 from fastapi import Depends
 
-from db.models.employees import EmployeeModel
+from models.employees import EmployeeModel
 from src.dependencies import create_employee_service
 
 

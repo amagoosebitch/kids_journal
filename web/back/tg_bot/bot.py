@@ -1,3 +1,8 @@
+import asyncio
+import json
+import logging
+
+from telegram import Update
 from telegram.ext import (
     Application,
     CallbackQueryHandler,
@@ -12,17 +17,20 @@ from tg_bot.handlers.command_handlers import start_command_handler, stop_command
 from tg_bot.handlers.message.employee import (
     handle_choose_child,
     handle_choose_group,
+    handle_employee_start,
     handle_send_picture,
     handle_single_child_report,
-    handle_write_report, handle_employee_start,
+    handle_write_report,
 )
 from tg_bot.handlers.message.parent import handle_subscribe
 from tg_bot.message_replies import BACK
 from tg_bot.settings import BotSettings
 from tg_bot.states import EmployeeState, ParentState
 
+logger = logging.getLogger(__name__)
 
-def start() -> None:
+
+def get_application() -> Application:
     settings = BotSettings()
     application: Application = Application.builder().token(settings.token).build()
 
@@ -38,7 +46,7 @@ def start() -> None:
             ],
             EmployeeState.CHOOSE_GROUP.value: [
                 CallbackQueryHandler(handle_employee_start, pattern=f"^{BACK}$"),
-                CallbackQueryHandler(handle_choose_group, pattern="^.*$")
+                CallbackQueryHandler(handle_choose_group, pattern="^.*$"),
             ],
             EmployeeState.CHOOSE_CHILD.value: [
                 CallbackQueryHandler(handle_single_child_report, pattern=f"^{BACK}$"),
@@ -58,9 +66,20 @@ def start() -> None:
         },
         fallbacks=[CommandHandler("stop", stop_command_handler)],
     )
-    application.add_handler(start_conv_handler)
-    application.run_polling()
 
+    application.add_handler(start_conv_handler)
+    return application
+
+
+async def start(event, context):
+    print(event)
+    print(app._initialized)
+    await app.initialize()
+    message = Update.de_json(json.loads(event["body"]), app.bot)
+    await app.process_update(message)
+
+
+app = get_application()
 
 if __name__ == "__main__":
-    start()
+    app.run_polling()

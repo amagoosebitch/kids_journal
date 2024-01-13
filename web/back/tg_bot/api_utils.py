@@ -1,10 +1,10 @@
 import requests
 from cachetools.func import ttl_cache
 
-from db.models.child import ChildModel
-from db.models.employees import EmployeeModel
-from db.models.groups import GroupModel
-from db.models.parents import ParentModel
+from models.child import ChildModel
+from models.employees import EmployeeModel
+from models.groups import GroupModel
+from models.parents import ParentModel
 from tg_bot.api_client_settings import get_api_settings
 
 api_settings = get_api_settings()

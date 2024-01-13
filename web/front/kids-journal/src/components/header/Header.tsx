@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
-import { Link, useParams } from "react-router-dom";
+import {Link, useNavigate, useParams} from "react-router-dom";
 import { Avatar } from "@chakra-ui/react";
-import Select from "react-select";
+import Select, {SingleValue} from "react-select";
 
 import { useClickOutside } from "../../hooks/useClickOutside";
 import { MenuButton } from "../menuButton/MenuButton";
@@ -28,9 +28,6 @@ export type MenuListOption = {
 export const Header = () => {
   const { organization } = useParams();
 
-  console.log(organization);
-  console.log(`${organization}/main`);
-
   const [valueMenu, setValueMenu] = useState<MenuListOption | undefined>(
     optionsMenu[0],
   );
@@ -47,6 +44,16 @@ export const Header = () => {
   const [value, setValue] = useState(
     options.find((obj) => obj.label === organization),
   );
+
+  const navigate = useNavigate();
+
+  const changeSelect = (event: SingleValue<{label: string, value: number}>) => {
+    event
+        ? setValue({ label: event.label, value: event.value })
+        : setValue(options.find((obj) => obj.label === organization))
+
+    navigate(`/${value?.label}/main`);
+  }
 
   const [isOpenMenu, setOpenMenu] = useState(false);
 
@@ -101,11 +108,7 @@ export const Header = () => {
         <Select
           options={options}
           value={value}
-          onChange={(event) =>
-            event
-              ? setValue({ label: event.label, value: event.value })
-              : setValue(options.find((obj) => obj.label === organization))
-          }
+          onChange={(e) => changeSelect(e)}
         />
       </div>
 

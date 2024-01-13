@@ -1,6 +1,6 @@
 from fastapi import Depends
 
-from db.models.child import ChildModel
+from models.child import ChildModel
 from src.dependencies import create_child_service
 
 

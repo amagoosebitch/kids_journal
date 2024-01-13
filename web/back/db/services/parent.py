@@ -1,6 +1,6 @@
 from typing import Any
 
-from db.models.parents import ParentModel
+from models.parents import ParentModel
 
 
 class ParentService:

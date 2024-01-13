@@ -2,7 +2,7 @@ from uuid import UUID, uuid4
 
 from pydantic import BaseModel
 
-from db.entity import Gender
+from models.entity import Gender
 
 
 class EmployeeModel(BaseModel):

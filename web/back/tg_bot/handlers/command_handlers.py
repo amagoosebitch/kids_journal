@@ -19,11 +19,10 @@ logger = logging.getLogger(__name__)
 async def start_command_handler(
     update: Update, context: ContextTypes.DEFAULT_TYPE
 ) -> int:
-    logger.info("User %s started a conversation", update.message.from_user.id)
-
+    await update.message.reply_text("kek")
     employee = get_employee_by_tg_id(tg_id=update.message.from_user.id)
     if employee:
-        context.chat_data['first_name'] = employee.first_name
+        context.chat_data["first_name"] = employee.first_name
         await update.message.reply_text(
             START_EMPLOYEE.format(first_name=employee.first_name),
             reply_markup=InlineKeyboardMarkup(

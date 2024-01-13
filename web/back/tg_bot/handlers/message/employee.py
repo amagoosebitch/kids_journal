@@ -17,15 +17,16 @@ from tg_bot.message_replies import (
     GROUP_INFO,
     NEXT,
     SEND_PICTURE,
+    START_EMPLOYEE,
     SUCCESSFULLY_SENT,
-    WRITE_REPORT, START_EMPLOYEE,
+    WRITE_REPORT,
 )
 from tg_bot.states import EmployeeState
 
 
 async def handle_employee_start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.callback_query.edit_message_text(
-        START_EMPLOYEE.format(first_name=context.chat_data['first_name']),
+        START_EMPLOYEE.format(first_name=context.chat_data["first_name"]),
         reply_markup=InlineKeyboardMarkup(
             [
                 [

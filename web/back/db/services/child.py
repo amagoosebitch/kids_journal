@@ -1,7 +1,7 @@
 from typing import Any
 
-from db.models.child import ChildModel
 from db.utils import _format_time
+from models.child import ChildModel
 
 
 class ChildService:

@@ -1,7 +1,7 @@
 import json
 from typing import Any
 
-from db.models.employees import EmployeeModel
+from models.employees import EmployeeModel
 
 
 class EmployeeService:

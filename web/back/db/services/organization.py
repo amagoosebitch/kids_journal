@@ -4,8 +4,8 @@ from uuid import UUID
 import ydb
 from pydantic import ValidationError
 
-from db.models.organizations import OrganizationModel
 from db.utils import _format_time, _format_unix_time
+from models.organizations import OrganizationModel
 
 
 def insert_test(pool: Any):

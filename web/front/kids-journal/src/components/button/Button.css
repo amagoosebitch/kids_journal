@@ -1,0 +1,21 @@
+@import "../../style/index.css";
+
+.Button {
+  padding: 10px 10px;
+  border-radius: 10px;
+  color: white;
+  background-color: var(--color-orang_main);
+  outline: transparent;
+  transition: all 0.3s;
+  cursor: pointer;
+}
+
+.Button:hover {
+  background-color: var(--color-lightorange_main);
+  color: var(--color-darkgrey);
+}
+
+.Button.Button__disabled {
+  color: var(--color-darkgrey);
+  background-color: var(--color-lightgrey);
+}

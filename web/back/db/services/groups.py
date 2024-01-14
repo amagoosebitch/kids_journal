@@ -2,7 +2,7 @@ from typing import Any
 from uuid import UUID
 
 from db.utils import _format_unix_time
-from models import GroupChildModel, GroupModel
+from models.groups import GroupChildModel, GroupModel
 from models.child import ChildModel
 
 

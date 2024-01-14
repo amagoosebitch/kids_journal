@@ -3,6 +3,7 @@ from uuid import UUID, uuid4
 from pydantic import BaseModel
 
 from models.entity import Gender
+from models.role import Role
 
 
 class EmployeeModel(BaseModel):
@@ -14,5 +15,5 @@ class EmployeeModel(BaseModel):
     gender: Gender
     phone_number: str | None = None
     tg_user_id: str | None = None
-    role_id: UUID
+    role: Role
     group_ids: list[UUID] = []

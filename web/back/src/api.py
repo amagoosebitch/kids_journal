@@ -1,6 +1,7 @@
 import uvicorn
 from fastapi import APIRouter, FastAPI
 
+from routers.user import try_merge_user_by_phone
 from src.routers.auth import login
 from src.routers.child import create_child
 from src.routers.employee import create_employee, get_employee_by_tg_id
@@ -65,6 +66,9 @@ def init_app() -> FastAPI:
     # Child
     router.add_api_route("/child", create_child, methods=["POST"])
     router.add_api_route("/child/{groupId}", get_children_by_group_id, methods=["GET"])
+
+    # User
+    router.add_api_route("/user/{phone}", try_merge_user_by_phone, methods=["POST"])
 
     app.include_router(router)
     return app

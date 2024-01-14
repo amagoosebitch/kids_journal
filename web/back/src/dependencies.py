@@ -1,8 +1,10 @@
+from functools import cache
 from typing import Annotated, Any
 
 import ydb
 from fastapi import Depends
 
+from auth.settings import JWTSettings
 from db.services.child import ChildService
 from db.services.employee import EmployeeService
 from db.services.groups import GroupService
@@ -11,10 +13,17 @@ from db.services.parent import ParentService
 from db.settings import YDBSettings
 
 
+@cache
 def ydb_settings() -> YDBSettings:
     return YDBSettings()
 
 
+@cache
+def jwt_settings() -> JWTSettings:
+    return JWTSettings()
+
+
+@cache
 def create_pool(settings: Annotated[YDBSettings, Depends(ydb_settings)]):
     driver = ydb.Driver(
         endpoint=settings.endpoint,
@@ -25,6 +34,7 @@ def create_pool(settings: Annotated[YDBSettings, Depends(ydb_settings)]):
     return ydb.SessionPool(driver)
 
 
+@cache
 def create_organization_service(
     pool: Annotated[Any, Depends(create_pool)],
     settings: Annotated[YDBSettings, Depends(ydb_settings)],
@@ -32,6 +42,7 @@ def create_organization_service(
     return OrganizationService(pool, settings.database)
 
 
+@cache
 def create_group_service(
     pool: Annotated[Any, Depends(create_pool)],
     settings: Annotated[YDBSettings, Depends(ydb_settings)],
@@ -39,6 +50,7 @@ def create_group_service(
     return GroupService(pool, settings.database)
 
 
+@cache
 def create_parent_service(
     pool: Annotated[Any, Depends(create_pool)],
     settings: Annotated[YDBSettings, Depends(ydb_settings)],
@@ -46,6 +58,7 @@ def create_parent_service(
     return ParentService(pool, settings.database)
 
 
+@cache
 def create_employee_service(
     pool: Annotated[Any, Depends(create_pool)],
     settings: Annotated[YDBSettings, Depends(ydb_settings)],
@@ -53,6 +66,7 @@ def create_employee_service(
     return EmployeeService(pool, settings.database)
 
 
+@cache
 def create_child_service(
     pool: Annotated[Any, Depends(create_pool)],
     settings: Annotated[YDBSettings, Depends(ydb_settings)],

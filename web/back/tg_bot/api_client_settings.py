@@ -7,6 +7,7 @@ from yarl import URL
 class ApiClientSettings(BaseSettings):
     url: URL = URL("http://127.0.0.1:8000")
     employee_endpoint: str = "employee/{tgId}"
+    user_endpoint: str = "user/{phone}"
     parent_endpoint: str = "parents/{tgId}"
     parents_by_child_endpoint: str = "parents/child/{childId}"
     group_endpoint: str = "groups/{groupId}"
@@ -23,6 +24,10 @@ class ApiClientSettings(BaseSettings):
     @property
     def employee_url(self) -> URL:
         return self.url / self.employee_endpoint
+
+    @property
+    def user_url(self) -> URL:
+        return self.url / self.user_endpoint
 
     @property
     def parent_url(self) -> URL:

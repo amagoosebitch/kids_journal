@@ -187,4 +187,5 @@ fabric.properties
 web/back/ydb_certs/*
 web/back/ydb_data/*
 node_modules
+**/.idea
 .idea

@@ -3,7 +3,7 @@ from pathlib import Path
 import jwt
 from fastapi import Depends, Request
 from starlette import status
-from starlette.responses import HTMLResponse, JSONResponse
+from starlette.responses import HTMLResponse, RedirectResponse
 from starlette.templating import Jinja2Templates
 
 from auth.settings import JWTSettings
@@ -39,14 +39,11 @@ def _create_jwt_token(
     return token
 
 
-def _get_json_response(jwt_token: str | None) -> JSONResponse:
+def _get_redirect_response(jwt_token: str | None) -> RedirectResponse:
     if jwt_token is None:
-        return JSONResponse(
-            content={"message": "Auth failed, no access"},
-            status_code=status.HTTP_401_UNAUTHORIZED,
-        )
-    response = JSONResponse(content={"message": "Auth success"})
-    response.set_cookie(key="token", value=jwt_token)
+        return RedirectResponse(url="/")
+    response = RedirectResponse(url="/main")
+    response.set_cookie(key="Authorization", value=jwt_token)
     return response
 
 
@@ -93,7 +90,7 @@ async def login(
             model_data=query_params,
             employee_service=employee_service,
         )
-        return _get_json_response(token)
+        return _get_redirect_response(token)
     except TelegramDataIsOutdated:
         return HTMLResponse(
             "The authentication data is expired.",

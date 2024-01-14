@@ -1,7 +1,12 @@
+from http.client import HTTPException
+
 import uvicorn
 from fastapi import APIRouter, FastAPI
+from starlette.middleware.cors import CORSMiddleware
 
-from routers.user import try_merge_user_by_phone
+from src.exception_handlers.unauthorized import handle_auth_error
+from src.routers.user import try_merge_user_by_phone
+from src.settings import load_api_settings
 from src.routers.auth import login
 from src.routers.child import create_child
 from src.routers.employee import create_employee, get_employee_by_tg_id
@@ -12,7 +17,6 @@ from src.routers.groups import (
     get_group,
     get_groups_by_organization,
 )
-from src.routers.index import index
 from src.routers.organization import (
     create_organization,
     get_organization,
@@ -50,7 +54,6 @@ def init_app() -> FastAPI:
 
     # Auth
     router.add_api_route("/login", login, methods=["GET"])
-    router.add_api_route("/", index, methods=["GET"])
 
     # Parent
     router.add_api_route("/parents", create_parent, methods=["POST"])
@@ -69,6 +72,20 @@ def init_app() -> FastAPI:
 
     # User
     router.add_api_route("/user/{phone}", try_merge_user_by_phone, methods=["POST"])
+
+    api_settings = load_api_settings()
+
+    # Midddlewares
+    app.add_middleware(
+        CORSMiddleware,
+        allow_origins=api_settings.allow_origins,
+        allow_credentials=api_settings.allow_credentials,
+        allow_methods=api_settings.allow_methods,
+        allow_headers=api_settings.allow_headers,
+    )
+
+    # Exception handlers
+    app.add_exception_handler(HTTPException, handle_auth_error)
 
     app.include_router(router)
     return app

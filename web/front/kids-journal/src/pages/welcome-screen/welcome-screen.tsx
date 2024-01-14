@@ -39,7 +39,7 @@ function WelcomeScreen({}: WelcomeScreenProps): JSX.Element {
           </ButtonMain>
         </div>
         <div className='home-button'>
-          <ButtonMain linkButton={AppRoute.SignUp} height="44px" width="316px">
+          <ButtonMain linkButton={AppRoute.SignIn} height="44px" width="316px">
             Зарегистрироваться
           </ButtonMain>
         </div>

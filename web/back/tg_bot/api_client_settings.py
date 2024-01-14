@@ -38,7 +38,7 @@ class ApiClientSettings(BaseSettings):
         return self.url / self.group_endpoint
 
     class Config:
-        env_prefix = "API_"
+        env_prefix = "API_CLIENT_"
 
 
 @cache

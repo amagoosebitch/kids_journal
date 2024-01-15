@@ -3,8 +3,8 @@ from uuid import UUID
 from fastapi import Depends
 
 from db.services.groups import GroupModel, GroupService
-from models.groups import GroupChildModel
 from models.child import ChildModel
+from models.groups import GroupChildModel
 from src.dependencies import create_group_service
 
 

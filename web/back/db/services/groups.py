@@ -2,8 +2,8 @@ from typing import Any
 from uuid import UUID
 
 from db.utils import _format_unix_time
-from models.groups import GroupChildModel, GroupModel
 from models.child import ChildModel
+from models.groups import GroupChildModel, GroupModel
 
 
 class GroupService:

@@ -13,6 +13,9 @@ import AddChildPage from "../../pages/addChild-page/AddChildPage";
 import ActivityPage from "../../pages/activity-page/ActivityPage";
 import CreateGroupsPage from "../../pages/createGroups-page/CreateGroupsPage";
 import { Header } from "../header/Header";
+import CreateActivityPage from "../../pages/createActivity-page/CreateActivityPage";
+import { SubjectPage } from "../../pages/subject-page/SubjectPage";
+import CreateSubjectPage from "../../pages/creactSubject-page/CreateSubjectPage";
 
 function App() {
   return (
@@ -43,6 +46,21 @@ function App() {
             element={<CreateEmployeesPage />}
           />
           <Route path={`${AppRoute.AddChild}`} element={<AddChildPage />} />
+
+          <Route
+            path={`:organization${AppRoute.Subject}`}
+            element={<SubjectPage />}
+          />
+
+          <Route
+            path={`:organization${AppRoute.CreateSubject}`}
+            element={<CreateSubjectPage />}
+          />
+
+          <Route
+            path={`:organization${AppRoute.CreateActivity}`}
+            element={<CreateActivityPage />}
+          />
         </Routes>
       </Router>
     </div>

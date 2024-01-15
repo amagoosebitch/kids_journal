@@ -49,7 +49,7 @@ export const AddChild = () => {
 
   const createGroup = () => {
     const result = {
-      organization: value,
+      organization_id: value,
       age: valueAge,
       groupName: valueName,
       listChildren: children,

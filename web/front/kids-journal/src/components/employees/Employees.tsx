@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { ButtonMain } from "../button/ButtonMain";
-import {AppRoute, infoEmployees, infoGroups} from "../../const";
+import {AppRoute, infoEmployees} from "../../const";
 import { Link } from "react-router-dom";
 
 import "./Employees.css";

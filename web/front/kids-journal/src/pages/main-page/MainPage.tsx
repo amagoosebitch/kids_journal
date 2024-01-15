@@ -10,24 +10,31 @@ import { useParams } from "react-router-dom";
 
 function MainPage(): JSX.Element {
   const { organization } = useParams();
+
+  const [currentDate, setCurrentDate] = useState(new Date())
+
+  function getDate(obj: Date) {
+      setCurrentDate(obj)
+  }
+
   return (
     <>
       <Header />
       <div className="main__container">
         <div>
-          <DateInput />
+          <DateInput getDate={getDate} organization={organization} />
         </div>
         <div>
           <ButtonMain
             height="44px"
             width="211px"
-            linkButton={AppRoute.CreateActivity}
+            linkButton={`/${organization}${AppRoute.CreateActivity}`}
           >
             Создать активность
           </ButtonMain>
         </div>
       </div>
-      <Carousel organization={organization} />
+      <Carousel currentDate={currentDate} organization={organization} />
     </>
   );
 }

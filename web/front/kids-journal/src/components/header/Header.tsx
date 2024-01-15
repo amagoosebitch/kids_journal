@@ -93,7 +93,6 @@ export const Header = () => {
     });
   }, []);
 
-  // @ts-ignore
   return (
     <header className="header">
       <Link

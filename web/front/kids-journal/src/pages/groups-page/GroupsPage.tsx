@@ -7,7 +7,6 @@ type GroupsPageProps = {};
 
 function GroupsPage({}: GroupsPageProps): JSX.Element {
   const { organization } = useParams();
-  console.log(organization);
   return (
     <div>
       <Header />

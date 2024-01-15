@@ -22,7 +22,7 @@ export const AddEmployees = () => {
 
   const addEmployees = () => {
     const result = {
-      organization: value,
+      organization_id: value,
       name: valueName,
       surname: valueSurname,
       job: valueJob,

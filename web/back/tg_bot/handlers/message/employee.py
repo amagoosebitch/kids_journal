@@ -1,5 +1,8 @@
+import os.path
 from io import BytesIO
+from uuid import uuid4
 
+import boto3
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup, Update
 from telegram.ext import ContextTypes
 
@@ -16,9 +19,12 @@ from tg_bot.message_replies import (
     CHOOSE_GROUP,
     GROUP_INFO,
     NEXT,
+    PRESENTATION_LINK,
     SEND_PICTURE,
+    SEND_PRESENTATION,
     START_EMPLOYEE,
     SUCCESSFULLY_SENT,
+    SUCCESSFULLY_UPLOADED,
     WRITE_REPORT,
 )
 from tg_bot.states import EmployeeState
@@ -30,17 +36,21 @@ async def handle_employee_start(update: Update, context: ContextTypes.DEFAULT_TY
         reply_markup=InlineKeyboardMarkup(
             [
                 [
-                    InlineKeyboardButton(
-                        ReportTypeCallback.OBSERVATION,
-                        callback_data=ReportTypeCallback.OBSERVATION,
-                    ),
-                    InlineKeyboardButton(
-                        ReportTypeCallback.COMMON,
-                        callback_data=ReportTypeCallback.COMMON,
-                    ),
+                    # InlineKeyboardButton(
+                    #     ReportTypeCallback.OBSERVATION,
+                    #     callback_data=ReportTypeCallback.OBSERVATION,
+                    # ),
+                    # InlineKeyboardButton(
+                    #     ReportTypeCallback.COMMON,
+                    #     callback_data=ReportTypeCallback.COMMON,
+                    # ),
                     InlineKeyboardButton(
                         ReportTypeCallback.SINGLE_CHILD,
                         callback_data=ReportTypeCallback.SINGLE_CHILD,
+                    ),
+                    InlineKeyboardButton(
+                        ReportTypeCallback.OBSERVATION,
+                        callback_data=ReportTypeCallback.OBSERVATION,
                     ),
                 ]
             ]
@@ -132,39 +142,102 @@ async def handle_write_report(update: Update, context: ContextTypes.DEFAULT_TYPE
 async def handle_send_picture(update: Update, context: ContextTypes.DEFAULT_TYPE):
     parent_1, parent_2 = get_parents_by_child_id(context.chat_data["child_id"])
 
-    file = await update.message.photo[-1].get_file()
-    picture = await file.download_as_bytearray()
-
-    await context.bot.send_photo(parent_1.tg_user_id, BytesIO(picture))
     await context.bot.send_message(
         chat_id=parent_1.tg_user_id, text=context.chat_data["report_text"]
     )
-
-    await context.bot.send_photo(parent_2.tg_user_id, BytesIO(picture))
     await context.bot.send_message(
         chat_id=parent_2.tg_user_id, text=context.chat_data["report_text"]
     )
+
+    if update.message.photo:
+        file = await update.message.photo[-1].get_file()
+        picture = await file.download_as_bytearray()
+        await context.bot.send_photo(parent_1.tg_user_id, BytesIO(picture))
+        await context.bot.send_photo(parent_2.tg_user_id, BytesIO(picture))
 
     await update.message.reply_text(
         SUCCESSFULLY_SENT,
         reply_markup=InlineKeyboardMarkup(
             [
                 [
-                    InlineKeyboardButton(
-                        ReportTypeCallback.OBSERVATION,
-                        callback_data=ReportTypeCallback.OBSERVATION,
-                    ),
-                    InlineKeyboardButton(
-                        ReportTypeCallback.COMMON,
-                        callback_data=ReportTypeCallback.COMMON,
-                    ),
+                    # InlineKeyboardButton(
+                    #     ReportTypeCallback.OBSERVATION,
+                    #     callback_data=ReportTypeCallback.OBSERVATION,
+                    # ),
+                    # InlineKeyboardButton(
+                    #     ReportTypeCallback.COMMON,
+                    #     callback_data=ReportTypeCallback.COMMON,
+                    # ),
                     InlineKeyboardButton(
                         ReportTypeCallback.SINGLE_CHILD,
                         callback_data=ReportTypeCallback.SINGLE_CHILD,
+                    ),
+                    InlineKeyboardButton(
+                        ReportTypeCallback.PRESENTATION,
+                        callback_data=ReportTypeCallback.PRESENTATION,
                     ),
                 ]
             ]
         ),
     )
 
+    return EmployeeState.CHOOSE_REPORT_TYPE.value
+
+
+async def handle_send_presentation(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    await update.callback_query.edit_message_text(SEND_PRESENTATION)
+
+    return EmployeeState.ACCEPT_PRESENTATION.value
+
+
+async def handle_accept_presentation(
+    update: Update, context: ContextTypes.DEFAULT_TYPE
+):
+    session = boto3.session.Session()
+    s3 = session.client(
+        service_name="s3", endpoint_url="https://storage.yandexcloud.net"
+    )
+    if update.message.document:
+        _, ext = os.path.splitext(update.message.document.file_name)
+        file = await update.message.document.get_file()
+        presentation = await file.download_as_bytearray()
+        key = f"{uuid4()}.{ext}" if ext else uuid4()
+        s3.put_object(
+            Bucket="dobry-mir-images-b1gf54qrjkrq75uriq7l",
+            Key=key,
+            Body=BytesIO(presentation),
+        )
+        presigned_url = s3.generate_presigned_url(
+            "get_object",
+            Params={"Bucket": "dobry-mir-images-b1gf54qrjkrq75uriq7l", "Key": key},
+        )
+        await update.message.reply_text(
+            PRESENTATION_LINK.format(presentation_link=presigned_url)
+        )
+
+    await update.message.reply_text(
+        SUCCESSFULLY_UPLOADED,
+        reply_markup=InlineKeyboardMarkup(
+            [
+                [
+                    # InlineKeyboardButton(
+                    #     ReportTypeCallback.OBSERVATION,
+                    #     callback_data=ReportTypeCallback.OBSERVATION,
+                    # ),
+                    # InlineKeyboardButton(
+                    #     ReportTypeCallback.COMMON,
+                    #     callback_data=ReportTypeCallback.COMMON,
+                    # ),
+                    InlineKeyboardButton(
+                        ReportTypeCallback.SINGLE_CHILD,
+                        callback_data=ReportTypeCallback.SINGLE_CHILD,
+                    ),
+                    InlineKeyboardButton(
+                        ReportTypeCallback.PRESENTATION,
+                        callback_data=ReportTypeCallback.PRESENTATION,
+                    ),
+                ]
+            ]
+        ),
+    )
     return EmployeeState.CHOOSE_REPORT_TYPE.value

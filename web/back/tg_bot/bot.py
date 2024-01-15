@@ -14,10 +14,12 @@ from telegram.ext import (
 from tg_bot.callbacks import ReportTypeCallback
 from tg_bot.handlers.command_handlers import start_command_handler, stop_command_handler
 from tg_bot.handlers.message.employee import (
+    handle_accept_presentation,
     handle_choose_child,
     handle_choose_group,
     handle_employee_start,
     handle_send_picture,
+    handle_send_presentation,
     handle_single_child_report,
     handle_write_report,
 )
@@ -40,6 +42,10 @@ def get_application() -> Application:
                 CallbackQueryHandler(
                     handle_single_child_report,
                     pattern=f"^{ReportTypeCallback.SINGLE_CHILD}$",
+                ),
+                CallbackQueryHandler(
+                    handle_send_presentation,
+                    pattern=f"^{ReportTypeCallback.PRESENTATION}$",
                 )
                 #  ToDo: Другие ветки работника
             ],
@@ -56,7 +62,13 @@ def get_application() -> Application:
             ],
             EmployeeState.SEND_PICTURE.value: [
                 MessageHandler(
-                    filters.ATTACHMENT | filters.Document.IMAGE, handle_send_picture
+                    filters.ATTACHMENT | filters.Document.IMAGE | filters.TEXT,
+                    handle_send_picture,
+                )
+            ],
+            EmployeeState.ACCEPT_PRESENTATION.value: [
+                MessageHandler(
+                    filters.TEXT | filters.Document.ALL, handle_accept_presentation
                 )
             ],
             ParentState.SUBSCRIBE.value: [

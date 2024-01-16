@@ -23,23 +23,48 @@
   margin-left: 40px;
 }
 
-.Close-Button {
-  margin: auto auto;
+
+.create-group-main__container {
+  position: relative;
+  padding: 2rem;
+  margin: auto;
+  border-radius: 0.5rem;
+  max-width: max-content;
 }
 
-.add_children {
-  margin: 0 auto;
-  padding: 0;
-}
-
-.add_children-item {
-  margin-bottom: 20px;
-}
-.childrenScroll {
-  max-height: 585px;
-  overflow-y: scroll;
-}
-
-.button-addChild {
+.create-group__text {
+  font-family: "Inter", sans-serif;
+  font-size: 32px;
+  padding-top: 122px;
+  margin-top: 20px;
   text-align: center;
+}
+
+.create-group__form {
+  display: flex;
+  justify-content: center;
+  width: 50vw;
+  margin: auto;
+  padding-bottom: 10px;
+  padding-top: 10px;
+
+}
+
+.create-group__container {
+  overflow: auto;
+}
+
+.create-group__form-button {
+  display: flex;
+  justify-content: center;
+  padding-top: 20px;
+}
+
+.create-group__form-items {
+  margin-bottom: 10px;
+}
+
+.create-group {
+  width: 100%;
+  margin: 20px;
 }

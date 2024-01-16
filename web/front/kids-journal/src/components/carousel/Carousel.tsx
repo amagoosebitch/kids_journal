@@ -39,19 +39,35 @@ const action1 = {
 };
 
 export const Carousel = ({ organization, currentDate }: CarouselProps) => {
+  const [carousels, setCarousels] = useState(infoGroups);
+
+  const currentCarousel = carousels.filter((carousel) => {
+    if (organization !== undefined)
+      return carousel.organization
+        .toLowerCase()
+        .includes(organization.toLowerCase());
+    return {};
+  });
+
+  let slidesToShowCurrent = 3;
+
+  if (currentCarousel.length === 1) slidesToShowCurrent = 1;
+  if (currentCarousel.length === 2) slidesToShowCurrent = 2;
+
   let settings = {
     dots: true,
     infinite: true,
     speed: 500,
-    slidesToShow: 3,
+    slidesToShow: slidesToShowCurrent,
     slidesToScroll: 3,
     initialSlide: 0,
     responsive: [
       {
         breakpoint: 1024,
         settings: {
-          slidesToShow: 2,
-          slidesToScroll: 3,
+          slidesToShow: slidesToShowCurrent === 1 ? 1 : slidesToShowCurrent - 1,
+          slidesToScroll:
+            slidesToShowCurrent === 1 ? 1 : slidesToShowCurrent - 1,
           infinite: true,
           dots: true,
         },
@@ -61,7 +77,7 @@ export const Carousel = ({ organization, currentDate }: CarouselProps) => {
         settings: {
           slidesToShow: 1,
           slidesToScroll: 1,
-          initialSlide: 2,
+          initialSlide: 1,
         },
       },
       {
@@ -74,26 +90,16 @@ export const Carousel = ({ organization, currentDate }: CarouselProps) => {
     ],
   };
 
-  const [carousels, setCarousels] = useState(infoGroups);
-
-  const currentCarousel = carousels.filter((carousel) => {
-    if (organization !== undefined)
-      return carousel.organization
-        .toLowerCase()
-        .includes(organization.toLowerCase());
-    return {};
-  });
-
   const formatData = currentDate.toLocaleDateString();
 
   const [isOpenModal, setIsOpenModal] = useState(false);
 
   const [currentActivity, setCurrentActivity] = useState(action1);
-  const [currentGroup, setCurrentGroup] = useState('');
+  const [currentGroup, setCurrentGroup] = useState("");
 
   const doDo = (action: ActionProps, group: string) => {
     setCurrentActivity(action);
-    setCurrentGroup(group)
+    setCurrentGroup(group);
   };
 
   const handleModalOpen = () => {
@@ -116,41 +122,43 @@ export const Carousel = ({ organization, currentDate }: CarouselProps) => {
                 </div>
                 <div className="carousel_box-age">{carousel.carouselAge}</div>
               </div>
-              {carousel.carouselAction
-                .filter((action) => {
-                  return (
-                    new Date(
-                      action.carouselActionData.split("T")[0],
-                    ).toLocaleDateString() === formatData
-                  );
-                })
-                .map((action) => (
-                  <Link to={""} onClick={handleModalOpen}>
-                    <div
-                      onClick={() => doDo(action, carousel.carouselLabel)}
-                      className={`carousel_box-action ${
-                        action.carouselActionCategory ? "isOrange" : "isGreen"
-                      }`}
-                    >
-                      <div className="carousel_action-info">
-                        <div className="carousel_action-topic">
-                          {action.carouselActionTitle}
+              <div className="carousel_box-content">
+                {carousel.carouselAction
+                  .filter((action) => {
+                    return (
+                      new Date(
+                        action.carouselActionData.split("T")[0],
+                      ).toLocaleDateString() === formatData
+                    );
+                  })
+                  .map((action) => (
+                    <Link to={""} onClick={handleModalOpen}>
+                      <div
+                        onClick={() => doDo(action, carousel.carouselLabel)}
+                        className={`carousel_box-action ${
+                          action.carouselActionCategory ? "isOrange" : "isGreen"
+                        }`}
+                      >
+                        <div className="carousel_action-info">
+                          <div className="carousel_action-topic">
+                            {action.carouselActionTitle}
+                          </div>
+                          <div className="carousel_action-time">
+                            {action.carouselActionData.split("T")[1]}
+                          </div>
                         </div>
-                        <div className="carousel_action-time">
-                          {action.carouselActionData.split("T")[1]}
+                        <div className="carousel_action-children">
+                          {action.carouselActionCategory &&
+                            `Дети: ${action.children[0].name} ${
+                              action.children.length > 1
+                                ? `и еще ${action.children.length - 1}`
+                                : ""
+                            }`}
                         </div>
                       </div>
-                      <div className="carousel_action-children">
-                        {action.carouselActionCategory &&
-                          `Дети: ${action.children[0].name} ${
-                            action.children.length > 1
-                              ? `и еще ${action.children.length - 1}`
-                              : ""
-                          }`}
-                      </div>
-                    </div>
-                  </Link>
-                ))}
+                    </Link>
+                  ))}
+              </div>
             </div>
           ))}
         </Slider>

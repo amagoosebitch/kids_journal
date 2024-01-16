@@ -1,6 +1,7 @@
 import React from "react";
 import { Header } from "../../components/header/Header";
 import { CreateGroups } from "../../components/createGroups/CreateGroups";
+import { useParams } from "react-router-dom";
 
 type CreateGroupsPageProps = {};
 

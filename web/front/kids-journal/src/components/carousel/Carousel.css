@@ -9,11 +9,11 @@
   height: 57vh;
   width: 440px;
   text-align: center;
-  overflow-y:scroll;
+  overflow-y: scroll;
 }
 
 .carousel_box-title {
-  display:inline-block;
+  display: inline-block;
 }
 
 .carousel_box-name {
@@ -60,7 +60,6 @@
   font-weight: bolder;
   text-align: start;
 }
-
 
 .carousel_action-children {
   font-size: 12px;

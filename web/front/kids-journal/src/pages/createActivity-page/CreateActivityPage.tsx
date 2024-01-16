@@ -40,8 +40,6 @@ export default function CreateActivityPage() {
       <DescriptionForm {...data} updateFields={updateFields} />,
     ]);
 
-  console.log(INITIAL_DATA)
-
   function onSubmitForm(e: FormEvent) {
     e.preventDefault();
     return !isLastStep ? next() : alert("GOOD!!!");

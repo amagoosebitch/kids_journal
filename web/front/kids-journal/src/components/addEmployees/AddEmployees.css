@@ -1,0 +1,28 @@
+@import "../../style/index.css";
+
+.employees-creat__form {
+    display: flex;
+    justify-content: center;
+    width: 50vw;
+    margin: auto;
+    padding-bottom: 10px;
+    padding-top: 10px;
+}
+
+.creat-employees__container {
+    overflow: auto;
+}
+
+.creat-employees__form-button {
+    display: flex;
+    justify-content: center;
+}
+
+.employees-creat__form-items {
+    margin-bottom: 10px;
+}
+
+.employees-creat {
+    width: 100%;
+    margin: 20px;
+}

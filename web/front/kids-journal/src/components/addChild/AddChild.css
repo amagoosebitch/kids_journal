@@ -1,0 +1,30 @@
+.creat__form {
+  margin-top: 30px;
+}
+
+.childrenScroll {
+  max-height: 45vh;
+  overflow-y: scroll;
+}
+
+.Close-Button {
+  margin: auto auto;
+}
+
+.add_children {
+  margin: 0 auto;
+  padding: 0;
+}
+
+.add_children-item {
+  margin-bottom: 20px;
+}
+
+.button-addChild {
+  text-align: center;
+  margin-bottom: 5px;
+}
+
+.add_children-in-group__button {
+  text-align: center;
+}

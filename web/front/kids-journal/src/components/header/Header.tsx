@@ -1,19 +1,16 @@
 import React, { useState, useEffect, useRef } from "react";
-import {Link, useNavigate, useParams} from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { Avatar } from "@chakra-ui/react";
-import Select, {SingleValue} from "react-select";
+import { SingleValue } from "react-select";
 
 import { useClickOutside } from "../../hooks/useClickOutside";
 import { MenuButton } from "../menuButton/MenuButton";
 import "../menuButton/MenuButton.css";
 import "../menuList/MenuList.css";
 import "./Header.css";
-import { AppRoute } from "../../const";
+import {AppRoute, infoOrganization} from "../../const";
+import {Select, SelectOption} from "../singleSelect/SingleSelect";
 
-const options = [
-  { label: "Садик №1", value: 1 },
-  { label: "Садик Вишенка", value: 2 },
-];
 
 const optionsMenu = [
   { label: "Профиль", value: 1, link: "/profile" },
@@ -41,19 +38,24 @@ export const Header = () => {
     return option === valueMenu;
   }
 
+  const options = infoOrganization.map((group, index: number | string) => ({
+    label: group.name,
+    value: index,
+  }));
+
   const [value, setValue] = useState(
     options.find((obj) => obj.label === organization),
   );
 
   const navigate = useNavigate();
 
-  const changeSelect = (event: SingleValue<{label: string, value: number}>) => {
+  const changeSelect = (event: SelectOption) => {
     event
-        ? setValue({ label: event.label, value: event.value })
-        : setValue(options.find((obj) => obj.label === organization))
+      ? setValue({ label: event.label, value: event.value })
+      : setValue(options.find((obj) => obj.label === organization));
 
     navigate(`/${value?.label}/main`);
-  }
+  };
 
   const [isOpenMenu, setOpenMenu] = useState(false);
 
@@ -107,7 +109,7 @@ export const Header = () => {
         <Select
           options={options}
           value={value}
-          onChange={(e) => changeSelect(e)}
+          onChange={(e: SelectOption) => changeSelect(e)}
         />
       </div>
 

@@ -12,6 +12,7 @@ export const AppRoute = {
   CreateGroups: "/createGroups",
   CreateEmployees: "/createEmployees",
   CreateSubject: "/createSubject",
+  CreateOrganization: "/createOrganization",
   AddChild: "/addChild",
   Error: "/*",
 };
@@ -21,6 +22,17 @@ export enum AuthorizationStatus {
   NoAuth = "NO_AUTH",
   Unknown = "UNKNOWN",
 }
+
+export const infoOrganization = [
+  {
+    name: "Садик №1",
+    id: "1",
+  },
+  {
+    name: "Садик Вишенка",
+    id: "2",
+  },
+];
 
 export const infoGroups = [
   {
@@ -39,6 +51,60 @@ export const infoGroups = [
           },
         ],
         description: "",
+      },
+      {
+        carouselActionData: "2024-01-16T19:26",
+        subject: "Что-то",
+        carouselActionTitle: "Клеим марки",
+        carouselActionCategory: false,
+        children: [],
+        description:
+          "qwertyuikjbfbvjbdfvbgjfnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnjk",
+      },
+      {
+        carouselActionData: "2024-01-16T19:26",
+        subject: "Что-то",
+        carouselActionTitle: "Клеим марки",
+        carouselActionCategory: false,
+        children: [],
+        description:
+          "qwertyuikjbfbvjbdfvbgjfnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnjk",
+      },
+      {
+        carouselActionData: "2024-01-16T19:26",
+        subject: "Что-то",
+        carouselActionTitle: "Клеим марки",
+        carouselActionCategory: false,
+        children: [],
+        description:
+          "qwertyuikjbfbvjbdfvbgjfnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnjk",
+      },
+      {
+        carouselActionData: "2024-01-16T19:26",
+        subject: "Что-то",
+        carouselActionTitle: "Клеим марки",
+        carouselActionCategory: false,
+        children: [],
+        description:
+          "qwertyuikjbfbvjbdfvbgjfnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnjk",
+      },
+      {
+        carouselActionData: "2024-01-16T19:26",
+        subject: "Что-то",
+        carouselActionTitle: "Клеим марки",
+        carouselActionCategory: false,
+        children: [],
+        description:
+          "qwertyuikjbfbvjbdfvbgjfnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnjk",
+      },
+      {
+        carouselActionData: "2024-01-16T19:26",
+        subject: "Что-то",
+        carouselActionTitle: "Клеим марки",
+        carouselActionCategory: false,
+        children: [],
+        description:
+          "qwertyuikjbfbvjbdfvbgjfnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnjk",
       },
       {
         carouselActionData: "2024-01-16T19:26",
@@ -195,5 +261,12 @@ export const subjectInfo = [
     organization: "Садик №1",
     name: "yqwef11",
     topic: [{ name: "qwert", age: "3-6", description: "" }],
+  },
+  {
+    name: "qwef",
+    topic: [
+      { name: "qwert", age: "3-6", description: "" },
+      { name: "qwert11", age: "0-3", description: "" },
+    ],
   },
 ];

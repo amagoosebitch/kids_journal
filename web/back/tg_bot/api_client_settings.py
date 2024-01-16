@@ -5,7 +5,7 @@ from yarl import URL
 
 
 class ApiClientSettings(BaseSettings):
-    url: URL = URL("http://127.0.0.1:8000")
+    url: str = "http://127.0.0.1:8000"
     employee_endpoint: str = "employee/{tgId}"
     user_endpoint: str = "user/{phone}"
     parent_endpoint: str = "parents/{tgId}"
@@ -15,15 +15,15 @@ class ApiClientSettings(BaseSettings):
 
     @property
     def parents_by_child_url(self) -> URL:
-        return self.url / self.parents_by_child_endpoint
+        return URL(self.url) / self.parents_by_child_endpoint
 
     @property
     def children_by_group_url(self) -> URL:
-        return self.url / self.children_by_group_endpoint
+        return URL(self.url) / self.children_by_group_endpoint
 
     @property
     def employee_url(self) -> URL:
-        return self.url / self.employee_endpoint
+        return URL(self.url) / self.employee_endpoint
 
     @property
     def user_url(self) -> URL:
@@ -31,11 +31,11 @@ class ApiClientSettings(BaseSettings):
 
     @property
     def parent_url(self) -> URL:
-        return self.url / self.parent_endpoint
+        return URL(self.url) / self.parent_endpoint
 
     @property
     def group_url(self) -> URL:
-        return self.url / self.group_endpoint
+        return URL(self.url) / self.group_endpoint
 
     class Config:
         env_prefix = "API_CLIENT_"

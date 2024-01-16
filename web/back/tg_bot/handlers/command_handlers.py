@@ -41,17 +41,21 @@ async def start_command_handler(
             reply_markup=InlineKeyboardMarkup(
                 [
                     [
-                        InlineKeyboardButton(
-                            ReportTypeCallback.OBSERVATION,
-                            callback_data=ReportTypeCallback.OBSERVATION,
-                        ),
-                        InlineKeyboardButton(
-                            ReportTypeCallback.COMMON,
-                            callback_data=ReportTypeCallback.COMMON,
-                        ),
+                        # InlineKeyboardButton(
+                        #     ReportTypeCallback.OBSERVATION,
+                        #     callback_data=ReportTypeCallback.OBSERVATION,
+                        # ),
+                        # InlineKeyboardButton(
+                        #     ReportTypeCallback.COMMON,
+                        #     callback_data=ReportTypeCallback.COMMON,
+                        # ),
                         InlineKeyboardButton(
                             ReportTypeCallback.SINGLE_CHILD,
                             callback_data=ReportTypeCallback.SINGLE_CHILD,
+                        ),
+                        InlineKeyboardButton(
+                            ReportTypeCallback.PRESENTATION,
+                            callback_data=ReportTypeCallback.PRESENTATION,
                         ),
                     ]
                 ]

@@ -1,7 +1,6 @@
-import json
 import logging
+from pathlib import Path
 
-from telegram import Update
 from telegram.ext import (
     Application,
     CallbackQueryHandler,
@@ -25,6 +24,7 @@ from tg_bot.handlers.message.employee import (
 )
 from tg_bot.handlers.message.parent import handle_subscribe
 from tg_bot.message_replies import BACK
+from tg_bot.persistence import S3PicklePersistence
 from tg_bot.settings import BotSettings
 from tg_bot.states import EmployeeState, ParentState
 
@@ -32,10 +32,16 @@ logger = logging.getLogger(__name__)
 
 
 def get_application() -> Application:
+    print("initialized")
     settings = BotSettings()
-    application: Application = Application.builder().token(settings.token).build()
+    persistence = S3PicklePersistence(filepath=Path("kek"))
+    application: Application = (
+        Application.builder().token(settings.token).persistence(persistence).build()
+    )
 
     start_conv_handler = ConversationHandler(
+        persistent=True,
+        name="dobry-mir",
         entry_points=[CommandHandler("start", start_command_handler)],
         states={
             EmployeeState.CHOOSE_REPORT_TYPE.value: [
@@ -80,14 +86,6 @@ def get_application() -> Application:
 
     application.add_handler(start_conv_handler)
     return application
-
-
-async def start(event, context):
-    print(event)
-    print(app._initialized)
-    await app.initialize()
-    message = Update.de_json(json.loads(event["body"]), app.bot)
-    await app.process_update(message)
 
 
 app = get_application()

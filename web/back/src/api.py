@@ -80,7 +80,7 @@ def init_app() -> FastAPI:
     router.add_api_route("/{groupId}/child", get_children_by_group_id, methods=["GET"])
 
     # User
-    router.add_api_route("/user/{phone}", try_merge_user_by_phone, methods=["POST"])
+    router.add_api_route("/user_merge", try_merge_user_by_phone, methods=["POST"])
 
     # Subject
     router.add_api_route(

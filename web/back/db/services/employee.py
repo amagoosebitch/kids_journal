@@ -2,6 +2,7 @@ import json
 from typing import Any
 
 from models.employees import EmployeeModel
+from models.role import Role
 
 
 class EmployeeService:
@@ -48,7 +49,6 @@ class EmployeeService:
                 PRAGMA TablePathPrefix("{db_prefix}");
                 SELECT *
                 FROM employee
-                JOIN role on employee.role_id = role.role_id
                 WHERE tg_user_id = "{tg_user_id}"
                 """.format(
                     db_prefix=self._db_prefix,
@@ -62,6 +62,7 @@ class EmployeeService:
             return None
 
         rows[0]["group_ids"] = json.loads(rows[0]["group_ids"].replace("'", '"'))
+        rows[0]["role_id"] = Role[rows[0]["role_id"]].value
         return EmployeeModel.model_validate(rows[0])
 
     def get_by_phone(self, phone_number: str) -> EmployeeModel | None:
@@ -71,7 +72,6 @@ class EmployeeService:
                 PRAGMA TablePathPrefix("{db_prefix}");
                 SELECT *
                 FROM employee
-                JOIN role on employee.role_id = role.role_id
                 WHERE phone_number = "{phone_number}"
                 """.format(
                     db_prefix=self._db_prefix,
@@ -85,6 +85,7 @@ class EmployeeService:
             return None
 
         rows[0]["group_ids"] = json.loads(rows[0]["group_ids"].replace("'", '"'))
+        rows[0]["role_id"] = Role[rows[0]["role_id"]].value
         return EmployeeModel.model_validate(rows[0])
 
     def set_telegram_id(self, phone_number: str, tg_user_id: str) -> bool:

@@ -188,4 +188,4 @@ web/back/ydb_certs/*
 web/back/ydb_data/*
 **/.node_modules/*
 **/.idea/*
-*/.DS_Store/*
+**/.DS_Store/*

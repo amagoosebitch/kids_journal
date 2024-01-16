@@ -4,6 +4,8 @@ import uvicorn
 from fastapi import APIRouter, FastAPI
 from starlette.middleware.cors import CORSMiddleware
 
+from routers.presentation import create_presentation, get_presentation
+from routers.subject import get_all_subjects_for_organization, create_subject, get_subject
 from src.exception_handlers.unauthorized import handle_auth_error
 from src.routers.user import try_merge_user_by_phone
 from src.settings import load_api_settings
@@ -73,6 +75,15 @@ def init_app() -> FastAPI:
     # User
     router.add_api_route("/user/{phone}", try_merge_user_by_phone, methods=["POST"])
 
+    # Subject
+    router.add_api_route("/organizations/{organizationId}/subjects/{subjectId}", get_subject, methods=["GET"])
+    router.add_api_route("/organizations/{organizationId}/subjects", get_all_subjects_for_organization, methods=["GET"])
+    router.add_api_route("/organizations/{organizationId}/subjects", create_subject, methods=["POST"])
+
+    # Presentation
+    router.add_api_route("/subjects/{subjectId}/presentations", create_presentation, methods=["POST"])
+    router.add_api_route("/organizations/{organizationId}/subjects/{subjectId}/{presentationId}", get_presentation, methods=["GET"])
+
     api_settings = load_api_settings()
 
     # Midddlewares
@@ -92,4 +103,4 @@ def init_app() -> FastAPI:
 
 
 if __name__ == "__main__":
-    uvicorn.run(init_app, port=8000)
+    uvicorn.run(init_app, host="0.0.0.0", port=8080)

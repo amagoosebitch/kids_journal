@@ -111,6 +111,52 @@ def create_tables(session_pool: Any, path: Path):
             ),
         )
 
+        # child_schedule
+        session.create_table(
+            str(path / "child_schedule"),
+            ydb.TableDescription()
+            .with_primary_keys("child_id", "schedule_id")  # точно оба форяки ?
+            .with_columns(
+                ydb.Column("child_id", ydb.PrimitiveType.Utf8),
+                ydb.Column("schedule_id", ydb.PrimitiveType.Utf8),
+            ),
+        )
+
+        # schedule
+        session.create_table(
+            str(path / "schedule"),
+            ydb.TableDescription()
+            .with_primary_keys("schedule_id")
+            .with_columns(
+                ydb.Column("schedule_id", ydb.PrimitiveType.Utf8),
+                ydb.Column("group_id", ydb.PrimitiveType.Utf8),
+                ydb.Column("start_lesson", ydb.OptionalType(ydb.PrimitiveType.Datetime)),
+                ydb.Column("end_lesson", ydb.OptionalType(ydb.PrimitiveType.Datetime)),
+                ydb.Column("description", ydb.OptionalType(ydb.PrimitiveType.Utf8)),
+                ydb.Column("teacher_id", ydb.OptionalType(ydb.PrimitiveType.Utf8)),
+                ydb.Column("subject_id", ydb.OptionalType(ydb.PrimitiveType.Utf8)),
+                ydb.Column("presentation_id", ydb.OptionalType(ydb.PrimitiveType.Utf8)),
+                ydb.Column("note_id", ydb.OptionalType(ydb.PrimitiveType.Utf8)),
+                ydb.Column("canceled", ydb.OptionalType(ydb.PrimitiveType.Bool)),
+            )
+            .with_indexes(
+                ydb.TableIndex("teacher_index").with_index_columns("teacher_id"),
+                ydb.TableIndex("subject_index").with_index_columns("subject_id"),
+            ),
+        )
+
+        # note
+        session.create_table(
+            str(path / "note"),
+            ydb.TableDescription()
+            .with_primary_keys("note_id")
+            .with_columns(
+                ydb.Column("note_id", ydb.PrimitiveType.Utf8),
+                ydb.Column("schedule_id", ydb.PrimitiveType.Utf8),
+                ydb.Column("text", ydb.PrimitiveType.Utf8),
+            ),
+        )
+
         # subject
         session.create_table(
             str(path / "subject"),
@@ -175,7 +221,6 @@ def create_tables(session_pool: Any, path: Path):
                 ),  # Опять дичь какая-то
             )
             .with_indexes(
-                ydb.TableIndex("tg_user_index").with_index_columns("tg_user_id"),
                 ydb.TableIndex("role_index").with_index_columns("role_id"),
             ),
         )
@@ -200,9 +245,6 @@ def create_tables(session_pool: Any, path: Path):
                 ),
                 ydb.Column("tg_user_id", ydb.OptionalType(ydb.PrimitiveType.Utf8)),
             )
-            .with_indexes(
-                ydb.TableIndex("tg_user_index").with_index_columns("tg_user_id"),
-            ),
         )
 
         # skill_level
@@ -249,20 +291,6 @@ def create_tables(session_pool: Any, path: Path):
             .with_columns(
                 ydb.Column("role_id", ydb.PrimitiveType.Utf8),
                 ydb.Column("name", ydb.OptionalType(ydb.PrimitiveType.Utf8)),
-            ),
-        )
-
-        # tg_user???
-        session.create_table(
-            str(path / "tg_user"),
-            ydb.TableDescription()
-            .with_primary_keys("tg_user_id")
-            .with_columns(
-                ydb.Column("tg_user_id", ydb.PrimitiveType.Utf8),
-                ydb.Column("first_name", ydb.OptionalType(ydb.PrimitiveType.Utf8)),
-                ydb.Column("last_name", ydb.OptionalType(ydb.PrimitiveType.Utf8)),
-                ydb.Column("username", ydb.OptionalType(ydb.PrimitiveType.Utf8)),
-                ydb.Column("photo_url", ydb.OptionalType(ydb.PrimitiveType.Utf8)),
             ),
         )
 

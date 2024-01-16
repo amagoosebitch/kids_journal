@@ -10,6 +10,8 @@ from db.services.employee import EmployeeService
 from db.services.groups import GroupService
 from db.services.organization import OrganizationService
 from db.services.parent import ParentService
+from db.services.presentations import PresentationService
+from db.services.subjects import SubjectService
 from db.settings import YDBSettings
 
 
@@ -23,7 +25,6 @@ def jwt_settings() -> JWTSettings:
     return JWTSettings()
 
 
-@cache
 def create_pool(settings: Annotated[YDBSettings, Depends(ydb_settings)]):
     driver = ydb.Driver(
         endpoint=settings.endpoint,
@@ -34,7 +35,6 @@ def create_pool(settings: Annotated[YDBSettings, Depends(ydb_settings)]):
     return ydb.SessionPool(driver)
 
 
-@cache
 def create_organization_service(
     pool: Annotated[Any, Depends(create_pool)],
     settings: Annotated[YDBSettings, Depends(ydb_settings)],
@@ -42,7 +42,20 @@ def create_organization_service(
     return OrganizationService(pool, settings.database)
 
 
-@cache
+def create_presentation_service(
+    pool: Annotated[Any, Depends(create_pool)],
+    settings: Annotated[YDBSettings, Depends(ydb_settings)],
+) -> PresentationService:
+    return PresentationService(pool, settings.database)
+
+
+def create_subject_service(
+    pool: Annotated[Any, Depends(create_pool)],
+    settings: Annotated[YDBSettings, Depends(ydb_settings)],
+) -> SubjectService:
+    return SubjectService(pool, settings.database)
+
+
 def create_group_service(
     pool: Annotated[Any, Depends(create_pool)],
     settings: Annotated[YDBSettings, Depends(ydb_settings)],
@@ -50,7 +63,6 @@ def create_group_service(
     return GroupService(pool, settings.database)
 
 
-@cache
 def create_parent_service(
     pool: Annotated[Any, Depends(create_pool)],
     settings: Annotated[YDBSettings, Depends(ydb_settings)],
@@ -58,7 +70,6 @@ def create_parent_service(
     return ParentService(pool, settings.database)
 
 
-@cache
 def create_employee_service(
     pool: Annotated[Any, Depends(create_pool)],
     settings: Annotated[YDBSettings, Depends(ydb_settings)],
@@ -66,7 +77,6 @@ def create_employee_service(
     return EmployeeService(pool, settings.database)
 
 
-@cache
 def create_child_service(
     pool: Annotated[Any, Depends(create_pool)],
     settings: Annotated[YDBSettings, Depends(ydb_settings)],

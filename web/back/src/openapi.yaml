@@ -1,0 +1,767 @@
+---
+openapi: '3.0.0'
+info:
+  title: Dobry Mir api
+  version: '1.0'
+x-yc-apigateway:
+  service_account_id: ajec0sj89ke5nr84p7bs
+paths:
+  "/groups":
+    post:
+      summary: Add Group To Organization
+      operationId: add_group_to_organization_groups_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/GroupModel"
+        required: true
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/HTTPValidationError"
+      x-yc-apigateway-integration:
+        type: serverless_containers
+        container_id: bbaun4q4u3tog5iae1j8
+  "/organizations/{organizationId}/groups":
+    get:
+      summary: Get Groups By Organization
+      operationId: get_groups_by_organization_organizations__organizationId__groups_get
+      parameters:
+      - name: organizationId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+          title: Organization Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  "$ref": "#/components/schemas/GroupModel"
+                title: Response Get Groups By Organization Organizations  Organizationid  Groups
+                  Get
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/HTTPValidationError"
+      x-yc-apigateway-integration:
+        type: serverless_containers
+        container_id: bbaun4q4u3tog5iae1j8
+  "/groups/{groupId}":
+    get:
+      summary: Get Group
+      operationId: get_group_groups__groupId__get
+      parameters:
+      - name: groupId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+          title: Group Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                nullable: true
+                anyOf:
+                - "$ref": "#/components/schemas/GroupModel"
+                title: Response Get Group Groups  Groupid  Get
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/HTTPValidationError"
+      x-yc-apigateway-integration:
+        type: serverless_containers
+        container_id: bbaun4q4u3tog5iae1j8
+  "/groups/link_children":
+    post:
+      summary: Add Children To Group
+      operationId: add_children_to_group_groups_link_children_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/GroupChildModel"
+        required: true
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/HTTPValidationError"
+      x-yc-apigateway-integration:
+        type: serverless_containers
+        container_id: bbaun4q4u3tog5iae1j8
+  "/organizations":
+    get:
+      summary: Get Organizations
+      operationId: get_organizations_organizations_get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                items:
+                  "$ref": "#/components/schemas/OrganizationModel"
+                type: array
+                title: Response Get Organizations Organizations Get
+      x-yc-apigateway-integration:
+        type: serverless_containers
+        container_id: bbaun4q4u3tog5iae1j8
+    post:
+      summary: Create Organization
+      operationId: create_organization_organizations_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/OrganizationModel"
+        required: true
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/HTTPValidationError"
+      x-yc-apigateway-integration:
+        type: serverless_containers
+        container_id: bbaun4q4u3tog5iae1j8
+  "/organizations/{organization_id}":
+    get:
+      summary: Get Organization
+      operationId: get_organization_organizations__organization_id__get
+      parameters:
+      - name: organization_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+          title: Organization Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                nullable: true
+                anyOf:
+                - "$ref": "#/components/schemas/OrganizationModel"
+                title: Response Get Organization Organizations  Organization Id  Get
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/HTTPValidationError"
+      x-yc-apigateway-integration:
+        type: serverless_containers
+        container_id: bbaun4q4u3tog5iae1j8
+  "/login":
+    get:
+      summary: Login
+      operationId: login_login_get
+      parameters:
+      - name: id
+        in: query
+        required: false
+        schema:
+          nullable: true
+          anyOf:
+          - type: integer
+          title: Id
+      - name: first_name
+        in: query
+        required: false
+        schema:
+          nullable: true
+          anyOf:
+          - type: string
+          title: First Name
+      - name: last_name
+        in: query
+        required: false
+        schema:
+          nullable: true
+          anyOf:
+          - type: string
+          title: Last Name
+      - name: username
+        in: query
+        required: false
+        schema:
+          nullable: true
+          anyOf:
+          - type: string
+          title: Username
+      - name: photo_url
+        in: query
+        required: false
+        schema:
+          nullable: true
+          anyOf:
+          - type: string
+          title: Photo Url
+      - name: auth_date
+        in: query
+        required: false
+        schema:
+          nullable: true
+          anyOf:
+          - type: string
+          title: Auth Date
+      - name: hash
+        in: query
+        required: false
+        schema:
+          nullable: true
+          anyOf:
+          - type: string
+          title: Hash
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/HTTPValidationError"
+      x-yc-apigateway-integration:
+        type: serverless_containers
+        container_id: bbaun4q4u3tog5iae1j8
+  "/":
+    get:
+      summary: Index
+      description: Index page just redirects to login page.
+      operationId: index__get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+      x-yc-apigateway-integration:
+        type: serverless_containers
+        container_id: bbaun4q4u3tog5iae1j8
+  "/parents":
+    post:
+      summary: Create Parent
+      operationId: create_parent_parents_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/ParentModel"
+        required: true
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/HTTPValidationError"
+      x-yc-apigateway-integration:
+        type: serverless_containers
+        container_id: bbaun4q4u3tog5iae1j8
+  "/parents/{tgId}":
+    get:
+      summary: Get Parent By Tg Id
+      operationId: get_parent_by_tg_id_parents__tgId__get
+      parameters:
+      - name: tgId
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Tg Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                nullable: true
+                anyOf:
+                - "$ref": "#/components/schemas/ParentModel"
+                title: Response Get Parent By Tg Id Parents  Tgid  Get
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/HTTPValidationError"
+      x-yc-apigateway-integration:
+        type: serverless_containers
+        container_id: bbaun4q4u3tog5iae1j8
+  "/parents/child/{childId}":
+    get:
+      summary: Get Parents By Child Id
+      operationId: get_parents_by_child_id_parents_child__childId__get
+      parameters:
+      - name: childId
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Child Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                nullable: true
+                type: array
+                items:
+                  "$ref": "#/components/schemas/ParentModel"
+                minItems: 2
+                maxItems: 2
+                title: Response Get Parents By Child Id Parents Child  Childid  Get
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/HTTPValidationError"
+      x-yc-apigateway-integration:
+        type: serverless_containers
+        container_id: bbaun4q4u3tog5iae1j8
+  "/employee":
+    post:
+      summary: Create Employee
+      operationId: create_employee_employee_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/EmployeeModel"
+        required: true
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/HTTPValidationError"
+      x-yc-apigateway-integration:
+        type: serverless_containers
+        container_id: bbaun4q4u3tog5iae1j8
+  "/employee/{tgId}":
+    get:
+      summary: Get Employee By Tg Id
+      operationId: get_employee_by_tg_id_employee__tgId__get
+      parameters:
+      - name: tgId
+        in: path
+        required: true
+        schema:
+          type: string
+          title: Tg Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                nullable: true
+                anyOf:
+                - "$ref": "#/components/schemas/EmployeeModel"
+                title: Response Get Employee By Tg Id Employee  Tgid  Get
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/HTTPValidationError"
+      x-yc-apigateway-integration:
+        type: serverless_containers
+        container_id: bbaun4q4u3tog5iae1j8
+  "/child":
+    post:
+      summary: Create Child
+      operationId: create_child_child_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/ChildModel"
+        required: true
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/HTTPValidationError"
+      x-yc-apigateway-integration:
+        type: serverless_containers
+        container_id: bbaun4q4u3tog5iae1j8
+  "/child/{groupId}":
+    get:
+      summary: Get Children By Group Id
+      operationId: get_children_by_group_id_child__groupId__get
+      parameters:
+      - name: groupId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+          title: Group Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  "$ref": "#/components/schemas/ChildModel"
+                title: Response Get Children By Group Id Child  Groupid  Get
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/HTTPValidationError"
+      x-yc-apigateway-integration:
+        type: serverless_containers
+        container_id: bbaun4q4u3tog5iae1j8
+components:
+  schemas:
+    AgeRanges:
+      type: string
+      enum:
+      - 0-2
+      - 2-4
+      - 4-6
+      title: AgeRanges
+    ChildModel:
+      properties:
+        child_id:
+          type: string
+          format: uuid
+          title: Child Id
+          default: 25bf4a03-3001-45c8-99e2-6ec0ed51778f
+        name:
+          type: string
+          title: Name
+        first_name:
+          type: string
+          title: First Name
+        last_name:
+          nullable: true
+          anyOf:
+          - type: string
+          title: Last Name
+        birth_date:
+          nullable: true
+          anyOf:
+          - type: string
+            format: date-time
+          title: Birth Date
+        start_education_date:
+          nullable: true
+          anyOf:
+          - type: string
+            format: date-time
+          title: Start Education Date
+        start_education_time:
+          nullable: true
+          anyOf:
+          - type: string
+            format: date-time
+          title: Start Education Time
+        end_education_time:
+          nullable: true
+          anyOf:
+          - type: string
+            format: date-time
+          title: End Education Time
+        gender:
+          "$ref": "#/components/schemas/Gender"
+        parent_1_id:
+          type: string
+          format: uuid
+          title: Parent 1 Id
+          default: 8ed7f0d4-9c98-4251-9589-35a5685ebd01
+        parent_2_id:
+          type: string
+          format: uuid
+          title: Parent 2 Id
+          default: a9bc9729-9a61-4fa7-9c62-0a059e13bf75
+      type: object
+      required:
+      - name
+      - first_name
+      - gender
+      title: ChildModel
+    EmployeeModel:
+      properties:
+        employee_id:
+          type: string
+          format: uuid
+          title: Employee Id
+          default: d7e610c3-6a37-41e3-8ea6-82b6c72868ba
+        name:
+          type: string
+          title: Name
+        first_name:
+          type: string
+          title: First Name
+        last_name:
+          nullable: true
+          anyOf:
+          - type: string
+          title: Last Name
+        email:
+          nullable: true
+          anyOf:
+          - type: string
+          title: Email
+        gender:
+          "$ref": "#/components/schemas/Gender"
+        phone_number:
+          nullable: true
+          anyOf:
+          - type: string
+          title: Phone Number
+        tg_user_id:
+          nullable: true
+          anyOf:
+          - type: string
+          title: Tg User Id
+        role_id:
+          type: string
+          format: uuid
+          title: Role Id
+        group_ids:
+          items:
+            type: string
+            format: uuid
+          type: array
+          title: Group Ids
+          default: []
+      type: object
+      required:
+      - name
+      - first_name
+      - gender
+      - role_id
+      title: EmployeeModel
+    Gender:
+      type: string
+      enum:
+      - MALE
+      - FEMALE
+      title: Gender
+    GroupChildModel:
+      properties:
+        group_id:
+          type: string
+          format: uuid
+          title: Group Id
+          default: 147425e2-34de-4a34-a2bc-75a9199192ac
+        child_ids:
+          items:
+            type: string
+            format: uuid
+          type: array
+          title: Child Ids
+          default: []
+      type: object
+      title: GroupChildModel
+    GroupModel:
+      properties:
+        group_id:
+          type: string
+          format: uuid
+          title: Group Id
+          default: 8e650e97-4a15-41a1-8e68-70a63709c15f
+        organization_id:
+          type: string
+          format: uuid
+          title: Organization Id
+          default: 7ee7284a-f9d1-46c3-b256-ebb274002bf0
+        name:
+          type: string
+          title: Name
+        age_range:
+          "$ref": "#/components/schemas/AgeRanges"
+      type: object
+      required:
+      - name
+      - age_range
+      title: GroupModel
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            "$ref": "#/components/schemas/ValidationError"
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    OrganizationModel:
+      properties:
+        organization_id:
+          type: string
+          format: uuid
+          title: Organization Id
+          default: f7e4718e-5139-489a-966d-79ff7b4ce527
+        name:
+          type: string
+          title: Name
+        description:
+          nullable: true
+          anyOf:
+          - type: string
+          title: Description
+        photo_url:
+          nullable: true
+          anyOf:
+          - type: string
+          title: Photo Url
+        start_education_time:
+          type: string
+          format: date-time
+          title: Start Education Time
+        end_education_time:
+          type: string
+          format: date-time
+          title: End Education Time
+        registration_date:
+          type: string
+          format: date-time
+          title: Registration Date
+          default: '2024-01-14T13:34:13.668758Z'
+        updated_date:
+          type: string
+          format: date-time
+          title: Updated Date
+          default: '2024-01-14T13:34:13.669007Z'
+      type: object
+      required:
+      - name
+      - start_education_time
+      - end_education_time
+      title: OrganizationModel
+    ParentModel:
+      properties:
+        parent_id:
+          type: string
+          format: uuid
+          title: Parent Id
+          default: 298107d3-49d8-4cc4-9907-e3c64cbf1805
+        name:
+          type: string
+          title: Name
+        first_name:
+          type: string
+          title: First Name
+        last_name:
+          nullable: true
+          anyOf:
+          - type: string
+          title: Last Name
+        email:
+          nullable: true
+          anyOf:
+          - type: string
+          title: Email
+        gender:
+          "$ref": "#/components/schemas/Gender"
+        phone_number:
+          nullable: true
+          anyOf:
+          - type: string
+          title: Phone Number
+        freq_notifications:
+          type: integer
+          title: Freq Notifications
+        tg_user_id:
+          nullable: true
+          anyOf:
+          - type: string
+          title: Tg User Id
+      type: object
+      required:
+      - name
+      - first_name
+      - gender
+      - freq_notifications
+      title: ParentModel
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError

@@ -8,7 +8,8 @@ from starlette.templating import Jinja2Templates
 
 from auth.settings import JWTSettings
 from db.services.employee import EmployeeService
-from dependencies import create_employee_service
+from dependencies import create_employee_service, jwt_settings
+from models.employees import EmployeeModel
 from src.auth import (
     TelegramAuth,
     TelegramDataError,
@@ -25,10 +26,8 @@ templates = Jinja2Templates(Path(__file__).parent.parent / "templates")
 def _create_jwt_token(
     *,
     jwt_settings: JWTSettings,
-    model_data: TelegramAuth,
-    employee_service: EmployeeService,
+    employee: EmployeeModel | None,
 ) -> str | None:
-    employee = employee_service.get_by_tg_user_id(str(model_data.id))
     if employee is None:
         return None
     token = jwt.encode(
@@ -63,7 +62,7 @@ async def login(
     request: Request,
     query_params: TelegramAuth = Depends(TelegramAuth),
     config: BotConfig = Depends(load_bot_config),
-    jwt_settings: JWTSettings = Depends(JWTSettings),
+    jwt_settings: JWTSettings = Depends(jwt_settings),
     employee_service: EmployeeService = Depends(create_employee_service),
 ):
     telegram_token = config.telegram_token
@@ -85,10 +84,10 @@ async def login(
         validated_data = validate_telegram_data(telegram_token, query_params)
         if not validated_data:
             return
+        employee = employee_service.get_by_tg_user_id(str(query_params.id))
         token = _create_jwt_token(
             jwt_settings=jwt_settings,
-            model_data=query_params,
-            employee_service=employee_service,
+            employee=employee,
         )
         return _get_redirect_response(token)
     except TelegramDataIsOutdated:

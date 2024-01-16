@@ -18,7 +18,7 @@ class APIServerSettings(BaseSettings):
     allow_headers: list[str] = ["*"]
 
     class Config:
-        env_prefix = "API_SERVER"
+        env_prefix = "API_SERVER_"
 
 
 @cache

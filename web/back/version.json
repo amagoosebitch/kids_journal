@@ -1,0 +1,6 @@
+{
+  "type": "backend",
+  "info": "Api for dobry mir",
+  "version": 32,
+  "inherit": true
+}

@@ -33,11 +33,12 @@ async def start_command_handler(
     update: Update, context: ContextTypes.DEFAULT_TYPE
 ) -> int:
     await update.message.reply_text("kek")
-    employee = get_employee_by_tg_id(tg_id=update.message.from_user.id)
+    # employee = get_employee_by_tg_id(tg_id=update.message.from_user.id)
+    employee = True
     if employee:
-        context.chat_data["first_name"] = employee.first_name
+        context.chat_data["first_name"] = "kek"
         await update.message.reply_text(
-            START_EMPLOYEE.format(first_name=employee.first_name),
+            START_EMPLOYEE.format(first_name="kek"),
             reply_markup=InlineKeyboardMarkup(
                 [
                     [

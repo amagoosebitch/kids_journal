@@ -4,7 +4,7 @@
     width: 200px;
     border-radius: 5px;
     text-transform: capitalize;
-    background-color: var(--color-brown_accent);
+    background-color: #d49050;
 }
 
 .calendar__header {

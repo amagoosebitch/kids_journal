@@ -13,6 +13,10 @@
     background-color: var(--color-lightorange);
     border-radius: 10px;
 }
+.date__container:hover{
+    background-color: var(--color-lightorange_main_07)
+}
+
 
 .calendar-move {
     visibility: hidden;

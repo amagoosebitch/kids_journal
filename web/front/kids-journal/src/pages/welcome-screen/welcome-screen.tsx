@@ -24,6 +24,7 @@ function WelcomeScreen({}: WelcomeScreenProps): JSX.Element {
 
   window.addEventListener("resize", showButton);
 
+  console.log(new Date().getMonth());
   return (
     <div className="home">
       <div className="home-text">
@@ -33,13 +34,17 @@ function WelcomeScreen({}: WelcomeScreenProps): JSX.Element {
         </div>
       </div>
       <div className="home-buttons">
-        <div className='home-button'>
-          <ButtonMain linkButton={`/Садик №1${AppRoute.Main}`} height="44px" width="316px">
+        <div className="home-button">
+          <ButtonMain
+            linkButton={`/Садик №1${AppRoute.Main}`}
+            height="44px"
+            width="316px"
+          >
             Войти
           </ButtonMain>
         </div>
-        <div className='home-button'>
-          <ButtonMain linkButton={AppRoute.SignIn} height="44px" width="316px">
+        <div className="home-button">
+          <ButtonMain linkButton={AppRoute.SignUp} height="44px" width="316px">
             Зарегистрироваться
           </ButtonMain>
         </div>

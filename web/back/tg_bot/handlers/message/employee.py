@@ -201,7 +201,7 @@ async def handle_accept_presentation(
         _, ext = os.path.splitext(update.message.document.file_name)
         file = await update.message.document.get_file()
         presentation = await file.download_as_bytearray()
-        key = f"{uuid4()}.{ext}" if ext else uuid4()
+        key = f"{uuid4()}.{ext}" if ext else str(uuid4())
         s3.put_object(
             Bucket="dobry-mir-images-b1gf54qrjkrq75uriq7l",
             Key=key,

@@ -69,7 +69,14 @@
 .select-option-last {
     display: flex;
     justify-content: center;
-    padding-top: 5px;
-    background-color: var(--color-lightorange);
+
 }
 
+.select-option-last:hover {
+    background-color: var(--color-lightorange);
+
+}
+
+.organization-select {
+    margin-top: 10px;
+}

@@ -44,7 +44,7 @@ export const GroupInfo = ({ organization, groupId }: GroupInfoProps) => {
           <ButtonMain
             height="44px"
             width="211px"
-            linkButton={AppRoute.AddChild}
+            linkButton={`/${organization}/${groupId}${AppRoute.AddChild}`}
           >
             Добавить ребенка
           </ButtonMain>

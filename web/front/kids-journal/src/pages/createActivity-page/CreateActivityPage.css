@@ -1,0 +1,14 @@
+@import "../../style/index.css";
+
+.creat_activity_container {
+  position: relative;
+  padding: 2rem;
+  margin: 20px auto;
+  border-radius: 0.5rem;
+  max-width: max-content;
+}
+
+.creat__text {
+  margin-top: 20px;
+  text-align: center;
+}

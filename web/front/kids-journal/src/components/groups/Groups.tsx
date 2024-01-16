@@ -10,8 +10,8 @@ export type GroupProps = {
 
 export const Groups = ({ organization }: GroupProps) => {
   const currentGroup = infoGroups.filter((group) => {
-    return organization ? group.organization.includes(organization) : null
-  })
+    return organization ? group.organization.includes(organization) : null;
+  });
 
   const [groups, setGroups] = useState(currentGroup);
 
@@ -39,7 +39,7 @@ export const Groups = ({ organization }: GroupProps) => {
           <ButtonMain
             height="44px"
             width="211px"
-            linkButton={AppRoute.CreateGroups}
+            linkButton={`/${organization}${AppRoute.CreateGroups}`}
           >
             Создать группу
           </ButtonMain>
@@ -58,7 +58,7 @@ export const Groups = ({ organization }: GroupProps) => {
             {filteredGroups.map((group, index) => (
               <tr className="groups-item">
                 <td className="groups-item_label">
-                  <Link to={`${AppRoute.Groups}/${group.carouselLabel}`}>
+                  <Link to={`/${organization}/${group.carouselLabel}`}>
                     {group.carouselLabel}
                   </Link>
                 </td>

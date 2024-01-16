@@ -6,10 +6,13 @@ export const AppRoute = {
   Organizations: "/:organization",
   Groups: "/groups",
   Activity: "/activity",
+  Subject: "/subject",
   Employees: "/employees",
   CreateActivity: "/createActivity",
   CreateGroups: "/createGroups",
   CreateEmployees: "/createEmployees",
+  CreateSubject: "/createSubject",
+  CreateOrganization: "/createOrganization",
   AddChild: "/addChild",
   Error: "/*",
 };
@@ -20,6 +23,17 @@ export enum AuthorizationStatus {
   Unknown = "UNKNOWN",
 }
 
+export const infoOrganization = [
+  {
+    name: "Садик №1",
+    id: "1",
+  },
+  {
+    name: "Садик Вишенка",
+    id: "2",
+  },
+];
+
 export const infoGroups = [
   {
     organization: "Садик №1",
@@ -27,11 +41,80 @@ export const infoGroups = [
     carouselAge: "0-3",
     carouselAction: [
       {
-        carouselActionData: "",
+        carouselActionData: "2024-01-15T19:23",
+        subject: "Что-то",
         carouselActionTitle: "Застегивание пуговиц",
-        carouselActionCategory: "1",
+        carouselActionCategory: true,
+        children: [
+          {
+            name: "Болтов Егор",
+          },
+        ],
+        description: "",
       },
-      { carouselActionTitle: "Клеим марки", carouselActionCategory: "2" },
+      {
+        carouselActionData: "2024-01-16T19:26",
+        subject: "Что-то",
+        carouselActionTitle: "Клеим марки",
+        carouselActionCategory: false,
+        children: [],
+        description:
+          "qwertyuikjbfbvjbdfvbgjfnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnjk",
+      },
+      {
+        carouselActionData: "2024-01-16T19:26",
+        subject: "Что-то",
+        carouselActionTitle: "Клеим марки",
+        carouselActionCategory: false,
+        children: [],
+        description:
+          "qwertyuikjbfbvjbdfvbgjfnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnjk",
+      },
+      {
+        carouselActionData: "2024-01-16T19:26",
+        subject: "Что-то",
+        carouselActionTitle: "Клеим марки",
+        carouselActionCategory: false,
+        children: [],
+        description:
+          "qwertyuikjbfbvjbdfvbgjfnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnjk",
+      },
+      {
+        carouselActionData: "2024-01-16T19:26",
+        subject: "Что-то",
+        carouselActionTitle: "Клеим марки",
+        carouselActionCategory: false,
+        children: [],
+        description:
+          "qwertyuikjbfbvjbdfvbgjfnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnjk",
+      },
+      {
+        carouselActionData: "2024-01-16T19:26",
+        subject: "Что-то",
+        carouselActionTitle: "Клеим марки",
+        carouselActionCategory: false,
+        children: [],
+        description:
+          "qwertyuikjbfbvjbdfvbgjfnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnjk",
+      },
+      {
+        carouselActionData: "2024-01-16T19:26",
+        subject: "Что-то",
+        carouselActionTitle: "Клеим марки",
+        carouselActionCategory: false,
+        children: [],
+        description:
+          "qwertyuikjbfbvjbdfvbgjfnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnjk",
+      },
+      {
+        carouselActionData: "2024-01-16T19:26",
+        subject: "Что-то",
+        carouselActionTitle: "Клеим марки",
+        carouselActionCategory: false,
+        children: [],
+        description:
+          "qwertyuikjbfbvjbdfvbgjfnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnjk",
+      },
     ],
     group_child: [
       {
@@ -66,8 +149,19 @@ export const infoGroups = [
     carouselAge: "3-6",
     carouselAction: [
       {
+        carouselActionData: "2024-01-15T19:26",
+        subject: "Что-то",
         carouselActionTitle: "Пить сок",
-        carouselActionCategory: "2",
+        carouselActionCategory: true,
+        children: [
+          {
+            name: "Болтов Егор",
+          },
+          {
+            name: "Болтов Егорр",
+          },
+        ],
+        description: "",
       },
     ],
     group_child: [
@@ -91,8 +185,12 @@ export const infoGroups = [
     carouselAge: "6-9",
     carouselAction: [
       {
+        carouselActionData: "2024-01-15T19:26",
+        subject: "Что-то",
         carouselActionTitle: "Застегивание пуговиц",
-        carouselActionCategory: "1",
+        carouselActionCategory: false,
+        children: [],
+        description: "",
       },
     ],
   },
@@ -102,8 +200,19 @@ export const infoGroups = [
     carouselAge: "6-9",
     carouselAction: [
       {
+        carouselActionData: "2024-01-15T19:26",
+        subject: "Что-то",
         carouselActionTitle: "Застегивание пуговиц",
-        carouselActionCategory: "1",
+        carouselActionCategory: true,
+        children: [
+          {
+            name: "Болтов Егор",
+          },
+          {
+            name: "Болтов Егорр",
+          },
+        ],
+        description: "",
       },
     ],
     group_child: [
@@ -118,6 +227,7 @@ export const infoGroups = [
             phone_number: "+79998887766",
           },
         ],
+        description: "",
       },
     ],
   },
@@ -125,15 +235,38 @@ export const infoGroups = [
 
 export const infoEmployees = [
   {
-    organization: 'Садик №1',
+    organization: "Садик №1",
     name: "Болтов Егор",
     role_id: "Администратор",
     phone_number: "+79998887766",
   },
   {
-    organization: 'Садик Вишенка',
+    organization: "Садик Вишенка",
     name: "Викулова Света",
     role_id: "Педагог",
     phone_number: "+79998887766",
+  },
+];
+
+export const subjectInfo = [
+  {
+    organization: "Садик №1",
+    name: "qwef",
+    topic: [
+      { name: "qwert", age: "3-6", description: "" },
+      { name: "qwert11", age: "0-3", description: "" },
+    ],
+  },
+  {
+    organization: "Садик №1",
+    name: "yqwef11",
+    topic: [{ name: "qwert", age: "3-6", description: "" }],
+  },
+  {
+    name: "qwef",
+    topic: [
+      { name: "qwert", age: "3-6", description: "" },
+      { name: "qwert11", age: "0-3", description: "" },
+    ],
   },
 ];

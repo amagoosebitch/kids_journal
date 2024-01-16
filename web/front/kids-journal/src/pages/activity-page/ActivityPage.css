@@ -3,6 +3,8 @@
     padding-top: 121px;
     display: flex;
     justify-content: space-around;
+    height: 100vh;
+    overflow: auto;
 }
 
 .activity_item {
@@ -10,15 +12,20 @@
     font-size: 32px;
 
     background: white;
-    height: 235px;
+    height: 30vh;
     width: 440px;
 
     display: flex;
+    margin: 10px;
     align-items: center;
     justify-content: center;
 }
 
-@media screen and (max-width: 1370px) {
+.active_activity {
+    color: black;
+}
+
+@media screen and (max-width: 700px) {
     .activity_container {
         width: 100%;
     }

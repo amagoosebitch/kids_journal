@@ -12,6 +12,8 @@ class EmployeeService:
     def create_employee(self, args_model: EmployeeModel) -> None:
         args = args_model.model_dump(exclude_none=False, mode="json")
 
+        args["role_id"] = args_model.role_id.name
+
         def callee(session: Any):
             session.transaction().execute(
                 """
@@ -105,3 +107,21 @@ class EmployeeService:
         if not rows:
             return False
         return True
+
+    def link_to_groups(self, group_ids: list[str], teacher_id: str):
+        def callee(session: Any):
+            session.transaction().execute(
+                """
+                PRAGMA TablePathPrefix("{db_prefix}");
+                UPSERT INTO group_teacher ({keys}) VALUES {values}
+                """.format(
+                    db_prefix=self._db_prefix,
+                    keys="group_id, teacher_id",
+                    values=", ".join(
+                        [f'("{group_id}", "{teacher_id}")' for group_id in group_ids]
+                    ),
+                ),
+                commit_tx=True,
+            )
+
+        return self._pool.retry_operation_sync(callee)

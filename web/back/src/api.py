@@ -5,10 +5,13 @@ from fastapi import APIRouter, FastAPI
 from starlette.middleware.cors import CORSMiddleware
 
 from routers.presentation import create_presentation, get_presentation
-from routers.subject import get_all_subjects_for_organization, create_subject, get_subject
+from routers.schedule import create_lesson, get_schedule_for_group
+from routers.subject import (
+    create_subject,
+    get_all_subjects_for_organization,
+    get_subject,
+)
 from src.exception_handlers.unauthorized import handle_auth_error
-from src.routers.user import try_merge_user_by_phone
-from src.settings import load_api_settings
 from src.routers.auth import login
 from src.routers.child import create_child
 from src.routers.employee import create_employee, get_employee_by_tg_id
@@ -29,6 +32,8 @@ from src.routers.parent import (
     get_parent_by_tg_id,
     get_parents_by_child_id,
 )
+from src.routers.user import try_merge_user_by_phone
+from src.settings import load_api_settings
 
 
 def init_app() -> FastAPI:
@@ -65,24 +70,46 @@ def init_app() -> FastAPI:
     )
 
     # Employee
-    router.add_api_route("/employee", create_employee, methods=["POST"])
+    router.add_api_route(
+        "/organizations/{organization_id}/employee", create_employee, methods=["POST"]
+    )
     router.add_api_route("/employee/{tgId}", get_employee_by_tg_id, methods=["GET"])
 
     # Child
-    router.add_api_route("/child", create_child, methods=["POST"])
-    router.add_api_route("/child/{groupId}", get_children_by_group_id, methods=["GET"])
+    router.add_api_route("/{groupId}/child", create_child, methods=["POST"])
+    router.add_api_route("/{groupId}/child", get_children_by_group_id, methods=["GET"])
 
     # User
     router.add_api_route("/user/{phone}", try_merge_user_by_phone, methods=["POST"])
 
     # Subject
-    router.add_api_route("/organizations/{organizationId}/subjects/{subjectId}", get_subject, methods=["GET"])
-    router.add_api_route("/organizations/{organizationId}/subjects", get_all_subjects_for_organization, methods=["GET"])
-    router.add_api_route("/organizations/{organizationId}/subjects", create_subject, methods=["POST"])
+    router.add_api_route(
+        "/organizations/{organizationId}/subjects/{subjectId}",
+        get_subject,
+        methods=["GET"],
+    )
+    router.add_api_route(
+        "/organizations/{organizationId}/subjects",
+        get_all_subjects_for_organization,
+        methods=["GET"],
+    )
+    router.add_api_route(
+        "/organizations/{organizationId}/subjects", create_subject, methods=["POST"]
+    )
 
     # Presentation
-    router.add_api_route("/subjects/{subjectId}/presentations", create_presentation, methods=["POST"])
-    router.add_api_route("/organizations/{organizationId}/subjects/{subjectId}/{presentationId}", get_presentation, methods=["GET"])
+    router.add_api_route(
+        "/subjects/{subjectId}/presentations", create_presentation, methods=["POST"]
+    )
+    router.add_api_route(
+        "/organizations/{organizationId}/subjects/{subjectId}/{presentationId}",
+        get_presentation,
+        methods=["GET"],
+    )
+
+    # Schedule
+    router.add_api_route("/lessons", create_lesson, methods=["POST"])
+    router.add_api_route("/lessons/{groupId}", get_schedule_for_group, methods=["GET"])
 
     api_settings = load_api_settings()
 

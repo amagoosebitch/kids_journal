@@ -16,5 +16,5 @@ class ChildModel(BaseModel):
     start_education_time: datetime | None = None
     end_education_time: datetime | None = None
     gender: Gender
-    parent_1_id: UUID = uuid4()
-    parent_2_id: UUID = uuid4()
+    parent_1_id: UUID | None = None
+    parent_2_id: UUID | None = None

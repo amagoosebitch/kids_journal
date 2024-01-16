@@ -11,6 +11,7 @@ from db.services.groups import GroupService
 from db.services.organization import OrganizationService
 from db.services.parent import ParentService
 from db.services.presentations import PresentationService
+from db.services.schedule import ScheduleService
 from db.services.subjects import SubjectService
 from db.settings import YDBSettings
 
@@ -40,6 +41,13 @@ def create_organization_service(
     settings: Annotated[YDBSettings, Depends(ydb_settings)],
 ) -> OrganizationService:
     return OrganizationService(pool, settings.database)
+
+
+def create_schedule_service(
+    pool: Annotated[Any, Depends(create_pool)],
+    settings: Annotated[YDBSettings, Depends(ydb_settings)],
+) -> ScheduleService:
+    return ScheduleService(pool, settings.database)
 
 
 def create_presentation_service(

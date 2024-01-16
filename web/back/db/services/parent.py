@@ -147,7 +147,4 @@ class ParentService:
                 commit_tx=True,
             )
 
-        rows = self._pool.retry_operation_sync(callee)[0].rows  # посмотреть так ли это
-        if not rows:
-            return False
         return True

@@ -9,7 +9,9 @@ class SubjectService:
         self._db_prefix = db_prefix
 
     def create_subject(self, args_model: SubjectModel) -> None:
-        args = args_model.model_dump(exclude_none=False, mode="json", exclude={'presentations'})
+        args = args_model.model_dump(
+            exclude_none=False, mode="json", exclude={"presentations"}
+        )
 
         def callee(session: Any):
             session.transaction().execute(
@@ -20,9 +22,8 @@ class SubjectService:
                         "{subject_id}",
                         "{name}",
                         "{description}",
-                        "{age_range}",
-                        "{description}"
-                    );
+                        "{age_range}"
+                    )
                 """.format(
                     db_prefix=self._db_prefix,
                     keys=", ".join(args.keys()),
@@ -38,11 +39,13 @@ class SubjectService:
             session.transaction().execute(
                 """
                 PRAGMA TablePathPrefix("{db_prefix}");
-                UPSERT INTO group_subject ({keys}) VALUES {values};
+                UPSERT INTO group_subject ({keys}) VALUES {values}
                 """.format(
                     db_prefix=self._db_prefix,
                     keys="group_id, subject_id",
-                    values=", ".join([f"({group_id}, {subject_id}), " for group_id in group_ids]),
+                    values=", ".join(
+                        [f'("{group_id}", "{subject_id}")' for group_id in group_ids]
+                    ),
                 ),
                 commit_tx=True,
             )
@@ -75,10 +78,10 @@ class SubjectService:
             return session.transaction().execute(
                 """
                 PRAGMA TablePathPrefix("{db_prefix}");
-                SELECT s.subject_id, s.name, s.description, s.age_range
+                SELECT distinct s.subject_id, s.name, s.description, s.age_range
                 FROM subject as s
                 JOIN group_subject as gs 
-                ON g.subject_id = gs.subject_id
+                ON s.subject_id = gs.subject_id
                 JOIN group as g
                 ON gs.group_id = g.group_id
                 WHERE g.organization_id = "{organization_id}"
@@ -91,4 +94,3 @@ class SubjectService:
 
         results = self._pool.retry_operation_sync(callee)[0].rows
         return [SubjectModel.model_validate(result) for result in results]
-

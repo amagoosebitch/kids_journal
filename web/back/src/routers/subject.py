@@ -5,7 +5,7 @@ from fastapi import Depends
 from db.services.groups import GroupService
 from db.services.subjects import SubjectService
 from models.subjects import SubjectModel
-from src.dependencies import create_subject_service, create_group_service
+from src.dependencies import create_group_service, create_subject_service
 
 
 async def create_subject(
@@ -15,7 +15,10 @@ async def create_subject(
     subject_service: SubjectService = Depends(create_subject_service),
 ) -> None:
     subject_service.create_subject(subject)
-    group_ids = [str(group.group_id) for group in groups_service.get_all_for_organization(organization_id)]
+    group_ids = [
+        str(group.group_id)
+        for group in groups_service.get_all_for_organization(organization_id)
+    ]
     subject_service.create_group_subject_pair(group_ids, str(subject.subject_id))
 
 

@@ -1,4 +1,3 @@
-import json
 from typing import Any
 
 from models.presentations import PresentationModel
@@ -43,7 +42,7 @@ class PresentationService:
                 """.format(
                     db_prefix=self._db_prefix,
                     keys="subject_id, presentation_id",
-                    values=f"{subject_id}, {presentation_id}"
+                    values=f"{subject_id}, {presentation_id}",
                 ),
                 commit_tx=True,
             ),

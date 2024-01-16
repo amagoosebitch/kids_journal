@@ -3,7 +3,7 @@ from uuid import UUID
 
 from db.utils import _format_unix_time
 from models.child import ChildModel
-from models.groups import GroupChildModel, GroupModel
+from models.groups import GroupModel
 
 
 class GroupService:
@@ -37,7 +37,7 @@ class GroupService:
 
     def get_all(self) -> list[GroupModel]:
         def callee(session: Any):
-            session.transaction().execute(
+            return session.transaction().execute(
                 """
                 PRAGMA TablePathPrefix("{db_prefix}");
                 SELECT *
@@ -48,7 +48,7 @@ class GroupService:
                 commit_tx=True,
             )
 
-        results = self._pool.retry_operation_sync(callee)
+        results = self._pool.retry_operation_sync(callee)[0].rows
         return [GroupModel.model_validate(result) for result in results]
 
     def get_all_for_organization(self, organization_id: UUID) -> list[GroupModel]:
@@ -86,27 +86,6 @@ class GroupService:
         if not rows:
             return None
         return GroupModel.model_validate(rows[0])
-
-    def link_to_children(self, group_child_model: GroupChildModel) -> None:
-        values = ", ".join(
-            f'("{group_child_model.group_id}", "{child_id}")'
-            for child_id in group_child_model.child_ids
-        )
-
-        def callee(session: Any):
-            session.transaction().execute(
-                """
-                PRAGMA TablePathPrefix("{db_prefix}");
-                UPSERT INTO group_child {keys} VALUES {values}
-                """.format(
-                    db_prefix=self._db_prefix,
-                    keys="(group_id, child_id)",
-                    values=values,
-                ),
-                commit_tx=True,
-            )
-
-        return self._pool.retry_operation_sync(callee)
 
     def get_children_by_group_id(self, group_id: UUID) -> list[ChildModel]:
         def callee(session: Any):

@@ -130,7 +130,9 @@ def create_tables(session_pool: Any, path: Path):
             .with_columns(
                 ydb.Column("schedule_id", ydb.PrimitiveType.Utf8),
                 ydb.Column("group_id", ydb.PrimitiveType.Utf8),
-                ydb.Column("start_lesson", ydb.OptionalType(ydb.PrimitiveType.Datetime)),
+                ydb.Column(
+                    "start_lesson", ydb.OptionalType(ydb.PrimitiveType.Datetime)
+                ),
                 ydb.Column("end_lesson", ydb.OptionalType(ydb.PrimitiveType.Datetime)),
                 ydb.Column("description", ydb.OptionalType(ydb.PrimitiveType.Utf8)),
                 ydb.Column("teacher_id", ydb.OptionalType(ydb.PrimitiveType.Utf8)),
@@ -244,7 +246,7 @@ def create_tables(session_pool: Any, path: Path):
                     "freq_notifications", ydb.OptionalType(ydb.PrimitiveType.Uint64)
                 ),
                 ydb.Column("tg_user_id", ydb.OptionalType(ydb.PrimitiveType.Utf8)),
-            )
+            ),
         )
 
         # skill_level

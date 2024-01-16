@@ -14,6 +14,8 @@ class ScheduleModel(BaseModel):
     end_lesson: datetime
     child_id: list[UUID] | None = None
     description: str | None = None
+    note_id: UUID | None = None
+    canceled: bool = False
 
 
 class ScheduleModelResponse(BaseModel):

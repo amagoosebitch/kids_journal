@@ -1,45 +1,10 @@
 from typing import Any
 from uuid import UUID
 
-import ydb
 from pydantic import ValidationError
 
 from db.utils import _format_time, _format_unix_time
 from models.organizations import OrganizationModel
-
-
-def insert_test(pool: Any):
-    def callee(session: Any):
-        session.transaction().execute(
-            """
-            PRAGMA TablePathPrefix("{}");
-            UPSERT INTO organization (organization_id, description) VALUES
-                (1, "kek");
-            """.format(
-                "/local"
-            ),
-            commit_tx=True,
-        )
-
-    return pool.retry_operation_sync(callee)
-
-
-def select_test(pool: Any):
-    def callee(session: Any):
-        res = session.transaction(ydb.SerializableReadWrite()).execute(
-            """
-            PRAGMA TablePathPrefix("{}");
-            SELECT *
-            FROM organization
-            """.format(
-                "/local"
-            ),
-            commit_tx=True,
-        )
-        for row in res[0].rows:
-            print(row)
-
-    return pool.retry_operation_sync(callee)
 
 
 class OrganizationService:
@@ -116,25 +81,9 @@ class OrganizationService:
                 continue
         return response
 
-    def get_by_name(self, name: str) -> OrganizationModel:
-        def callee(session: Any):
-            session.transaction().execute(
-                """
-                PRAGMA TablePathPrefix("{db_prefix}");
-                SELECT *
-                FROM organization
-                WHERE name = "{name}"
-                """.format(
-                    db_prefix=self._db_prefix, name=name
-                ),
-                commit_tx=True,
-            )
-
-        return self._pool.retry_operation_sync(callee)
-
     def get_by_id(self, organization_id: UUID) -> OrganizationModel:
         def callee(session: Any):
-            session.transaction().execute(
+            return session.transaction().execute(
                 """
                 PRAGMA TablePathPrefix("{db_prefix}");
                 SELECT *
@@ -146,32 +95,13 @@ class OrganizationService:
                 commit_tx=True,
             )
 
-        return self._pool.retry_operation_sync(callee)
+        row = self._pool.retry_operation_sync(callee)[0][0]
 
-    def get_id_by_name(self, name: str) -> UUID:
-        def callee(session: Any):
-            session.transaction().execute(
-                """
-                PRAGMA TablePathPrefix("{db_prefix}");
-                SELECT organization_id
-                FROM organization
-                WHERE name = "{name}"
-                """.format(
-                    db_prefix=self._db_prefix, name=name
-                ),
-                commit_tx=True,
-            )
-
-        return self._pool.retry_operation_sync(callee)
-
-
-if __name__ == "__main__":
-    with ydb.Driver(
-        endpoint="grpc://localhost:2136",
-        database="/local",
-        credentials=ydb.credentials_from_env_variables(),
-    ) as driver:
-        driver.wait(timeout=5, fail_fast=True)
-        with ydb.SessionPool(driver) as pool:
-            insert_test(pool)
-            select_test(pool)
+        row["start_education_time"] = _format_unix_time(row["start_education_time"])
+        row["end_education_time"] = _format_unix_time(row["end_education_time"])
+        row["registration_date"] = _format_unix_time(row["registration_date"])
+        row["updated_date"] = _format_unix_time(row["updated_date"])
+        try:
+            return OrganizationModel.model_validate(row)
+        except ValidationError:
+            return None

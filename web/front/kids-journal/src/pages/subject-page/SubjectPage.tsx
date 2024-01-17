@@ -1,7 +1,7 @@
 import { Header } from "../../components/header/Header";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { ButtonMain } from "../../components/button/ButtonMain";
-import { AppRoute, subjectInfo } from "../../const";
+import { AppRoute, ApiRoute, subjectInfo } from "../../const";
 import {
   Accordion,
   AccordionButton,
@@ -13,6 +13,36 @@ import {
 import "./Subject.css";
 import { useParams } from "react-router-dom";
 
+export const infoSubject = [
+  {
+    organization_id: "",
+    subject_id: "",
+    name: "",
+    description: "",
+    age_range: "",
+  },
+];
+
+export const infoTopic = [
+  {
+    organization_id: "",
+    subject_id: "",
+    presentation_id: "",
+    name: "",
+    description: "",
+  },
+];
+
+type infoTopicProps = {
+  organization_id: string;
+  subject_id: string;
+  presentation_id: string;
+  name: string;
+  description: string;
+}[];
+
+type allInfoTopicProps = infoTopicProps[];
+
 export const SubjectPage = () => {
   const { organization } = useParams();
   const [value, setValue] = useState("");
@@ -20,6 +50,29 @@ export const SubjectPage = () => {
   const filteredSubject = subjectInfo.filter((curSub) => {
     return curSub.name.toLowerCase().includes(value.toLowerCase());
   });
+
+  const [subjects, setSubjects] = useState(infoSubject);
+  const [presentations, setPresentations] = useState(infoTopic);
+
+  let allPresentations: allInfoTopicProps;
+
+  useEffect(() => {
+    console.log(organization)
+    fetch(`${ApiRoute}/organizations/${organization}/subjects`, {
+      method: "GET",
+      headers: { Accept: "application/json" },
+    })
+        .then((response) => {
+          if (response.status === 200 || response.status === 201) {
+            return response;
+          }
+          throw new Error();
+        })
+        .then((response) => response.json())
+        .then((data) => {
+          setSubjects(data);
+        });
+  }, []);
 
   return (
     <>

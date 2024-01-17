@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from "react";
+import React, { useEffect, useState } from "react";
 import { AppRoute, ApiRoute, infoGroups } from "../../const";
 import { ButtonMain } from "../button/ButtonMain";
 import "./Groups.css";
@@ -8,31 +8,40 @@ export type GroupProps = {
   organization: string | undefined;
 };
 
-export const groupInfo = [{
-    group_id: '',
-    organization_id: '',
-    name: '',
-    age_range: ''
-}]
+export const groupInfo = [
+  {
+    group_id: "",
+    organization_id: "",
+    name: "",
+    age_range: "",
+  },
+];
 
 export const Groups = ({ organization }: GroupProps) => {
-    const [firstGroups, setFirstGroups] = useState(groupInfo);
-    useEffect(() => {fetch(`${ApiRoute}/organizations/${organization}/groups`,
-          {method: 'GET', headers: {'Accept': 'application/json',}}).then(response => {
-          if (response.status === 200 || response.status === 201) {
-              return response;
-          }
-          throw new Error();
-      }).then(response => response.json()).then(data => {setFirstGroups(data)});
-      }, [])
-
+  const [firstGroups, setFirstGroups] = useState(groupInfo);
+  useEffect(() => {
+    fetch(`${ApiRoute}/organizations/${organization}/groups`, {
+      method: "GET",
+      headers: { Accept: "application/json" },
+    })
+      .then((response) => {
+        if (response.status === 200 || response.status === 201) {
+          return response;
+        }
+        throw new Error();
+      })
+      .then((response) => response.json())
+      .then((data) => {
+        setFirstGroups(data);
+      });
+  }, []);
 
   const [value, setValue] = useState("");
   const filteredGroups = firstGroups.filter((group) => {
     return group.name.toLowerCase().includes(value.toLowerCase());
   });
 
-  console.log(filteredGroups)
+  console.log(filteredGroups);
 
   return (
     <>

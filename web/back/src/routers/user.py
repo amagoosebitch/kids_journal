@@ -14,14 +14,10 @@ async def try_merge_user_by_phone(
     unknown_user = UserModelResponse(role=UserRole.UNKNOWN)
     employee = employee_service.get_by_phone(user.phone_number)
     if employee is not None:
-        success = employee_service.set_telegram_id(user.phone_number, user.tg_user_id)
-        if success:
-            return UserModelResponse(role=UserRole.EMPLOYEE, data=employee)
-        return unknown_user
-    parent = parent_service.get_by_phone(user.phone)
+        employee_service.set_telegram_id(user.phone_number, user.tg_user_id)
+        return UserModelResponse(role=UserRole.EMPLOYEE, data=employee)
+    parent = parent_service.get_by_phone(user.phone_number)
     if parent is not None:
-        success = parent_service.set_telegram_id(user.phone_number, user.tg_user_id)
-        if success:
-            return UserModelResponse(role=UserRole.PARENT, data=parent)
-        return unknown_user
+        parent_service.set_telegram_id(user.phone_number, user.tg_user_id)
+        return UserModelResponse(role=UserRole.PARENT, data=parent)
     return unknown_user

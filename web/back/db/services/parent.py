@@ -131,7 +131,7 @@ class ParentService:
             return None
         return ParentModel.model_validate(rows[0])
 
-    def set_telegram_id(self, phone_number: str, tg_user_id: str) -> bool:
+    def set_telegram_id(self, phone_number: str, tg_user_id: str) -> None:
         def callee(session: Any):
             return session.transaction().execute(
                 """
@@ -147,4 +147,4 @@ class ParentService:
                 commit_tx=True,
             )
 
-        return True
+        return self._pool.retry_operation_sync(callee)

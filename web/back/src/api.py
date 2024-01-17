@@ -134,14 +134,4 @@ def init_app() -> FastAPI:
 
 if __name__ == "__main__":
     import os
-
-    os.environ["YDB_ENDPOINT"] = "grpcs://ydb.serverless.yandexcloud.net:2135"
-    os.environ["YDB_DATABASE"] = "/ru-central1/b1ge6sseudpphs9ug20c/etnq6fuuhe9nttldc4vh"
-    os.environ[
-        "YDB_ACCESS_TOKEN_CREDENTIALS"
-    ] = "t1.9euelZqPm52JxpuQjIycy8iPxsqZne3rnpWazpnIz8fGlo-UmcuZkZfIz4nl8_cVWGRS-e8ZEhxH_d3z91UGYlL57xkSHEf9zef1656VmpqPkZWUkIvKyc6PyZybnsrJ7_zF656VmpqPkZWUkIvKyc6PyZybnsrJ.VCuzEhy6Ehk0pENz3W5zMBsKK4yEgFLTpaEZjmHd9DIGNFWyyWrKECTbjHsg_VPkimm-3Ngzp4cTx7xQIUAXBQ"
-    os.environ["AUTH_TELEGRAM_TOKEN"] = "6371723269:AAHI3cGJzUOj9HI0CyPW4cA2-1o9Pt5nis0"
-    os.environ['AUTH_TELEGRAM_LOGIN'] = 'kind_world_bot'
-    os.environ['JWT_SECRET_KEY'] = 'b794385f2d1ef7ab4d9273d1906381b44f2f6f2588a3efb96a49188331984753'
-
     uvicorn.run(init_app, host="0.0.0.0", port=8080)

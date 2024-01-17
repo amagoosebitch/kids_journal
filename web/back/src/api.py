@@ -140,5 +140,4 @@ def init_app() -> FastAPI:
 
 
 if __name__ == "__main__":
-    import os
     uvicorn.run(init_app, host="0.0.0.0", port=8080)

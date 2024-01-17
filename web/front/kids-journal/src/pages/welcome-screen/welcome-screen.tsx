@@ -41,16 +41,14 @@ function WelcomeScreen({}: WelcomeScreenProps): JSX.Element {
             return response;
         }
         throw new Error();
-    }).then(response => response.json()).then(data => {setOrgNames(data)});
+    }).then(response => response.json()).then(data => {setOrgNames(data)})
+        .then( () => {
+          if (orgNames.length >= 1 && orgNames[0].length >= 1) {
+            console.log(`/${orgNames[0]}${AppRoute.Main}`)
+            navigate(`/${orgNames[0]}${AppRoute.Main}`);
+          }
+        });
     }, [])
-
-    console.log(orgNames)
-    console.log(phone_number)
-    // useEffect(() => {
-    //   if (orgNames.length >= 1) {
-    //     navigate(`/${orgNames[0]}${AppRoute.Main}`);
-    //   }
-    // })
 
 
   const [click, setClick] = useState(false);

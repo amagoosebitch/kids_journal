@@ -40,7 +40,7 @@ def _create_jwt_token(
 
 def _get_redirect_response(jwt_token: str | None, redirect_settings: RedirectSettings) -> RedirectResponse:
     if jwt_token is None:
-        return RedirectResponse(url=redirect_settings.url, status_code=status.HTTP_304_NOT_MODIFIED)
+        return RedirectResponse(url=redirect_settings.main_url, status_code=status.HTTP_304_NOT_MODIFIED)
     response = RedirectResponse(url=redirect_settings.main_url + f'?cookie={jwt_token}', status_code=status.HTTP_302_FOUND)
     return response
 
@@ -70,6 +70,16 @@ async def login(
     redirect_widget = get_telegram_redirect_widget(
         request=request, telegram_login=telegram_login
     )
+
+    if not query_params.model_dump().get("hash"):
+        return templates.TemplateResponse(
+            "login.html",
+            context={
+                "request": request,
+                "redirect_telegram_login_widget": redirect_widget,
+            },
+        )
+
     try:
         validated_data = validate_telegram_data(telegram_token, query_params)
         if not validated_data:

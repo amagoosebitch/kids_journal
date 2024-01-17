@@ -15,7 +15,7 @@ async def create_presentation(
 ) -> None:
     presentation_service.create_presentation(presentation)
     presentation_service.create_subject_presentations_pair(
-        str(subject_id), str(presentation)
+        str(subject_id), str(presentation.presentation_id)
     )
 
 
@@ -31,5 +31,5 @@ async def get_presentation(
 async def get_presentations(
     subject_id: str,
     presentation_service: PresentationService = Depends(create_presentation_service),
-) -> PresentationModel | None:
+) -> list[PresentationModel] | None:
     return presentation_service.get_all_for_subject(subject_id)

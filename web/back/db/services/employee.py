@@ -164,7 +164,7 @@ class EmployeeService:
             return session.transaction().execute(
                 """
                 PRAGMA TablePathPrefix("{db_prefix}");
-                SELECT org.name
+                SELECT distinct org.name
                 FROM employee as e
                 JOIN group_teacher as gt ON gt.teacher_id = e.employee_id
                 JOIN group as g ON g.group_id = gt.group_id
@@ -177,4 +177,4 @@ class EmployeeService:
                 commit_tx=True,
             )
 
-        return self._pool.retry_operation_sync(callee)[0].rows
+        return list(map(lambda x: x['org.name'], self._pool.retry_operation_sync(callee)[0].rows))

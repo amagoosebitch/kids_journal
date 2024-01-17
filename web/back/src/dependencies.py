@@ -1,18 +1,29 @@
+from functools import cache
 from typing import Annotated, Any
 
 import ydb
 from fastapi import Depends
 
+from auth.settings import JWTSettings
 from db.services.child import ChildService
 from db.services.employee import EmployeeService
 from db.services.groups import GroupService
 from db.services.organization import OrganizationService
 from db.services.parent import ParentService
+from db.services.presentations import PresentationService
+from db.services.schedule import ScheduleService
+from db.services.subjects import SubjectService
 from db.settings import YDBSettings
 
 
+@cache
 def ydb_settings() -> YDBSettings:
     return YDBSettings()
+
+
+@cache
+def jwt_settings() -> JWTSettings:
+    return JWTSettings()
 
 
 def create_pool(settings: Annotated[YDBSettings, Depends(ydb_settings)]):
@@ -30,6 +41,27 @@ def create_organization_service(
     settings: Annotated[YDBSettings, Depends(ydb_settings)],
 ) -> OrganizationService:
     return OrganizationService(pool, settings.database)
+
+
+def create_schedule_service(
+    pool: Annotated[Any, Depends(create_pool)],
+    settings: Annotated[YDBSettings, Depends(ydb_settings)],
+) -> ScheduleService:
+    return ScheduleService(pool, settings.database)
+
+
+def create_presentation_service(
+    pool: Annotated[Any, Depends(create_pool)],
+    settings: Annotated[YDBSettings, Depends(ydb_settings)],
+) -> PresentationService:
+    return PresentationService(pool, settings.database)
+
+
+def create_subject_service(
+    pool: Annotated[Any, Depends(create_pool)],
+    settings: Annotated[YDBSettings, Depends(ydb_settings)],
+) -> SubjectService:
+    return SubjectService(pool, settings.database)
 
 
 def create_group_service(

@@ -3,6 +3,8 @@ import { Button, CloseButton, Grid, GridItem, Input } from "@chakra-ui/react";
 import { useParams } from "react-router-dom";
 import "./AddChild.css";
 import { ButtonMain } from "../button/ButtonMain";
+import {ApiRoute} from "../../const";
+import {InputPhone} from "../input-phone/InputPhone";
 
 type Child = {
   firstNameChild: string;
@@ -16,15 +18,19 @@ type Child = {
   telParentTWO: string;
 };
 
-export const AddChild = () => {
-  const { organization, groupId } = useParams();
+type addChildrenProps = {
+  organization: string | undefined;
+  groupId: string | undefined;
+}
+
+export const AddChild = ({organization, groupId}: addChildrenProps) => {
 
   const [isButton, setIsButton] = useState(false);
 
   const childTemplate = {
     firstNameChild: "",
     surnameChild: "",
-    dataChild: "",
+    dataChild: Date(),
     firstNameParent: "",
     surnameParent: "",
     telParent: "",
@@ -64,6 +70,64 @@ export const AddChild = () => {
 
   const addToGroup = () => {
     console.log(children);
+
+    const headers = new Headers();
+    headers.append("Content-Type", "application/json");
+
+    for (let i = 0; i < children.length; i++) {
+      let child = children[i];
+      let body_parent_1 = JSON.stringify({
+        first_name: child.firstNameParent,
+        last_name: child.surnameParent,
+        name: child.firstNameParent + " " + child.surnameParent,
+        parent_id: child.firstNameParent + " " + child.surnameParent,
+        phone_number: child.telParent,
+      });
+
+      let requestOptions1 = {
+          method: 'POST',
+          headers: headers,
+          body: body_parent_1,
+      };
+
+      fetch(ApiRoute + "/parents", requestOptions1)
+
+      let body_parent_2 = JSON.stringify({
+        first_name: child.firstNameParentTWO,
+        last_name: child.surnameParentTWO,
+        name: child.firstNameParentTWO + " " + child.surnameParentTWO,
+        parent_id: child.firstNameParentTWO + " " + child.surnameParentTWO,
+        phone_number: child.telParentTWO,
+      });
+
+      let requestOptions2 = {
+          method: 'POST',
+          headers: headers,
+          body: body_parent_2,
+      };
+
+      fetch(ApiRoute + "/parents", requestOptions2)
+
+      let body_child = JSON.stringify({
+        first_name: child.firstNameChild,
+        last_name: child.surnameChild,
+        name: child.firstNameChild + " " + child.surnameChild,
+        child_id: child.firstNameChild + " " + child.surnameChild,
+        birth_date: new Date(child.dataChild),
+        parent_1_id: child.firstNameParent + " " + child.surnameParent,
+        parent_2_id: child.firstNameParentTWO + " " + child.surnameParentTWO
+      });
+
+      let requestOptions3 = {
+          method: 'POST',
+          headers: headers,
+          body: body_child,
+      };
+
+      fetch(ApiRoute + `/${groupId}/child`, requestOptions3)
+
+    }
+
   };
 
   return (
@@ -132,12 +196,12 @@ export const AddChild = () => {
                       />
                     </GridItem>
                     <GridItem colSpan={2} w="100%" h="10">
-                      <Input
+                      <InputPhone
                         placeholder="Номер телефона родителя"
                         size="md"
                         type="tel"
                         name="telParent"
-                        onChange={(e) => onChangeChild(e, index)}
+                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => onChangeChild(e, index)}
                         value={child.telParent}
                       />
                     </GridItem>
@@ -161,12 +225,12 @@ export const AddChild = () => {
                       />
                     </GridItem>
                     <GridItem colSpan={2} w="100%" h="10">
-                      <Input
+                      <InputPhone
                         placeholder="Номер телефона родителя"
                         size="md"
                         type="tel"
                         name="telParentTWO"
-                        onChange={(e) => onChangeChild(e, index)}
+                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => onChangeChild(e, index)}
                         value={child.telParentTWO}
                       />
                     </GridItem>
@@ -189,7 +253,7 @@ export const AddChild = () => {
             <ButtonMain
               height="44px"
               width="211px"
-              linkButton={""}
+              linkButton={`/${organization}/${groupId}`}
               onClick={() => addToGroup()}
             >
               Добавить детей в группу

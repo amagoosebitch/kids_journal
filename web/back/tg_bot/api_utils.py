@@ -63,3 +63,20 @@ def get_group_by_id(group_id: str) -> GroupModel | None:
     if response is None:
         return response
     return GroupModel.model_validate(response)
+
+
+@ttl_cache(ttl=3600)
+def try_merge_user_by_phone(
+    phone: str, tg_id: int
+) -> ParentModel | EmployeeModel | None:
+    response = requests.post(
+        api_settings.user_url,
+        data={"phone_number": phone, "tg_user_id": tg_id},
+    ).json()
+    if response is None:
+        return None
+    if response["user_type"] == "parent":
+        return ParentModel.model_validate(response["data"])
+    elif response["user_type"] == "employee":
+        return EmployeeModel.model_validate(response["data"])
+    return None

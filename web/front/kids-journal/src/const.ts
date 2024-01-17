@@ -1,3 +1,5 @@
+export const ApiRoute = "https://d5de0lctsr23htkj7hlj.apigw.yandexcloud.net"
+//export const ApiRoute = "http://0.0.0.0:8080"
 export const AppRoute = {
   WelcomeScreen: "/",
   Main: "/main",
@@ -16,6 +18,9 @@ export const AppRoute = {
   AddChild: "/addChild",
   Error: "/*",
 };
+
+export const LoginUrl = "https://d5de0lctsr23htkj7hlj.apigw.yandexcloud.net/login";
+export const JwtKey = process.env.REACT_APP_JWT_SECRET_KEY
 
 export enum AuthorizationStatus {
   Auth = "AUTH",

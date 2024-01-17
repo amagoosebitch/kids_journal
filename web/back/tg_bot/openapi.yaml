@@ -1,0 +1,13 @@
+openapi: 3.0.0
+info:
+  title: bot-dobry-mir
+  version: 1.0.0
+servers:
+- url:  https://bba51k0b0kk9oapinqn2.containers.yandexcloud.net/K
+paths:
+  /fshtb-function:
+    post:
+      x-yc-apigateway-integration:
+        type: cloud_functions
+        function_id: d4efil4ece38selv9ebs
+      operationId: fshtb-function

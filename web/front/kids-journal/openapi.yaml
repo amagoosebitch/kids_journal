@@ -1,0 +1,31 @@
+openapi: "3.0.0"
+info:
+    version: 1.0.0
+    title: Wishes website
+x-yc-apigateway:
+    service_account_id: ajec0sj89ke5nr84p7bs
+    cors:
+        origin: '*'
+        methods: '*'
+        allowedHeaders: '*'
+paths:
+    /:
+        get:
+            operationId: index
+            x-yc-apigateway-integration:
+                type: object_storage
+                bucket: dobry-mir-website-b1gf54qrjkrq75uriq7l
+                object: 'index.html'
+    /{file+}:
+        get:
+            operationId: website
+            parameters:
+                - name: file
+                  in: path
+                  required: false
+                  schema:
+                      type: string
+            x-yc-apigateway-integration:
+                type: object_storage
+                bucket: dobry-mir-website-b1gf54qrjkrq75uriq7l
+                object: '{file}'

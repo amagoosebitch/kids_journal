@@ -3,6 +3,7 @@ import { Input, Select } from "@chakra-ui/react";
 import { ButtonMain } from "../button/ButtonMain";
 import "./AddEmployees.css";
 import { InputPhone } from "../input-phone/InputPhone";
+import {ApiRoute} from "../../const";
 
 const options = [
   { label: "Садик №1", value: 1 },
@@ -14,21 +15,36 @@ const optionsJob = [
   { job: "Воспитатель", value: 2 },
 ];
 
-export const AddEmployees = () => {
-  const [value, setValue] = useState("");
+type addEmployeeProps = {
+  organization: string | undefined;
+}
+
+export const AddEmployees = ({organization}: addEmployeeProps) => {
   const [valueName, setName] = useState("");
   const [valueSurname, setSurname] = useState("");
   const [valueJob, setValueJob] = useState("");
   const [valueTel, setValueTel] = useState("");
 
   const addEmployees = () => {
-    const result = {
-      organization_id: value,
-      name: valueName,
-      surname: valueSurname,
-      job: valueJob,
-      tel: valueTel,
-    };
+    const headers = new Headers();
+    headers.append("Content-Type", "application/json");
+
+    let employee = JSON.stringify({
+        first_name: valueName,
+        last_name: valueSurname,
+        name: valueName + ' ' + valueSurname,
+        employee_id: valueName + ' ' + valueSurname,
+        role_id: optionsJob[Number(valueJob) - 1].job,
+        phone_number: valueTel,
+      });
+
+    let requestOptions1 = {
+          method: 'POST',
+          headers: headers,
+          body: employee,
+      };
+
+    fetch(ApiRoute + `/organizations/${organization}/employee`, requestOptions1)
   };
 
   return (
@@ -37,21 +53,6 @@ export const AddEmployees = () => {
         <div className="creat__text">Добавление нового сотрудника</div>
         <div className="employees-creat__form">
           <div className="subject-creat">
-            <div className="employees-creat__form-items">
-              <Select
-                placeholder="Выберете организацию"
-                onChange={(event: React.FormEvent<HTMLSelectElement>) =>
-                  setValue(event.currentTarget.value)
-                }
-                style={{
-                  background: "white",
-                }}
-              >
-                {options.map((option) => (
-                  <option value={option.value}>{option.label}</option>
-                ))}
-              </Select>
-            </div>
             <div className="employees-creat__form-items">
               <Select
                 placeholder="Выберете должность"

@@ -1,9 +1,9 @@
-import React, { FormEvent, useState } from "react";
+import React, { FormEvent, useEffect, useState } from "react";
 import { Header } from "../../components/header/Header";
 import { ButtonMain } from "../../components/button/ButtonMain";
 import { useParams } from "react-router-dom";
 import { Input, Select, Textarea } from "@chakra-ui/react";
-import { infoGroups, subjectInfo } from "../../const";
+import { infoGroups, ApiRoute, subjectInfo } from "../../const";
 import "./CreateSubject.css";
 
 type CreateSubjectPageProps = {};
@@ -12,6 +12,16 @@ const optionsAge = [
   { age: "0-3", value: 1 },
   { age: "3-6", value: 2 },
   { age: "6-9", value: 3 },
+];
+
+export const infoSubject = [
+  {
+    organization_id: "",
+    subject_id: "",
+    name: "",
+    description: "",
+    age_range: "",
+  },
 ];
 
 function CreateSubjectPage({}: CreateSubjectPageProps): JSX.Element {
@@ -40,18 +50,61 @@ function CreateSubjectPage({}: CreateSubjectPageProps): JSX.Element {
 
   const [isIndividual, setIsIndividual] = useState(false);
 
+  const [subjectsCur, setsubjectsCur] = useState(infoSubject);
+  useEffect(() => {
+    fetch(`${ApiRoute}/organizations/${organization}/subjects`, {
+      method: "GET",
+      headers: { Accept: "application/json" },
+    })
+      .then((response) => {
+        if (response.status === 200 || response.status === 201) {
+          return response;
+        }
+        throw new Error();
+      })
+      .then((response) => response.json())
+      .then((data) => {
+        setsubjectsCur(data);
+      });
+  }, []);
+
   function onSubmitForm() {
-    isIndividual
-      ? subjectInfo
-          .filter((obj) => {
-            return (
-              obj.organization === addSubject.organizationCur &&
-              obj.name === addSubject.name
-            );
-          })
-          .map((obj) => obj.topic.push(addSubject.topic[0]))
-      : subjectInfo.push(addSubject);
-    alert("GOOD!!!");
+    const headers = new Headers();
+    headers.append("Content-Type", "application/json");
+
+    if (isIndividual) {
+      console.log(isIndividual)
+      let subject = JSON.stringify({
+        organization_id: organization,
+        subject_id: valueName,
+        name: valueName,
+      });
+      console.log(subject);
+
+      let requestOptions = {
+        method: "POST",
+        headers: headers,
+        body: subject,
+      };
+
+      fetch(ApiRoute + `/organizations/${organization}/subjects`, requestOptions);
+    }
+
+    let presentation = JSON.stringify({
+      subject_id: valueName,
+      presentation_id: valueTopic,
+      name: valueTopic,
+      description: valueDescription,
+    });
+    console.log(presentation);
+
+    let requestOptions1 = {
+      method: "POST",
+      headers: headers,
+      body: presentation,
+    };
+
+    fetch(ApiRoute + `/subjects/${valueName}/presentations`, requestOptions1);
   }
 
   return (
@@ -88,7 +141,7 @@ function CreateSubjectPage({}: CreateSubjectPageProps): JSX.Element {
                     setName(event.currentTarget.value)
                   }
                 >
-                  {subjects.map((subject, index) => (
+                  {subjectsCur.map((subject, index) => (
                     <option value={index}>{subject.name}</option>
                   ))}
                 </Select>

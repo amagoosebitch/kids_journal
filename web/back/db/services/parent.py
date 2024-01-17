@@ -110,3 +110,41 @@ class ParentService:
         if not rows:
             return None
         return ParentModel.model_validate(rows[0]), ParentModel.model_validate(rows[1])
+
+    def get_by_phone(self, phone_number: str) -> ParentModel | None:
+        def callee(session: Any):
+            return session.transaction().execute(
+                """
+                PRAGMA TablePathPrefix("{db_prefix}");
+                SELECT *
+                FROM parent
+                WHERE phone_number = "{phone_number}"
+                """.format(
+                    db_prefix=self._db_prefix,
+                    phone_number=phone_number,
+                ),
+                commit_tx=True,
+            )
+
+        rows = self._pool.retry_operation_sync(callee)[0].rows
+        if not rows:
+            return None
+        return ParentModel.model_validate(rows[0])
+
+    def set_telegram_id(self, phone_number: str, tg_user_id: str) -> bool:
+        def callee(session: Any):
+            return session.transaction().execute(
+                """
+                PRAGMA TablePathPrefix("{db_prefix}");
+                UPDATE parent
+                SET tg_user_id = "{tg_user_id}"
+                WHERE phone_number = "{phone_number}"
+                """.format(
+                    db_prefix=self._db_prefix,
+                    phone_number=phone_number,
+                    tg_user_id=tg_user_id,
+                ),
+                commit_tx=True,
+            )
+
+        return True

@@ -1,7 +1,6 @@
-import React, { useState } from "react";
+import React, {useEffect, useState} from "react";
 import { ButtonMain } from "../button/ButtonMain";
-import { AppRoute, infoEmployees } from "../../const";
-import { Link } from "react-router-dom";
+import {ApiRoute, AppRoute, infoEmployees} from "../../const";
 
 import "./Employees.css";
 
@@ -9,12 +8,24 @@ export type EmployeesProps = {
   organization: string | undefined;
 };
 
-export const Employees = ({ organization }: EmployeesProps) => {
-  const currentEmployees = infoEmployees.filter((employee) => {
-    return organization ? employee.organization.includes(organization) : null;
-  });
+export const employeeInfo = [{
+    group_id: '',
+    organization_id: '',
+    name: '',
+    role_id:'',
+    phone_number: ''
+}]
 
-  const [employees, setEmployees] = useState(currentEmployees);
+export const Employees = ({ organization }: EmployeesProps) => {
+    const [employees, setEmployees] = useState(employeeInfo);
+    useEffect(() => {fetch(`${ApiRoute}/organizations/${organization}/employee`,
+          {method: 'GET', headers: {'Accept': 'application/json',}}).then(response => {
+          if (response.status === 200 || response.status === 201) {
+              return response;
+          }
+          throw new Error();
+      }).then(response => response.json()).then(data => {setEmployees(data)});
+      }, [])
 
   return (
     <>

@@ -33,4 +33,4 @@ create-tables:
 	YDB_ANONYMOUS_CREDENTIALS=1 $(VENV)/bin/python db/create_tables.py -e grpc://localhost:2136 -d local
 
 local-api-up:
-	YDB_ANONYMOUS_CREDENTIALS=1 $(VENV)/bin/python src/api.py
+	YDB_ANONYMOUS_CREDENTIALS=1 PYTHONPATH=. $(VENV)/bin/python src/api.py

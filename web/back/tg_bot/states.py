@@ -8,6 +8,7 @@ class EmployeeState(enum.Enum):
     WRITE_REPORT = 4
     SEND_PICTURE = 5
     ACCEPT_PRESENTATION = 6
+    MERGE = 7
 
 
 class ParentState(enum.Enum):

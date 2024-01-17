@@ -42,7 +42,7 @@ class PresentationService:
                 """.format(
                     db_prefix=self._db_prefix,
                     keys="subject_id, presentation_id",
-                    values=f"{subject_id}, {presentation_id}",
+                    values=f'"{subject_id}", "{presentation_id}"',
                 ),
                 commit_tx=True,
             ),
@@ -68,3 +68,35 @@ class PresentationService:
         if not rows:
             return None
         return PresentationModel.model_validate(rows[0])
+
+    def get_all_for_subject(self, subject_id: str) -> list[PresentationModel] | None:
+        def callee(session: Any):
+            return session.transaction().execute(
+                """
+                PRAGMA TablePathPrefix("{db_prefix}");
+                SELECT distinct p.presentation_id, p.name, p.description, p.photo_url, p.file_url
+                FROM presentation as p
+                JOIN subject_presentation as sp ON sp.presentation_id = p.presentation_id
+                WHERE sp.subject_id = "{subject_id}"
+                """.format(
+                    db_prefix=self._db_prefix,
+                    subject_id=subject_id,
+                ),
+                commit_tx=True,
+            )
+
+        rows = self._pool.retry_operation_sync(callee)[0].rows
+        if not rows:
+            return None
+        result = []
+        for row in rows:
+            result.append(
+                PresentationModel(
+                    presentation_id=row['p.presentation_id'],
+                    name=row['p.name'],
+                    description=row['p.description'],
+                    photo_url=row['p.photo_url'],
+                    file_url=row['p.file_url'],
+                )
+            )
+        return result

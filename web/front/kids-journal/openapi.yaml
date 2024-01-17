@@ -4,7 +4,10 @@ info:
     title: Wishes website
 x-yc-apigateway:
     service_account_id: ajec0sj89ke5nr84p7bs
-
+    cors:
+        origin: '*'
+        methods: '*'
+        allowedHeaders: '*'
 paths:
     /:
         get:

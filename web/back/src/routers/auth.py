@@ -100,3 +100,7 @@ async def login(
             "The request contains invalid data.",
             status_code=status.HTTP_400_BAD_REQUEST,
         )
+
+
+async def login():
+    pass

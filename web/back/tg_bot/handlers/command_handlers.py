@@ -32,9 +32,7 @@ logger = logging.getLogger(__name__)
 async def start_command_handler(
     update: Update, context: ContextTypes.DEFAULT_TYPE
 ) -> int:
-    await update.message.reply_text("kek")
-    # employee = get_employee_by_tg_id(tg_id=update.message.from_user.id)
-    employee = False
+    employee = get_employee_by_tg_id(tg_id=update.message.from_user.id)
     if employee:
         context.chat_data["first_name"] = "kek"
         await update.message.reply_text(
@@ -65,7 +63,6 @@ async def start_command_handler(
         return EmployeeState.CHOOSE_REPORT_TYPE.value
 
     parent = get_parent_by_tg_id(tg_id=update.message.from_user.id)
-    parent = False
     if parent:
         await update.message.reply_text(
             START_PARENT.format(first_name=parent.first_name)

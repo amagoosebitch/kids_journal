@@ -1,5 +1,4 @@
 import requests
-from cachetools.func import ttl_cache
 
 from models.child import ChildModel
 from models.employees import EmployeeModel
@@ -10,7 +9,6 @@ from tg_bot.api_client_settings import get_api_settings
 api_settings = get_api_settings()
 
 
-@ttl_cache(ttl=3600)
 def get_employee_by_tg_id(tg_id: int) -> EmployeeModel | None:
     response = requests.get(
         api_settings.get_employee_url(tg_id=tg_id),
@@ -20,7 +18,6 @@ def get_employee_by_tg_id(tg_id: int) -> EmployeeModel | None:
     return EmployeeModel.model_validate(response)
 
 
-@ttl_cache(ttl=3600)
 def get_children_by_group_id(group_id: str) -> list[ChildModel]:
     response = requests.get(
         api_settings.get_children_by_group_url(group_id=group_id),
@@ -28,7 +25,6 @@ def get_children_by_group_id(group_id: str) -> list[ChildModel]:
     return [ChildModel.model_validate(row) for row in response]
 
 
-@ttl_cache(ttl=3600)
 def get_parent_by_tg_id(tg_id: int) -> ParentModel | None:
     response = requests.get(
         api_settings.get_parent_url(tg_id=tg_id),
@@ -38,7 +34,6 @@ def get_parent_by_tg_id(tg_id: int) -> ParentModel | None:
     return ParentModel.model_validate(response)
 
 
-@ttl_cache(ttl=3600)
 def get_parents_by_child_id(child_id: str) -> tuple[ParentModel, ParentModel] | None:
     response = requests.get(
         api_settings.get_parents_by_child_url.format(child_id=child_id)
@@ -50,7 +45,6 @@ def get_parents_by_child_id(child_id: str) -> tuple[ParentModel, ParentModel] | 
     )
 
 
-@ttl_cache(ttl=3600)
 def get_group_by_id(group_id: str) -> GroupModel | None:
     response = requests.get(
         api_settings.get_group_url(group_id=group_id),
@@ -60,7 +54,6 @@ def get_group_by_id(group_id: str) -> GroupModel | None:
     return GroupModel.model_validate(response)
 
 
-@ttl_cache(ttl=3600)
 def try_merge_user_by_phone(
     phone: str, tg_id: int
 ) -> ParentModel | EmployeeModel | None:

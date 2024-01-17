@@ -6,7 +6,7 @@ from yarl import URL
 
 class ApiClientSettings(BaseSettings):
     url: str = "http://127.0.0.1:8080"
-    employee_endpoint: str = "employee"
+    employee_endpoint: str = "employee/{tg_id}"
     user_endpoint: str = "user_merge"
     parent_endpoint: str = "parents/{tg_id}"
     parents_by_child_endpoint: str = "parents/child/{child_id}"

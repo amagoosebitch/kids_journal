@@ -158,3 +158,23 @@ class EmployeeService:
                 )
             )
         return result
+
+    def get_get_organization_name_by_phone(self, phone_number: str) -> str | None:
+        def callee(session: Any):
+            return session.transaction().execute(
+                """
+                PRAGMA TablePathPrefix("{db_prefix}");
+                SELECT org.name
+                FROM employee as e
+                JOIN group_teacher as gt ON gt.teacher_id = e.employee_id
+                JOIN group as g ON g.group_id = gt.group_id
+                JOIN organization as org ON org.organization_id = g.organization_id
+                WHERE e.phone_number = "{phone_number}"
+                """.format(
+                    db_prefix=self._db_prefix,
+                    phone_number=phone_number,
+                ),
+                commit_tx=True,
+            )
+
+        return self._pool.retry_operation_sync(callee)[0].rows

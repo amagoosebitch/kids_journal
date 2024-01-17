@@ -24,5 +24,12 @@ async def get_presentation(
     subject_id: str,
     presentation_id: str,
     presentation_service: PresentationService = Depends(create_presentation_service),
-) -> OrganizationModel | None:
+) -> PresentationModel | None:
     return presentation_service.get_by_id(str(presentation_id))
+
+
+async def get_presentations(
+    subject_id: str,
+    presentation_service: PresentationService = Depends(create_presentation_service),
+) -> PresentationModel | None:
+    return presentation_service.get_all_for_subject(subject_id)

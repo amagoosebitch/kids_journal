@@ -18,7 +18,7 @@ async def try_merge_user_by_phone(
         if success:
             return UserModelResponse(role=UserRole.EMPLOYEE, data=employee)
         return unknown_user
-    parent = parent_service.get_by_phone(user.phone)
+    parent = parent_service.get_by_phone(user.phone_number)
     if parent is not None:
         success = parent_service.set_telegram_id(user.phone_number, user.tg_user_id)
         if success:

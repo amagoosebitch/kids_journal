@@ -34,7 +34,7 @@ async def start_command_handler(
 ) -> int:
     await update.message.reply_text("kek")
     # employee = get_employee_by_tg_id(tg_id=update.message.from_user.id)
-    employee = True
+    employee = False
     if employee:
         context.chat_data["first_name"] = "kek"
         await update.message.reply_text(
@@ -65,9 +65,10 @@ async def start_command_handler(
         return EmployeeState.CHOOSE_REPORT_TYPE.value
 
     parent = get_parent_by_tg_id(tg_id=update.message.from_user.id)
+    parent = False
     if parent:
         await update.message.reply_text(
-            START_PARENT.format(first_name=parent["first_name"])
+            START_PARENT.format(first_name=parent.first_name)
         )
         return ParentState.SUBSCRIBE.value
 
@@ -75,7 +76,7 @@ async def start_command_handler(
     reply_markup = ReplyKeyboardMarkup([[share_button]], one_time_keyboard=True)
     await update.message.reply_text(text=START_TRY_MERGE, reply_markup=reply_markup)
 
-    return ConversationHandler.END
+    return EmployeeState.MERGE.value
 
 
 async def stop_command_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):

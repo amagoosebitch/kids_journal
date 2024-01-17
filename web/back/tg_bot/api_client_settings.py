@@ -5,37 +5,31 @@ from yarl import URL
 
 
 class ApiClientSettings(BaseSettings):
-    url: str = "http://127.0.0.1:8000"
-    employee_endpoint: str = "employee/{tgId}"
+    url: str = "http://127.0.0.1:8080"
+    employee_endpoint: str = "employee"
     user_endpoint: str = "user_merge"
-    parent_endpoint: str = "parents/{tgId}"
-    parents_by_child_endpoint: str = "parents/child/{childId}"
-    group_endpoint: str = "groups/{groupId}"
-    children_by_group_endpoint: str = "child/{groupId}"
+    parent_endpoint: str = "parents/{tg_id}"
+    parents_by_child_endpoint: str = "parents/child/{child_id}"
+    group_endpoint: str = "groups/{group_id}"
+    children_by_group_endpoint: str = "child/{group_id}"
 
-    @property
-    def parents_by_child_url(self) -> URL:
-        return URL(self.url) / self.parents_by_child_endpoint
+    def get_parents_by_child_url(self, child_id: str) -> URL:
+        return URL(self.url) / self.parents_by_child_endpoint.format(child_id=child_id)
 
-    @property
-    def children_by_group_url(self) -> URL:
-        return URL(self.url) / self.children_by_group_endpoint
+    def get_children_by_group_url(self, group_id: str) -> URL:
+        return URL(self.url) / self.children_by_group_endpoint.format(group_id=group_id)
 
-    @property
-    def employee_url(self) -> URL:
-        return URL(self.url) / self.employee_endpoint
+    def get_employee_url(self, tg_id: int) -> URL:
+        return URL(self.url) / self.employee_endpoint.format(tg_id=tg_id)
 
-    @property
-    def user_url(self) -> URL:
+    def get_user_url(self) -> URL:
         return URL(self.url) / self.user_endpoint
 
-    @property
-    def parent_url(self) -> URL:
-        return URL(self.url) / self.parent_endpoint
+    def get_parent_url(self, tg_id: int) -> URL:
+        return URL(self.url) / self.parent_endpoint.format(tg_id=tg_id)
 
-    @property
-    def group_url(self) -> URL:
-        return URL(self.url) / self.group_endpoint
+    def get_group_url(self, group_id: str) -> URL:
+        return URL(self.url) / self.group_endpoint.format(group_id=group_id)
 
     class Config:
         env_prefix = "API_CLIENT_"

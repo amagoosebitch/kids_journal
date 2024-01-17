@@ -70,16 +70,6 @@ async def login(
     redirect_widget = get_telegram_redirect_widget(
         request=request, telegram_login=telegram_login
     )
-
-    if not query_params.model_dump().get("hash"):
-        return templates.TemplateResponse(
-            "login.html",
-            context={
-                "request": request,
-                "redirect_telegram_login_widget": redirect_widget,
-            },
-        )
-
     try:
         validated_data = validate_telegram_data(telegram_token, query_params)
         if not validated_data:

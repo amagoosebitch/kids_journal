@@ -78,7 +78,8 @@ class SubjectService:
             return session.transaction().execute(
                 """
                 PRAGMA TablePathPrefix("{db_prefix}");
-                SELECT distinct s.subject_id, s.name, s.description, s.age_range
+                SELECT distinct s.subject_id as subject_id, s.name as name,
+                s.description as description, s.age_range as age_range
                 FROM subject as s
                 JOIN group_subject as gs 
                 ON s.subject_id = gs.subject_id

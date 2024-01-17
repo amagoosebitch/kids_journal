@@ -59,6 +59,7 @@ export const InputPhone = ({ ...props }) => {
       style={{
         background: "white",
       }}
+      {...props}
     />
   );
 };

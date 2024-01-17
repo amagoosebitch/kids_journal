@@ -4,7 +4,7 @@ from pydantic import BaseModel
 
 
 class SubjectModel(BaseModel):
-    subject_id: UUID = uuid4()
+    subject_id: str = uuid4()
     name: str
     description: str | None = None
     # photo_url: str | None = None

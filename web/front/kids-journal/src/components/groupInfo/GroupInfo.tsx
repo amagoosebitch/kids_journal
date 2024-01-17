@@ -1,17 +1,48 @@
-import React, { MouseEventHandler, useState } from "react";
+import React, {MouseEventHandler, useEffect, useState} from "react";
 import { ButtonMain } from "../button/ButtonMain";
-import { AppRoute, infoGroups } from "../../const";
+import {ApiRoute, AppRoute, infoGroups} from "../../const";
 import { Link } from "react-router-dom";
 
 import "./GroupInfo.css";
 import { Modal } from "../modal/Modal";
+import {groupInfo} from "../groups/Groups";
 
 export type GroupInfoProps = {
   groupId: string | undefined;
   organization: string | undefined;
 };
 
+export const parent = {
+    parent_id:'',
+    name:'',
+    phone_number:'',
+}
+
+export const child = {
+    name:'',
+    birth_date:new Date(),
+    parent_1: {
+            name:'',
+            phone_number:'',
+    },
+    parent_2:{
+            name:'',
+            phone_number:'',
+    },
+}
+
+
+
 export const GroupInfo = ({ organization, groupId }: GroupInfoProps) => {
+  const [children, setChildren] = useState([child]);
+    useEffect(() => {fetch(`${ApiRoute}/${groupId}/child`,
+          {method: 'GET', headers: {'Accept': 'application/json',}}).then(response => {
+          if (response.status === 200 || response.status === 201) {
+              return response;
+          }
+          throw new Error();
+      }).then(response => response.json()).then(data => {setChildren(data)});
+      }, [])
   const [groups, setGroups] = useState(infoGroups);
 
   const currentGroup = groups.filter((group) => {
@@ -35,6 +66,8 @@ export const GroupInfo = ({ organization, groupId }: GroupInfoProps) => {
   const handleModalClose = () => {
     setIsOpenModal(false);
   };
+
+  console.log(children);
 
   return (
     <>
@@ -62,17 +95,15 @@ export const GroupInfo = ({ organization, groupId }: GroupInfoProps) => {
             </tr>
           </thead>
           <tbody>
-            {currentGroup.map((group) => (
-              <>
-                {group.group_child?.map((child) => (
+                {children?.map((child) => (
                   <>
                     <tr
                       className="children-item"
                       onClick={() =>
                         doDo(
                           child.name,
-                          child.parents[0].name,
-                          child.parents[0].phone_number,
+                          child.parent_1.name,
+                          child.parent_1.phone_number,
                         )
                       }
                     >
@@ -86,16 +117,14 @@ export const GroupInfo = ({ organization, groupId }: GroupInfoProps) => {
                           new Date(child.birth_date).getFullYear()}
                       </td>
                       <td className="children-item_number">
-                        {child.parents[0].phone_number}
+                        {child.parent_1.phone_number}
                       </td>
                       <td className="children-item_parent">
-                        {child.parents[0].name}
+                        {child.parent_1.name}
                       </td>
                     </tr>
                   </>
                 ))}
-              </>
-            ))}
           </tbody>
         </table>
       </div>

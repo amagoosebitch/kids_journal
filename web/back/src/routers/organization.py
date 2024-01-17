@@ -20,7 +20,7 @@ async def get_organizations(
 
 
 async def get_organization(
-    organization_id: UUID,
+    organization_id: str,
     organization_service=Depends(create_organization_service),
 ) -> OrganizationModel | None:
     return organization_service.get_by_id(organization_id)

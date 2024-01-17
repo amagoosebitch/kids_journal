@@ -9,7 +9,7 @@ from src.dependencies import create_group_service, create_subject_service
 
 
 async def create_subject(
-    organization_id: UUID,
+    organization_id: str,
     subject: SubjectModel,
     groups_service: GroupService = Depends(create_group_service),
     subject_service: SubjectService = Depends(create_subject_service),
@@ -23,15 +23,15 @@ async def create_subject(
 
 
 async def get_subject(
-    organization_id: UUID,
-    subject_id: UUID,
+    organization_id: str,
+    subject_id: str,
     subject_service: SubjectService = Depends(create_subject_service),
 ) -> SubjectModel:
-    return subject_service.get_by_id(str(subject_id))
+    return subject_service.get_by_id(subject_id)
 
 
 async def get_all_subjects_for_organization(
-    organization_id: UUID,
+    organization_id: str,
     subject_service: SubjectService = Depends(create_subject_service),
 ) -> list[SubjectModel]:
-    return subject_service.get_all_for_organization(str(organization_id))
+    return subject_service.get_all_for_organization(organization_id)

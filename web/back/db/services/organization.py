@@ -81,7 +81,7 @@ class OrganizationService:
                 continue
         return response
 
-    def get_by_id(self, organization_id: UUID) -> OrganizationModel:
+    def get_by_id(self, organization_id: str) -> OrganizationModel:
         def callee(session: Any):
             return session.transaction().execute(
                 """

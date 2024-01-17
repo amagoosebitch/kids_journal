@@ -2,7 +2,7 @@ from pydantic import BaseModel
 
 
 class TelegramAuth(BaseModel):
-    id: int
+    id: int | None = None
     first_name: str | None = None
     last_name: str | None = None
     username: str | None = None

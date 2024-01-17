@@ -1,9 +1,12 @@
+import logging
+from typing import Any
 from uuid import UUID
 
 from fastapi import Depends
+from fastapi.params import Path
 
 from db.services.groups import GroupModel, GroupService
-from models.child import ChildModel
+from models.child import ChildModel, ChildModelResponse
 from models.groups import GroupChildModel
 from src.dependencies import create_group_service
 
@@ -16,14 +19,14 @@ async def add_group_to_organization(
 
 
 async def get_groups_by_organization(
-    organization_id: UUID,
+    organization_id: str = Path(...),
     group_service: GroupService = Depends(create_group_service),
 ) -> list[GroupModel]:
     return group_service.get_all_for_organization(organization_id)
 
 
 async def get_group(
-    group_id: UUID,
+    group_id: str,
     group_service: GroupService = Depends(create_group_service),
 ) -> GroupModel | None:
     response = group_service.get_by_id(group_id)
@@ -40,6 +43,7 @@ async def add_children_to_group(
 
 
 async def get_children_by_group_id(
-    group_id: UUID, group_service: GroupService = Depends(create_group_service)
-) -> list[ChildModel]:
+    group_id: str,
+    group_service: GroupService = Depends(create_group_service)
+) -> list[ChildModelResponse]:
     return group_service.get_children_by_group_id(group_id)

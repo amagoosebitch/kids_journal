@@ -21,7 +21,7 @@ async def create_lesson(
 
 
 async def get_schedule_for_group(
-    group_id: UUID,
+    group_id: str,
     date: datetime,
     schedule_service=Depends(create_schedule_service),
 ) -> list[OrganizationModel]:

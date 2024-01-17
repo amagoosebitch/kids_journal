@@ -1,7 +1,7 @@
 import json
 from typing import Any
 
-from models.employees import EmployeeModel
+from models.employees import EmployeeModel, EmployeeResponse
 from models.role import Role
 
 
@@ -104,10 +104,7 @@ class EmployeeService:
                 commit_tx=True,
             )
 
-        rows = self._pool.retry_operation_sync(callee)[0].rows  # посмотреть так ли это
-        if not rows:
-            return False
-        return True
+        return self._pool.retry_operation_sync(callee)
 
     def link_to_groups(self, group_ids: list[str], teacher_id: str):
         def callee(session: Any):
@@ -126,3 +123,38 @@ class EmployeeService:
             )
 
         return self._pool.retry_operation_sync(callee)
+
+    def get_by_organization_id(self, organization_id: str) -> list[EmployeeResponse]:
+        def callee(session: Any):
+            return session.transaction().execute(
+                """
+                PRAGMA TablePathPrefix("{db_prefix}");
+                SELECT DISTINCT e.employee_id, e.name, e.phone_number, e.role_id
+                FROM employee as e
+                JOIN group_teacher as gt ON gt.teacher_id = e.employee_id
+                JOIN group as g ON g.group_id = gt.group_id
+                JOIN organization as org ON org.organization_id = g.organization_id
+                WHERE org.organization_id = "{organization_id}"
+                """.format(
+                    db_prefix=self._db_prefix,
+                    organization_id=organization_id,
+                ),
+                commit_tx=True,
+            )
+
+        rows = self._pool.retry_operation_sync(callee)[0].rows
+        if not rows:
+            return []
+        result = []
+
+        for row in rows:
+            row["role_id"] = Role[row["e.role_id"]].value
+            result.append(
+                EmployeeResponse(
+                    employee_id=row['e.employee_id'],
+                    name=row['e.name'],
+                    phone_number=row['e.phone_number'],
+                    role_id=row['role_id'],
+                )
+            )
+        return result

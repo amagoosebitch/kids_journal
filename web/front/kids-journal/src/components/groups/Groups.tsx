@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { AppRoute, infoGroups } from "../../const";
+import React, {useEffect, useState} from "react";
+import { AppRoute, ApiRoute, infoGroups } from "../../const";
 import { ButtonMain } from "../button/ButtonMain";
 import "./Groups.css";
 import { Link } from "react-router-dom";
@@ -8,17 +8,31 @@ export type GroupProps = {
   organization: string | undefined;
 };
 
-export const Groups = ({ organization }: GroupProps) => {
-  const currentGroup = infoGroups.filter((group) => {
-    return organization ? group.organization.includes(organization) : null;
-  });
+export const groupInfo = [{
+    group_id: '',
+    organization_id: '',
+    name: '',
+    age_range: ''
+}]
 
-  const [groups, setGroups] = useState(currentGroup);
+export const Groups = ({ organization }: GroupProps) => {
+    const [firstGroups, setFirstGroups] = useState(groupInfo);
+    useEffect(() => {fetch(`${ApiRoute}/organizations/${organization}/groups`,
+          {method: 'GET', headers: {'Accept': 'application/json',}}).then(response => {
+          if (response.status === 200 || response.status === 201) {
+              return response;
+          }
+          throw new Error();
+      }).then(response => response.json()).then(data => {setFirstGroups(data)});
+      }, [])
+
 
   const [value, setValue] = useState("");
-  const filteredGroups = groups.filter((group) => {
-    return group.carouselLabel.toLowerCase().includes(value.toLowerCase());
+  const filteredGroups = firstGroups.filter((group) => {
+    return group.name.toLowerCase().includes(value.toLowerCase());
   });
+
+  console.log(filteredGroups)
 
   return (
     <>
@@ -58,11 +72,11 @@ export const Groups = ({ organization }: GroupProps) => {
             {filteredGroups.map((group, index) => (
               <tr className="groups-item">
                 <td className="groups-item_label">
-                  <Link to={`/${organization}/${group.carouselLabel}`}>
-                    {group.carouselLabel}
+                  <Link to={`/${organization}/${group.name}`}>
+                    {group.name}
                   </Link>
                 </td>
-                <td className="groups-item_age">{group.carouselAge}</td>
+                <td className="groups-item_age">{group.age_range}</td>
               </tr>
             ))}
           </tbody>

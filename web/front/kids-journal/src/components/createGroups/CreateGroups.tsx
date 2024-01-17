@@ -3,11 +3,7 @@ import React, { useState } from "react";
 import {Button, CloseButton, Grid, GridItem, Input, Select} from "@chakra-ui/react";
 import { ButtonMain } from "../button/ButtonMain";
 import { InputPhone } from "../input-phone/InputPhone";
-
-const options = [
-  { label: "Садик №1", value: 1 },
-  { label: "Садик Вишенка", value: 2 },
-];
+import {ApiRoute} from "../../const";
 
 const optionsAge = [
   { age: "0-3", value: 1 },
@@ -15,8 +11,11 @@ const optionsAge = [
   { age: "6-9", value: 3 },
 ];
 
-export const CreateGroups = () => {
-  const [value, setValue] = useState("");
+type CreateGroupsProps = {
+  organization: string | undefined,
+}
+
+export const CreateGroups = ({ organization }: CreateGroupsProps) => {
   const [valueAge, setValueAge] = useState("");
   const [valueName, setNameInput] = useState("");
 
@@ -50,13 +49,24 @@ export const CreateGroups = () => {
   };
 
   const createGroup = () => {
-    const result = {
-      organization_id: value,
-      age: valueAge,
-      groupName: valueName,
-      listChildren: children,
+    const headers = new Headers();
+    headers.append("Content-Type", "application/json");
+    const body = JSON.stringify({
+      organization_id: organization,
+      age_range: optionsAge[Number(valueAge) - 1].age,
+      name: valueName,
+      group_id: valueName
+    });
+
+    console.log(body);
+
+    const requestOptions = {
+        method: 'POST',
+        headers: headers,
+        body: body,
     };
-    console.log(result);
+
+    fetch(ApiRoute + "/groups", requestOptions)
   };
 
   return (
@@ -64,21 +74,6 @@ export const CreateGroups = () => {
       <div className="create-group__text">Создание новой группы</div>
       <div className="create-group__form">
         <div className="create-group">
-          <div className="create-group__form-items">
-            <Select
-              placeholder="Выберете организацию"
-              onChange={(event: React.FormEvent<HTMLSelectElement>) =>
-                setValue(event.currentTarget.value)
-              }
-              style={{
-                background: "white",
-              }}
-            >
-              {options.map((option) => (
-                <option value={option.value}>{option.label}</option>
-              ))}
-            </Select>
-          </div>
           <div className="create-group__form-items">
             <Select
               placeholder="Выберете возраст детей"
@@ -111,7 +106,7 @@ export const CreateGroups = () => {
               className="create-group__button"
               height="44px"
               width="211px"
-              linkButton={""}
+              linkButton={`/${organization}/groups`}
               onClick={() => createGroup()}
             >
               Создать группу

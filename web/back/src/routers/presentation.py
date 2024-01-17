@@ -9,7 +9,7 @@ from src.dependencies import create_presentation_service
 
 
 async def create_presentation(
-    subject_id: UUID,
+    subject_id: str,
     presentation: PresentationModel,
     presentation_service: PresentationService = Depends(create_presentation_service),
 ) -> None:
@@ -20,9 +20,9 @@ async def create_presentation(
 
 
 async def get_presentation(
-    organization_id: UUID,
-    subject_id: UUID,
-    presentation_id: UUID,
+    organization_id: str,
+    subject_id: str,
+    presentation_id: str,
     presentation_service: PresentationService = Depends(create_presentation_service),
 ) -> OrganizationModel | None:
     return presentation_service.get_by_id(str(presentation_id))

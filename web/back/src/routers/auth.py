@@ -3,10 +3,10 @@ from pathlib import Path
 import jwt
 from fastapi import Depends, Request
 from starlette import status
-from starlette.responses import HTMLResponse, RedirectResponse
+from starlette.responses import HTMLResponse, RedirectResponse, JSONResponse
 from starlette.templating import Jinja2Templates
 
-from auth.settings import JWTSettings
+from auth.settings import JWTSettings, create_redirect_settings, RedirectSettings
 from db.services.employee import EmployeeService
 from dependencies import create_employee_service, jwt_settings
 from models.employees import EmployeeModel
@@ -31,22 +31,20 @@ def _create_jwt_token(
     if employee is None:
         return None
     token = jwt.encode(
-        {"user_id": employee.telegram_id, "role": employee.role},
+        {"user_id": employee.tg_user_id, "role": employee.role_id.name},
         jwt_settings.secret_key,
         algorithm=jwt_settings.algorithm,
     )
     return token
 
 
-def _get_redirect_response(jwt_token: str | None) -> RedirectResponse:
+def _get_cookie_response(jwt_token: str | None, redirect_settings: RedirectSettings) -> JSONResponse:
     if jwt_token is None:
-        return RedirectResponse(url="/")
-    response = RedirectResponse(url="/main")
-    response.set_cookie(key="Authorization", value=jwt_token)
-    return response
+        return JSONResponse(content={"message": "auth_failed"})
+    return JSONResponse(content={"Authorization": jwt_token})
 
 
-def get_telegram_redirect_widget(request: Request, telegram_login: str):
+def get_telegram_redirect_widget(telegram_login: str, redirect_settings: RedirectSettings):
     login_widget = TelegramLoginWidget(
         telegram_login=telegram_login,
         size=WidgetSize.LARGE,
@@ -54,7 +52,7 @@ def get_telegram_redirect_widget(request: Request, telegram_login: str):
         corner_radius=0,
     )
 
-    redirect_url = str(request.url_for("login"))
+    redirect_url = str(redirect_settings.main_url)
     return login_widget.redirect_telegram_login_widget(redirect_url=redirect_url)
 
 
@@ -64,11 +62,12 @@ async def login(
     config: BotConfig = Depends(load_bot_config),
     jwt_settings: JWTSettings = Depends(jwt_settings),
     employee_service: EmployeeService = Depends(create_employee_service),
+    redirect_settings: RedirectSettings = Depends(create_redirect_settings),
 ):
     telegram_token = config.telegram_token
     telegram_login = config.telegram_login
     redirect_widget = get_telegram_redirect_widget(
-        request=request, telegram_login=telegram_login
+        telegram_login=telegram_login, redirect_settings=redirect_settings
     )
 
     if not query_params.model_dump().get("hash"):
@@ -89,7 +88,7 @@ async def login(
             jwt_settings=jwt_settings,
             employee=employee,
         )
-        return _get_redirect_response(token)
+        return _get_cookie_response(token, redirect_settings)
     except TelegramDataIsOutdated:
         return HTMLResponse(
             "The authentication data is expired.",

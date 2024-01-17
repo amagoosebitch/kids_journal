@@ -70,6 +70,10 @@ function App() {
               path={AppRoute.CreateOrganization}
               element={<CreateOrganization />}
           />
+          <Route
+              path={AppRoute.SignIn}
+              element={<CreateOrganization />}
+          />
         </Routes>
       </Router>
     </div>

@@ -6,10 +6,11 @@ import { useParams } from "react-router-dom";
 type CreateGroupsPageProps = {};
 
 function CreateGroupsPage({}: CreateGroupsPageProps): JSX.Element {
-  return (
+  const { organization} = useParams();
+    return (
     <div>
       <Header />
-      <CreateGroups />
+      <CreateGroups organization={organization}/>
     </div>
   );
 }

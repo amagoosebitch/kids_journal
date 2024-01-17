@@ -8,7 +8,7 @@ from src.dependencies import create_child_service
 
 async def create_child(
     child: ChildModel,
-    group_id: UUID,
+    group_id: str,
     child_service=Depends(create_child_service),
 ) -> None:
     child_service.create_child(child)

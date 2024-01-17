@@ -10,7 +10,7 @@ function CreateEmployeesPage({}: CreateEmployeesPageProps): JSX.Element {
   return (
     <div>
       <Header />
-      <AddEmployees />
+      <AddEmployees organization={organization}/>
     </div>
   );
 }

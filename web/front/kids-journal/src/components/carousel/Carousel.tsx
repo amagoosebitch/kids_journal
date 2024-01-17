@@ -3,9 +3,9 @@ import "slick-carousel/slick/slick-theme.css";
 import "./Carousel.css";
 
 import Slider from "react-slick";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
-import { infoGroups } from "../../const";
+import { infoGroups, ApiRoute } from "../../const";
 import { Link } from "react-router-dom";
 import { ModalActive } from "../modalActive/ModalActive";
 
@@ -14,45 +14,116 @@ export type CarouselProps = {
   currentDate: Date;
 };
 
+// export type ActionProps = {
+//   carouselActionData: string;
+//   carouselActionTitle: string;
+//   subject: string;
+//   carouselActionCategory: boolean;
+//   children: {
+//     name: string;
+//   }[];
+//   description: string;
+// };
+
 export type ActionProps = {
-  carouselActionData: string;
-  carouselActionTitle: string;
-  subject: string;
-  carouselActionCategory: boolean;
-  children: {
-    name: string;
-  }[];
+  group_id: string;
+  subject_id: string;
+  start_lesson: Date;
+  presentation_id: string;
+  child_id: [],
   description: string;
 };
 
-const action1 = {
-  carouselActionData: "",
-  carouselActionTitle: "",
-  subject: "",
-  carouselActionCategory: true,
-  children: [
-    {
-      name: "",
-    },
-  ],
-  description: "",
-};
+// const action1 = {
+//   carouselActionData: "",
+//   carouselActionTitle: "",
+//   subject: "",
+//   carouselActionCategory: true,
+//   children: [
+//     {
+//       name: "",
+//     },
+//   ],
+//   description: "",
+// };
+
+export const groupInfo = [
+  {
+    group_id: "",
+    organization_id: "",
+    name: "",
+    age_range: "",
+  },
+];
+
+export const scheduleInfo = [
+  {
+    group_id: "",
+    subject_id: "",
+    start_lesson: new Date(),
+    presentation_id: "",
+    child_id: [],
+    description: "",
+  },
+];
 
 export const Carousel = ({ organization, currentDate }: CarouselProps) => {
-  const [carousels, setCarousels] = useState(infoGroups);
+  // const [carousels, setCarousels] = useState(infoGroups);
+  //
+  // const currentCarousel = carousels.filter((carousel) => {
+  //   if (organization !== undefined)
+  //     return carousel.organization
+  //       .toLowerCase()
+  //       .includes(organization.toLowerCase());
+  //   return {};
+  // });
 
-  const currentCarousel = carousels.filter((carousel) => {
-    if (organization !== undefined)
-      return carousel.organization
-        .toLowerCase()
-        .includes(organization.toLowerCase());
-    return {};
-  });
+  const [firstGroups, setFirstGroups] = useState(groupInfo);
+  useEffect(() => {
+    fetch(`${ApiRoute}/organizations/${organization}/groups`, {
+      method: "GET",
+      headers: { Accept: "application/json" },
+    })
+      .then((response) => {
+        if (response.status === 200 || response.status === 201) {
+          return response;
+        }
+        throw new Error();
+      })
+      .then((response) => response.json())
+      .then((data) => {
+        setFirstGroups(data);
+      });
+  }, []);
+
+  const [subjects, setSubjects] = useState(scheduleInfo);
+
+  const currentAction = (group_id: string) => {
+    useEffect(() => {
+      fetch(`${ApiRoute}/lessons/${group_id}`, {
+        method: "GET",
+        headers: { Accept: "application/json" },
+      })
+        .then((response) => {
+          if (response.status === 200 || response.status === 201) {
+            return response;
+          }
+          throw new Error();
+        })
+        .then((response) => response.json())
+        .then((data) => {
+          setSubjects(data);
+        });
+    }, []);
+    return subjects;
+  };
+
+  console.log(firstGroups);
 
   let slidesToShowCurrent = 3;
 
-  if (currentCarousel.length === 1) slidesToShowCurrent = 1;
-  if (currentCarousel.length === 2) slidesToShowCurrent = 2;
+  if (firstGroups.length === 1) slidesToShowCurrent = 1;
+  if (firstGroups.length === 2) slidesToShowCurrent = 2;
 
   let settings = {
     dots: true,
@@ -94,13 +165,13 @@ export const Carousel = ({ organization, currentDate }: CarouselProps) => {
 
   const [isOpenModal, setIsOpenModal] = useState(false);
 
-  const [currentActivity, setCurrentActivity] = useState(action1);
+  const [currentActivity, setCurrentActivity] = useState(scheduleInfo);
   const [currentGroup, setCurrentGroup] = useState("");
 
-  const doDo = (action: ActionProps, group: string) => {
-    setCurrentActivity(action);
-    setCurrentGroup(group);
-  };
+  // const doDo = (action: ActionProps, group: string) => {
+  //   setCurrentActivity(action);
+  //   setCurrentGroup(group);
+  // };
 
   const handleModalOpen = () => {
     setIsOpenModal(true);
@@ -114,44 +185,39 @@ export const Carousel = ({ organization, currentDate }: CarouselProps) => {
     <>
       <div className="carousel">
         <Slider {...settings}>
-          {currentCarousel.map((carousel) => (
+          {firstGroups.map((carousel) => (
             <div className="carousel_box">
               <div className="carousel_box-title">
-                <div className="carousel_box-name">
-                  Группа {carousel.carouselLabel}
-                </div>
-                <div className="carousel_box-age">{carousel.carouselAge}</div>
+                <div className="carousel_box-name">Группа {carousel.name}</div>
+                <div className="carousel_box-age">{carousel.age_range}</div>
               </div>
               <div className="carousel_box-content">
-                {carousel.carouselAction
+                {currentAction(carousel.name)
                   .filter((action) => {
                     return (
-                      new Date(
-                        action.carouselActionData.split("T")[0],
-                      ).toLocaleDateString() === formatData
+                      action.start_lesson.toLocaleDateString() === formatData
                     );
                   })
                   .map((action) => (
                     <Link to={""} onClick={handleModalOpen}>
                       <div
-                        onClick={() => doDo(action, carousel.carouselLabel)}
                         className={`carousel_box-action ${
-                          action.carouselActionCategory ? "isOrange" : "isGreen"
+                          action.child_id ? "isOrange" : "isGreen"
                         }`}
                       >
                         <div className="carousel_action-info">
                           <div className="carousel_action-topic">
-                            {action.carouselActionTitle}
+                            {action.presentation_id}
                           </div>
                           <div className="carousel_action-time">
-                            {action.carouselActionData.split("T")[1]}
+                            {action.start_lesson.toLocaleDateString()}
                           </div>
                         </div>
                         <div className="carousel_action-children">
-                          {action.carouselActionCategory &&
-                            `Дети: ${action.children[0].name} ${
-                              action.children.length > 1
-                                ? `и еще ${action.children.length - 1}`
+                          {action.child_id &&
+                            `Дети: ${action.child_id[0]} ${
+                              action.child_id.length > 1
+                                ? `и еще ${action.child_id.length - 1}`
                                 : ""
                             }`}
                         </div>
@@ -163,12 +229,12 @@ export const Carousel = ({ organization, currentDate }: CarouselProps) => {
           ))}
         </Slider>
       </div>
-      <ModalActive
-        isOpen={isOpenModal}
-        onCloseModal={handleModalClose}
-        currentActivity={currentActivity}
-        currentGroup={currentGroup}
-      />
+      {/*<ModalActive*/}
+      {/*  isOpen={isOpenModal}*/}
+      {/*  onCloseModal={handleModalClose}*/}
+      {/*  currentActivity={currentActivity}*/}
+      {/*  currentGroup={currentGroup}*/}
+      {/*/>*/}
     </>
   );
 };

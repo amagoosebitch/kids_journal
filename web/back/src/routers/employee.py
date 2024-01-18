@@ -17,7 +17,8 @@ def create_employee(
         str(group.group_id)
         for group in groups_service.get_all_for_organization(organization_id)
     ]
-    employee_service.link_to_groups(group_ids, str(employee.employee_id))
+    if group_ids:
+        employee_service.link_to_groups(group_ids, str(employee.employee_id))
 
 
 async def get_employee_by_tg_id(

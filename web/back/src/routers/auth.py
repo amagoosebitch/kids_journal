@@ -40,7 +40,7 @@ def _create_jwt_token(
 
 def _get_redirect_response(jwt_token: str | None, redirect_settings: RedirectSettings) -> RedirectResponse:
     if jwt_token is None:
-        return RedirectResponse(url=redirect_settings.url, status_code=status.HTTP_304_NOT_MODIFIED)
+        return RedirectResponse(url=redirect_settings.main_url, status_code=status.HTTP_304_NOT_MODIFIED)
     response = RedirectResponse(url=redirect_settings.main_url + f'?cookie={jwt_token}', status_code=status.HTTP_302_FOUND)
     return response
 

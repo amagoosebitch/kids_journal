@@ -19,9 +19,9 @@ class PresentationService:
                     (
                         "{presentation_id}",
                         "{name}",
+                        "{description}",
                         "{file_url}",
-                        "{photo_url}",
-                        "{description}"
+                        "{photo_url}"
                     );
                 """.format(
                     db_prefix=self._db_prefix,

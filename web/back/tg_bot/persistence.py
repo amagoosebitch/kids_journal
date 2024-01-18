@@ -33,7 +33,7 @@ class S3PicklePersistence(PicklePersistence):
             self.bot_data = data.get("bot_data", self.context_types.bot_data())
             self.callback_data = data.get("callback_data", {})
             self.conversations = data["conversations"]
-        except (ClientError, KeyError) as e:
+        except (ClientError, KeyError, ConnectionRefusedError) as e:
             print(e)
             print("error occured, init with empty fields")
             self.conversations = {}

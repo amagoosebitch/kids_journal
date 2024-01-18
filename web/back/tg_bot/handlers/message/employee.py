@@ -64,11 +64,7 @@ async def handle_single_child_report(
 ):
     if "group_page" not in context.chat_data:
         context.chat_data["group_page"] = 0
-    phone = get_employee_by_tg_id(
-        tg_id=update.callback_query.from_user.id
-    ).phone_number
-    organization_id = get_employee_organization(phone=phone).organization_id
-    group_ids = get_groups_by_organization(organization=organization_id)
+    group_ids = get_groups_by_organization(organization="Добрый Мир")
 
     group_page = context.chat_data["group_page"]
     if group_page > len(group_ids):

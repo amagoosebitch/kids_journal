@@ -81,7 +81,7 @@ export const CreateGroups = ({ organization }: CreateGroupsProps) => {
         <div className="create-group">
           <div className="create-group__form-items">
             <Select
-              placeholder="Выберете возраст детей"
+              placeholder="Выберите возраст детей"
               onChange={(event: React.FormEvent<HTMLSelectElement>) =>
                 setValueAge(event.currentTarget.value)
               }

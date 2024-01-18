@@ -3,7 +3,7 @@ import { Header } from "../../components/header/Header";
 import { ButtonMain } from "../../components/button/ButtonMain";
 import { useParams } from "react-router-dom";
 import { Input, Select, Textarea } from "@chakra-ui/react";
-import { infoGroups, ApiRoute, subjectInfo } from "../../const";
+import { infoGroups, ApiRoute, AppRoute, subjectInfo } from "../../const";
 import "./CreateSubject.css";
 
 type CreateSubjectPageProps = {};
@@ -27,26 +27,9 @@ export const infoSubject = [
 function CreateSubjectPage({}: CreateSubjectPageProps): JSX.Element {
   const { organization } = useParams();
 
-  const subjects = subjectInfo.filter((obj) => {
-    return obj.organization === organization;
-  });
-
-  const [valueName, setName] = useState(subjects[0]?.name);
   const [valueTopic, setValueTopic] = useState("");
   const [valueAge, setValueAge] = useState("");
   const [valueDescription, setValueDescription] = useState("");
-
-  const addSubject = {
-    organizationCur: organization,
-    name: valueName,
-    topic: [
-      {
-        name: valueTopic,
-        age: valueAge,
-        description: valueDescription,
-      },
-    ],
-  };
 
   const [isIndividual, setIsIndividual] = useState(false);
 
@@ -68,6 +51,8 @@ function CreateSubjectPage({}: CreateSubjectPageProps): JSX.Element {
       });
   }, []);
 
+  const [valueName, setName] = useState(subjectsCur[0].name);
+
   function onSubmitForm() {
     const headers = new Headers();
     headers.append("Content-Type", "application/json");
@@ -75,7 +60,6 @@ function CreateSubjectPage({}: CreateSubjectPageProps): JSX.Element {
     let nameSubjectForm = !isIndividual
       ? subjectsCur[Number(valueName)].name
       : valueName;
-    console.log(valueAge, 1111);
 
     if (isIndividual) {
       let subject = JSON.stringify({
@@ -204,7 +188,7 @@ function CreateSubjectPage({}: CreateSubjectPageProps): JSX.Element {
                 className="creat-subject__button"
                 height="44px"
                 width="211px"
-                linkButton={""}
+                linkButton={`/${organization}${AppRoute.Subject}`}
                 onClick={onSubmitForm}
               >
                 Создать предмет/тему

@@ -3,7 +3,7 @@ import { Input, Select } from "@chakra-ui/react";
 import { ButtonMain } from "../button/ButtonMain";
 import "./AddEmployees.css";
 import { InputPhone } from "../input-phone/InputPhone";
-import { ApiRoute } from "../../const";
+import { ApiRoute, AppRoute } from "../../const";
 
 const options = [
   { label: "Садик №1", value: 1 },
@@ -58,7 +58,7 @@ export const AddEmployees = ({ organization }: addEmployeeProps) => {
           <div className="subject-creat">
             <div className="employees-creat__form-items">
               <Select
-                placeholder="Выберете должность"
+                placeholder="Выберите должность"
                 onChange={(event: React.FormEvent<HTMLSelectElement>) =>
                   setValueJob(event.currentTarget.value)
                 }
@@ -107,8 +107,8 @@ export const AddEmployees = ({ organization }: addEmployeeProps) => {
                 className="creat__form-button"
                 height="44px"
                 width="211px"
-                linkButton={""}
                 onClick={() => addEmployees()}
+                linkButton={`/${organization}${AppRoute.Employees}`}
               >
                 Добавить сотрудника
               </ButtonMain>

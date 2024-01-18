@@ -105,6 +105,7 @@ export function UserForm({
       <label>Группа</label>
       <Select
         required
+        placeholder="Выберите группу"
         onClick={(e) => setCurGroup(handleGroupsName(e.currentTarget.value))}
         onChange={(e) =>
           updateFields({ group: handleGroupsName(e.target.value) })
@@ -113,8 +114,8 @@ export function UserForm({
           background: "white",
         }}
       >
-        {groups.map((group, index) => (
-          <option value={index}>{group.name}</option>
+        {groups.map((groupCur, index) => (
+          <option value={index}>{groupCur.name}</option>
         ))}
       </Select>
       <label>Дата</label>

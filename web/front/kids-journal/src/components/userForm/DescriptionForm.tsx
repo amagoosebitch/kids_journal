@@ -94,6 +94,7 @@ export function DescriptionForm({
       <label>Предмет</label>
       <Select
         required
+        placeholder="Выберите предмет"
         onClick={(e) => setCurSubject(handleSubjectName(e.currentTarget.value))}
         onChange={(e) =>
           updateFields({ subject: handleSubjectName(e.target.value) })
@@ -109,6 +110,7 @@ export function DescriptionForm({
       <label>Презентация</label>
       <Select
         required
+        placeholder="Выберите презентацию"
         onChange={(e) =>
           updateFields({ topic: handleTopicName(e.target.value) })
         }

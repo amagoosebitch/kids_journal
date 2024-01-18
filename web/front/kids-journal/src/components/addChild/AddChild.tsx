@@ -1,10 +1,17 @@
 import React, { useState } from "react";
-import { Button, CloseButton, Grid, GridItem, Input } from "@chakra-ui/react";
+import {
+  Button,
+  CloseButton,
+  Grid,
+  GridItem,
+  Input,
+  FormControl,
+} from "@chakra-ui/react";
 import { useParams } from "react-router-dom";
 import "./AddChild.css";
 import { ButtonMain } from "../button/ButtonMain";
-import {ApiRoute} from "../../const";
-import {InputPhone} from "../input-phone/InputPhone";
+import { ApiRoute } from "../../const";
+import { InputPhone } from "../input-phone/InputPhone";
 
 type Child = {
   firstNameChild: string;
@@ -21,10 +28,9 @@ type Child = {
 type addChildrenProps = {
   organization: string | undefined;
   groupId: string | undefined;
-}
+};
 
-export const AddChild = ({organization, groupId}: addChildrenProps) => {
-
+export const AddChild = ({ organization, groupId }: addChildrenProps) => {
   const [isButton, setIsButton] = useState(false);
 
   const childTemplate = {
@@ -85,12 +91,12 @@ export const AddChild = ({organization, groupId}: addChildrenProps) => {
       });
 
       let requestOptions1 = {
-          method: 'POST',
-          headers: headers,
-          body: body_parent_1,
+        method: "POST",
+        headers: headers,
+        body: body_parent_1,
       };
 
-      fetch(ApiRoute + "/parents", requestOptions1)
+      fetch(ApiRoute + "/parents", requestOptions1);
 
       let body_parent_2 = JSON.stringify({
         first_name: child.firstNameParentTWO,
@@ -101,12 +107,12 @@ export const AddChild = ({organization, groupId}: addChildrenProps) => {
       });
 
       let requestOptions2 = {
-          method: 'POST',
-          headers: headers,
-          body: body_parent_2,
+        method: "POST",
+        headers: headers,
+        body: body_parent_2,
       };
 
-      fetch(ApiRoute + "/parents", requestOptions2)
+      fetch(ApiRoute + "/parents", requestOptions2);
 
       let body_child = JSON.stringify({
         first_name: child.firstNameChild,
@@ -115,19 +121,17 @@ export const AddChild = ({organization, groupId}: addChildrenProps) => {
         child_id: child.firstNameChild + " " + child.surnameChild,
         birth_date: new Date(child.dataChild),
         parent_1_id: child.firstNameParent + " " + child.surnameParent,
-        parent_2_id: child.firstNameParentTWO + " " + child.surnameParentTWO
+        parent_2_id: child.firstNameParentTWO + " " + child.surnameParentTWO,
       });
 
       let requestOptions3 = {
-          method: 'POST',
-          headers: headers,
-          body: body_child,
+        method: "POST",
+        headers: headers,
+        body: body_child,
       };
 
-      fetch(ApiRoute + `/${groupId}/child`, requestOptions3)
-
+      fetch(ApiRoute + `/${groupId}/child`, requestOptions3);
     }
-
   };
 
   return (
@@ -150,6 +154,7 @@ export const AddChild = ({organization, groupId}: addChildrenProps) => {
                     </GridItem>
                     <GridItem colSpan={2} w="100%" h="10">
                       <Input
+                        isRequired
                         placeholder="Имя ребенка"
                         size="md"
                         name="firstNameChild"
@@ -159,6 +164,7 @@ export const AddChild = ({organization, groupId}: addChildrenProps) => {
                     </GridItem>
                     <GridItem colSpan={2} w="100%" h="10">
                       <Input
+                        isRequired
                         placeholder="Фамилия ребенка"
                         size="md"
                         name="surnameChild"
@@ -168,6 +174,7 @@ export const AddChild = ({organization, groupId}: addChildrenProps) => {
                     </GridItem>
                     <GridItem colSpan={2} w="100%" h="10">
                       <Input
+                        isRequired
                         placeholder="Select Date"
                         size="md"
                         type="date"
@@ -179,6 +186,7 @@ export const AddChild = ({organization, groupId}: addChildrenProps) => {
 
                     <GridItem colSpan={2} w="100%" h="10">
                       <Input
+                        isRequired
                         placeholder="Имя родителя"
                         size="md"
                         name="firstNameParent"
@@ -187,21 +195,26 @@ export const AddChild = ({organization, groupId}: addChildrenProps) => {
                       />
                     </GridItem>
                     <GridItem colSpan={2} w="100%" h="10">
-                      <Input
-                        placeholder="Фамилия родителя"
-                        size="md"
-                        name="surnameParent"
-                        onChange={(e) => onChangeChild(e, index)}
-                        value={child.surnameParent}
-                      />
+                      <FormControl isRequired>
+                        <Input
+                          placeholder="Фамилия родителя"
+                          size="md"
+                          name="surnameParent"
+                          onChange={(e) => onChangeChild(e, index)}
+                          value={child.surnameParent}
+                        />
+                      </FormControl>
                     </GridItem>
                     <GridItem colSpan={2} w="100%" h="10">
                       <InputPhone
+                        isRequired
                         placeholder="Номер телефона родителя"
                         size="md"
                         type="tel"
                         name="telParent"
-                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => onChangeChild(e, index)}
+                        onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                          onChangeChild(e, index)
+                        }
                         value={child.telParent}
                       />
                     </GridItem>
@@ -230,7 +243,9 @@ export const AddChild = ({organization, groupId}: addChildrenProps) => {
                         size="md"
                         type="tel"
                         name="telParentTWO"
-                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => onChangeChild(e, index)}
+                        onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                          onChangeChild(e, index)
+                        }
                         value={child.telParentTWO}
                       />
                     </GridItem>

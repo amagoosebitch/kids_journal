@@ -5,9 +5,21 @@ import { default as ReactModal } from "react-responsive-modal";
 import "react-responsive-modal/styles.css";
 import "./ModalActive.css";
 import { CloseButton } from "@chakra-ui/react";
-import { ActionProps } from "../carousel/Carousel";
 
 type IModalSize = "medium";
+
+type lessonInfoProps = [
+  {
+    schedule_id: string;
+    subject_name: string;
+    presentation_id: string;
+    group_name: string;
+    child_names: string[];
+    date_day: string;
+    description: string;
+    is_for_child: boolean;
+  },
+];
 
 type TModalProps = {
   topic?: string;
@@ -16,16 +28,7 @@ type TModalProps = {
   dataTestId?: string;
   isOpen: boolean;
   currentGroup: string;
-  currentActivity: {
-    carouselActionData: string;
-    subject: string;
-    carouselActionTitle: string;
-    carouselActionCategory: boolean;
-    children: {
-      name: string;
-    }[];
-    description: string;
-  };
+  currentActivity: lessonInfoProps;
   onCloseModal: () => void;
   size?: IModalSize;
 };
@@ -83,49 +86,47 @@ export const ModalActive = ({
           <tr className="Modal_content-item">
             <td className="la Modal_content-topic">Предмет</td>
             <td className="Modal_content-information">
-              {currentActivity.subject}
+              {currentActivity[0].subject_name}
             </td>
           </tr>
           <tr className="Modal_content-item">
             <td className="la Modal_content-topic">Тема</td>
             <td className="Modal_content-information">
-              {currentActivity.carouselActionTitle}
+              {currentActivity[0].presentation_id}
             </td>
           </tr>
           <tr className="Modal_content-item">
             <td className="la Modal_content-date">Дата</td>
             <td className="Modal_content-information">
-              {new Date(
-                currentActivity.carouselActionData,
-              ).toLocaleDateString()}
+              {currentActivity[0].date_day.split('T')[0]}
             </td>
           </tr>
           <tr className="Modal_content-item">
             <td className="la Modal_content-time">Время</td>
             <td className="Modal_content-information">
-              {currentActivity.carouselActionData.split("T")[1]}
+              {currentActivity[0].date_day.split('T')[1]}
             </td>
           </tr>
           <tr className="Modal_content-item">
             <td className="la Modal_content-description">Описание</td>
             <td className="Modal_content-information">
-              {currentActivity.description}
+              {currentActivity[0].description}
             </td>
           </tr>
           <tr className="Modal_content-item">
-            {currentActivity.carouselActionCategory ? (
+            {currentActivity[0].is_for_child ? (
               <div>Индивидуальное задание</div>
             ) : (
               <div>Задание для всей группы</div>
             )}
           </tr>
           <tr className="Modal_content-item">
-            {currentActivity.carouselActionCategory && (
+            {currentActivity[0].is_for_child && (
               <>
                 <td className="la Modal_content-children">Дети</td>
                 <td className="Modal_content-information">
-                  {currentActivity.children.map((child) => (
-                    <tr>{child.name}</tr>
+                  {currentActivity[0].child_names.map((child) => (
+                    <tr>{child}</tr>
                   ))}
                 </td>
               </>

@@ -12,8 +12,12 @@ export type GroupInfoProps = {
   organization: string | undefined;
 };
 
+export type ParentProps = {
+  name: string;
+  phone_number: string;
+};
+
 export const parent = {
-  parent_id: "",
   name: "",
   phone_number: "",
 };
@@ -59,10 +63,12 @@ export const GroupInfo = ({ organization, groupId }: GroupInfoProps) => {
 
   const [isOpenModal, setIsOpenModal] = useState(false);
 
-  const [currChild, setCurrChild] = useState([""]);
+  const [currChild, setCurrChild] = useState<
+    [string, ParentProps, ParentProps]
+  >(["", parent, parent]);
 
-  const doDo = (name: string, parent: string, number: string) => {
-    setCurrChild([name, parent, number]);
+  const doDo = (name: string, parent_1: ParentProps, parent_2: ParentProps) => {
+    setCurrChild([name, parent_1, parent_2]);
   };
 
   const handleModalOpen = () => {
@@ -106,11 +112,7 @@ export const GroupInfo = ({ organization, groupId }: GroupInfoProps) => {
                 <tr
                   className="children-item"
                   onClick={() =>
-                    doDo(
-                      child.name,
-                      child.parent_1.name,
-                      child.parent_1.phone_number,
-                    )
+                    doDo(child.name, child.parent_1, child.parent_2)
                   }
                 >
                   <td className="children-item_name">

@@ -5,7 +5,8 @@ import { DescriptionForm } from "../../components/userForm/DescriptionForm";
 import React, { FormEvent, useState } from "react";
 import { Header } from "../../components/header/Header";
 import "./CreateActivityPage.css";
-import { ApiRoute } from "../../const";
+import { ApiRoute, AppRoute } from "../../const";
+import { useNavigate, useParams } from "react-router-dom";
 
 type FormData = {
   group: string;
@@ -28,6 +29,7 @@ const INITIAL_DATA: FormData = {
 };
 
 export default function CreateActivityPage() {
+  const { organization } = useParams();
   const [data, setData] = useState(INITIAL_DATA);
   function updateFields(fields: Partial<FormData>) {
     setData((prev) => {
@@ -41,12 +43,16 @@ export default function CreateActivityPage() {
       <DescriptionForm {...data} updateFields={updateFields} />,
     ]);
 
+  const navigate = useNavigate();
+
   function onSubmitForm(e: FormEvent) {
     e.preventDefault();
     if (!isLastStep) return next();
     else {
       const headers = new Headers();
       headers.append("Content-Type", "application/json");
+
+      console.log(data.topic)
 
       let lesson = JSON.stringify({
         group_id: data.group,
@@ -68,6 +74,7 @@ export default function CreateActivityPage() {
 
       fetch(ApiRoute + `/lessons`, requestOptions);
     }
+    navigate(`/${organization}${AppRoute.Main}`);
   }
 
   return (
@@ -89,11 +96,17 @@ export default function CreateActivityPage() {
             }}
           >
             {!isFirstStep && (
-              <button type="button" onClick={back}>
+              <button
+                className="creat-button-activity"
+                type="button"
+                onClick={back}
+              >
                 Назад
               </button>
             )}
-            <button type="submit">{isLastStep ? "Сохранить" : "Дальше"}</button>
+            <button className="creat-button-activity" type="submit">
+              {isLastStep ? "Сохранить" : "Дальше"}
+            </button>
           </div>
         </form>
       </div>

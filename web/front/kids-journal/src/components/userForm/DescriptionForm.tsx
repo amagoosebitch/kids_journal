@@ -80,7 +80,6 @@ export function DescriptionForm({
         });
     }
   }, [curSubject]);
-  console.log(subject);
 
   const handleSubjectName = (e: string) => {
     return subjects[Number(e)].name;

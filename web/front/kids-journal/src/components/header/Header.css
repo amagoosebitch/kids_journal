@@ -73,7 +73,7 @@
   margin-left: 20px;
 }
 
-@media screen and (max-width: 960px) {
+@media screen and (max-width: 980px) {
   .header__nav {
     position: fixed;
     top: 0;
@@ -107,5 +107,9 @@
 
   .header__nav-item:nth-child(n + 2) {
     margin-left: 0;
+  }
+
+  .header__logo {
+    font-size: 40px;
   }
 }

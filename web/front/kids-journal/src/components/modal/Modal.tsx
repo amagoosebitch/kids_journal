@@ -5,6 +5,7 @@ import { default as ReactModal } from "react-responsive-modal";
 import "react-responsive-modal/styles.css";
 import "./Modal.css";
 import { CloseButton } from "@chakra-ui/react";
+import { ParentProps } from "../groupInfo/GroupInfo";
 
 type IModalSize = "medium";
 
@@ -14,7 +15,7 @@ type TModalProps = {
   dataTestId?: string;
   isOpen: boolean;
   onCloseModal: () => void;
-  currChild: string[];
+  currChild: [string, ParentProps, ParentProps];
   groupId: string | undefined;
   size?: IModalSize;
 };
@@ -65,16 +66,31 @@ export const Modal = ({
       styles={styles}
     >
       <div className="Modal">
-        <div className="Modal-img"></div>
         <div className="Modal_content">
           <div className="Modal-name">{currChild[0]}</div>
           <div className="Modal_text">
             <div className="Modal_text-label">Группа {groupId}</div>
             <div className="Modal_text-parent">
-              <div className="Modal_text-parent_name">
-                Родитель: {currChild[1]}
-              </div>
-              <div className="Modal_text-parent_number">{currChild[2]}</div>
+              {currChild[1].name !== " " && (
+                <>
+                  <div className="Modal_text-parent_name">
+                    Родитель: {currChild[1].name}
+                  </div>
+                  <div className="Modal_text-parent_number">
+                    {currChild[1].phone_number}
+                  </div>
+                </>
+              )}
+              {currChild[2].name !== " " && (
+                  <>
+                    <div className="Modal_text-parent_name">
+                      Родитель: {currChild[2].name}
+                    </div>
+                    <div className="Modal_text-parent_number">
+                      {currChild[2].phone_number}
+                    </div>
+                  </>
+              )}
             </div>
           </div>
         </div>

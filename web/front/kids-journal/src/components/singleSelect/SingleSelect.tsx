@@ -101,12 +101,6 @@ export const Select = ({ value, onChange, options }: SelectProps) => {
         </ul>
 
       </div>
-      <Link
-        to={AppRoute.CreateOrganization}
-        className={"menu__creat-institution"}
-      >
-        <li className={"select-option-last"}>+ создать учреждение</li>
-      </Link>
     </div>
   );
 };

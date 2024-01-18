@@ -3,7 +3,7 @@ import { Input, Select } from "@chakra-ui/react";
 import { ButtonMain } from "../button/ButtonMain";
 import "./AddEmployees.css";
 import { InputPhone } from "../input-phone/InputPhone";
-import {ApiRoute} from "../../const";
+import { ApiRoute } from "../../const";
 
 const options = [
   { label: "Садик №1", value: 1 },
@@ -17,9 +17,9 @@ const optionsJob = [
 
 type addEmployeeProps = {
   organization: string | undefined;
-}
+};
 
-export const AddEmployees = ({organization}: addEmployeeProps) => {
+export const AddEmployees = ({ organization }: addEmployeeProps) => {
   const [valueName, setName] = useState("");
   const [valueSurname, setSurname] = useState("");
   const [valueJob, setValueJob] = useState("");
@@ -30,21 +30,24 @@ export const AddEmployees = ({organization}: addEmployeeProps) => {
     headers.append("Content-Type", "application/json");
 
     let employee = JSON.stringify({
-        first_name: valueName,
-        last_name: valueSurname,
-        name: valueName + ' ' + valueSurname,
-        employee_id: valueName + ' ' + valueSurname,
-        role_id: optionsJob[Number(valueJob) - 1].job,
-        phone_number: valueTel,
-      });
+      first_name: valueName,
+      last_name: valueSurname,
+      name: valueName + " " + valueSurname,
+      employee_id: valueName + " " + valueSurname,
+      role_id: optionsJob[Number(valueJob) - 1].job,
+      phone_number: valueTel,
+    });
 
     let requestOptions1 = {
-          method: 'POST',
-          headers: headers,
-          body: employee,
-      };
+      method: "POST",
+      headers: headers,
+      body: employee,
+    };
 
-    fetch(ApiRoute + `/organizations/${organization}/employee`, requestOptions1)
+    fetch(
+      ApiRoute + `/organizations/${organization}/employee`,
+      requestOptions1,
+    );
   };
 
   return (

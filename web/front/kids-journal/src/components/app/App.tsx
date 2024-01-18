@@ -49,7 +49,10 @@ function App() {
             path={`:organization${AppRoute.CreateEmployees}`}
             element={<CreateEmployeesPage />}
           />
-          <Route path={`:organization/:groupId${AppRoute.AddChild}`} element={<AddChildPage />} />
+          <Route
+            path={`:organization/:groupId${AppRoute.AddChild}`}
+            element={<AddChildPage />}
+          />
 
           <Route
             path={`:organization${AppRoute.Subject}`}
@@ -67,13 +70,10 @@ function App() {
           />
 
           <Route
-              path={AppRoute.CreateOrganization}
-              element={<CreateOrganization />}
+            path={AppRoute.CreateOrganization}
+            element={<CreateOrganization />}
           />
-          <Route
-              path={AppRoute.SignIn}
-              element={<CreateOrganization />}
-          />
+          <Route path={AppRoute.SignIn} element={<CreateOrganization />} />
         </Routes>
       </Router>
     </div>

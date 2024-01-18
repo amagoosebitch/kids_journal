@@ -1,7 +1,9 @@
 import { FormWrapper } from "./FormWrapper";
 import { Checkbox, Input, Select } from "@chakra-ui/react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Multiselect } from "multiselect-react-dropdown";
+import { ApiRoute } from "../../const";
+import { useParams } from "react-router-dom";
 
 type UserData = {
   group: string;
@@ -14,9 +16,29 @@ type UserFormProps = UserData & {
   updateFields: (fields: Partial<UserData>) => void;
 };
 
-const groupsData = [
-  { label: "Садик №1", value: 1 },
-  { label: "Садик Вишенка", value: 2 },
+export const groupInfo = [
+  {
+    group_id: "",
+    organization_id: "",
+    name: "",
+    age_range: "",
+  },
+];
+
+export const childInfo = [
+  {
+    child_id: "",
+    name: "",
+  },
+];
+
+export const childrenInfo = [
+  {
+    group_id: "",
+    organization_id: "",
+    name: "",
+    age_range: "",
+  },
 ];
 
 const childrenData = [
@@ -31,23 +53,68 @@ export function UserForm({
   date,
   updateFields,
 }: UserFormProps) {
+  const { organization } = useParams();
   const [options] = useState(childrenData);
 
-  console.log(date)
+  const [groups, setGroups] = useState(groupInfo);
+  useEffect(() => {
+    fetch(`${ApiRoute}/organizations/${organization}/groups`, {
+      method: "GET",
+      headers: { Accept: "application/json" },
+    })
+      .then((response) => {
+        if (response.status === 200 || response.status === 201) {
+          return response;
+        }
+        throw new Error();
+      })
+      .then((response) => response.json())
+      .then((data) => {
+        setGroups(data);
+      });
+  }, []);
+
+  const [curGroup, setCurGroup] = useState("");
+  const handleGroupsName = (e: string) => {
+    return groups[Number(e)].name;
+  };
+
+  const [chilgren, setChilgren] = useState(childInfo);
+
+  useEffect(() => {
+    if (curGroup !== "") {
+      fetch(`${ApiRoute}/${curGroup}/child`, {
+        method: "GET",
+        headers: { Accept: "application/json" },
+      })
+        .then((response) => {
+          if (response.status === 200 || response.status === 201) {
+            return response;
+          }
+          throw new Error();
+        })
+        .then((response) => response.json())
+        .then((data) => {
+          setChilgren(data);
+        });
+    }
+  }, [curGroup]);
 
   return (
     <FormWrapper>
       <label>Группа</label>
       <Select
         required
-        value={group}
-        onChange={(e) => updateFields({ group: e.target.value })}
+        onClick={(e) => setCurGroup(handleGroupsName(e.currentTarget.value))}
+        onChange={(e) =>
+          updateFields({ group: handleGroupsName(e.target.value) })
+        }
         style={{
           background: "white",
         }}
       >
-        {groupsData.map((group) => (
-          <option value={group.value}>{group.label}</option>
+        {groups.map((group, index) => (
+          <option value={index}>{group.name}</option>
         ))}
       </Select>
       <label>Дата</label>
@@ -72,9 +139,15 @@ export function UserForm({
         <>
           <label>Дети</label>
           <Multiselect
-            options={options}
+            options={chilgren.map((child, index) => ({
+              name: child.child_id,
+              id: index,
+            }))}
             displayValue="name"
-            placeholder='Выберите ребенка'
+            placeholder="Выберите ребенка"
+            selectedValues={listChildren}
+            onSelect={(e) => updateFields({ listChildren: e })}
+            onRemove={(e) => updateFields({ listChildren: e })}
           />
         </>
       )}

@@ -78,27 +78,39 @@ export const ModalActive = ({
         <div className="Modal_content">
           <tr className="Modal_content-item">
             <td className="la Modal_content-group">Группа</td>
-            <td className='Modal_content-information'>{currentGroup}</td>
+            <td className="Modal_content-information">{currentGroup}</td>
           </tr>
           <tr className="Modal_content-item">
             <td className="la Modal_content-topic">Предмет</td>
-            <td className='Modal_content-information'>{currentActivity.subject}</td>
+            <td className="Modal_content-information">
+              {currentActivity.subject}
+            </td>
           </tr>
           <tr className="Modal_content-item">
             <td className="la Modal_content-topic">Тема</td>
-            <td className='Modal_content-information'>{currentActivity.carouselActionTitle}</td>
+            <td className="Modal_content-information">
+              {currentActivity.carouselActionTitle}
+            </td>
           </tr>
           <tr className="Modal_content-item">
             <td className="la Modal_content-date">Дата</td>
-            <td className='Modal_content-information'>{new Date(currentActivity.carouselActionData).toLocaleDateString()}</td>
+            <td className="Modal_content-information">
+              {new Date(
+                currentActivity.carouselActionData,
+              ).toLocaleDateString()}
+            </td>
           </tr>
           <tr className="Modal_content-item">
             <td className="la Modal_content-time">Время</td>
-            <td className='Modal_content-information'>{currentActivity.carouselActionData.split('T')[1]}</td>
+            <td className="Modal_content-information">
+              {currentActivity.carouselActionData.split("T")[1]}
+            </td>
           </tr>
           <tr className="Modal_content-item">
             <td className="la Modal_content-description">Описание</td>
-            <td className='Modal_content-information'>{currentActivity.description}</td>
+            <td className="Modal_content-information">
+              {currentActivity.description}
+            </td>
           </tr>
           <tr className="Modal_content-item">
             {currentActivity.carouselActionCategory ? (
@@ -111,9 +123,9 @@ export const ModalActive = ({
             {currentActivity.carouselActionCategory && (
               <>
                 <td className="la Modal_content-children">Дети</td>
-                <td className='Modal_content-information'>
+                <td className="Modal_content-information">
                   {currentActivity.children.map((child) => (
-                      <tr>{child.name}</tr>
+                    <tr>{child.name}</tr>
                   ))}
                 </td>
               </>

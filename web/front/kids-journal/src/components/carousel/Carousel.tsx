@@ -14,38 +14,29 @@ export type CarouselProps = {
   currentDate: Date;
 };
 
-// export type ActionProps = {
-//   carouselActionData: string;
-//   carouselActionTitle: string;
-//   subject: string;
-//   carouselActionCategory: boolean;
-//   children: {
-//     name: string;
-//   }[];
-//   description: string;
-// };
-
 export type ActionProps = {
-  group_id: string;
-  subject_id: string;
-  start_lesson: Date;
-  presentation_id: string;
-  child_id: [],
+  carouselActionData: string;
+  carouselActionTitle: string;
+  subject: string;
+  carouselActionCategory: boolean;
+  children: {
+    name: string;
+  }[];
   description: string;
 };
 
-// const action1 = {
-//   carouselActionData: "",
-//   carouselActionTitle: "",
-//   subject: "",
-//   carouselActionCategory: true,
-//   children: [
-//     {
-//       name: "",
-//     },
-//   ],
-//   description: "",
-// };
+const action1 = {
+  carouselActionData: "",
+  carouselActionTitle: "",
+  subject: "",
+  carouselActionCategory: true,
+  children: [
+    {
+      name: "",
+    },
+  ],
+  description: "",
+};
 
 export const groupInfo = [
   {
@@ -56,29 +47,45 @@ export const groupInfo = [
   },
 ];
 
-export const scheduleInfo = [
+type lessonInfoProps = [
   {
-    group_id: "",
-    subject_id: "",
-    start_lesson: new Date(),
-    presentation_id: "",
-    child_id: [],
+    schedule_id: string;
+    subject_name: string;
+    group_name: string;
+    child_names: string[];
+    date: Date;
+    description: string;
+    is_for_child: boolean;
+  },
+];
+
+export const lessonInfo: lessonInfoProps = [
+  {
+    schedule_id: "",
+    subject_name: "",
+    group_name: "",
+    child_names: [""],
+    date: new Date(),
     description: "",
+    is_for_child: false,
   },
 ];
 
 export const Carousel = ({ organization, currentDate }: CarouselProps) => {
-  // const [carousels, setCarousels] = useState(infoGroups);
-  //
-  // const currentCarousel = carousels.filter((carousel) => {
-  //   if (organization !== undefined)
-  //     return carousel.organization
-  //       .toLowerCase()
-  //       .includes(organization.toLowerCase());
-  //   return {};
-  // });
+  const [carousels, setCarousels] = useState(infoGroups);
 
-  const [firstGroups, setFirstGroups] = useState(groupInfo);
+  const currentCarousel = carousels.filter((carousel) => {
+    if (organization !== undefined)
+      return carousel.organization
+        .toLowerCase()
+        .includes(organization.toLowerCase());
+    return {};
+  });
+
+  const [groups, setGroups] = useState(groupInfo);
+  const [lesson, setLesson] = useState(lessonInfo);
+  const [allInfo, setAllInfo] = useState([{ group: "", lessons: lessonInfo }]);
+
   useEffect(() => {
     fetch(`${ApiRoute}/organizations/${organization}/groups`, {
       method: "GET",
@@ -92,15 +99,11 @@ export const Carousel = ({ organization, currentDate }: CarouselProps) => {
       })
       .then((response) => response.json())
       .then((data) => {
-        setFirstGroups(data);
+        setGroups(data);
       });
-  }, []);
 
-  const [subjects, setSubjects] = useState(scheduleInfo);
-
-  const currentAction = (group_id: string) => {
-    useEffect(() => {
-      fetch(`${ApiRoute}/lessons/${group_id}`, {
+    for (let i = 1; i < groups.length; i++) {
+      fetch(`${ApiRoute}/lessons/${groups[i].group_id}?date=${currentDate}`, {
         method: "GET",
         headers: { Accept: "application/json" },
       })
@@ -112,18 +115,18 @@ export const Carousel = ({ organization, currentDate }: CarouselProps) => {
         })
         .then((response) => response.json())
         .then((data) => {
-          setSubjects(data);
-        });
-    }, []);
-    return subjects;
-  };
+          setLesson(data);
+        })
+        .then(() =>
+          setAllInfo([...allInfo, { group: groups[i].group_id, lessons: lesson }]),
+        );
+    }
+  }, []);
 
-  console.log(firstGroups);
 
   let slidesToShowCurrent = 3;
-
-  if (firstGroups.length === 1) slidesToShowCurrent = 1;
-  if (firstGroups.length === 2) slidesToShowCurrent = 2;
+  if (currentCarousel.length === 1) slidesToShowCurrent = 1;
+  if (currentCarousel.length === 2) slidesToShowCurrent = 2;
 
   let settings = {
     dots: true,
@@ -165,13 +168,13 @@ export const Carousel = ({ organization, currentDate }: CarouselProps) => {
 
   const [isOpenModal, setIsOpenModal] = useState(false);
 
-  const [currentActivity, setCurrentActivity] = useState(scheduleInfo);
+  const [currentActivity, setCurrentActivity] = useState(action1);
   const [currentGroup, setCurrentGroup] = useState("");
 
-  // const doDo = (action: ActionProps, group: string) => {
-  //   setCurrentActivity(action);
-  //   setCurrentGroup(group);
-  // };
+  const doDo = (action: ActionProps, group: string) => {
+    setCurrentActivity(action);
+    setCurrentGroup(group);
+  };
 
   const handleModalOpen = () => {
     setIsOpenModal(true);
@@ -185,39 +188,44 @@ export const Carousel = ({ organization, currentDate }: CarouselProps) => {
     <>
       <div className="carousel">
         <Slider {...settings}>
-          {firstGroups.map((carousel) => (
+          {currentCarousel.map((carousel) => (
             <div className="carousel_box">
               <div className="carousel_box-title">
-                <div className="carousel_box-name">Группа {carousel.name}</div>
-                <div className="carousel_box-age">{carousel.age_range}</div>
+                <div className="carousel_box-name">
+                  Группа {carousel.carouselLabel}
+                </div>
+                <div className="carousel_box-age">{carousel.carouselAge}</div>
               </div>
               <div className="carousel_box-content">
-                {currentAction(carousel.name)
+                {carousel.carouselAction
                   .filter((action) => {
                     return (
-                      action.start_lesson.toLocaleDateString() === formatData
+                      new Date(
+                        action.carouselActionData.split("T")[0],
+                      ).toLocaleDateString() === formatData
                     );
                   })
                   .map((action) => (
                     <Link to={""} onClick={handleModalOpen}>
                       <div
+                        onClick={() => doDo(action, carousel.carouselLabel)}
                         className={`carousel_box-action ${
-                          action.child_id ? "isOrange" : "isGreen"
+                          action.carouselActionCategory ? "isOrange" : "isGreen"
                         }`}
                       >
                         <div className="carousel_action-info">
                           <div className="carousel_action-topic">
-                            {action.presentation_id}
+                            {action.carouselActionTitle}
                           </div>
                           <div className="carousel_action-time">
-                            {action.start_lesson.toLocaleDateString()}
+                            {action.carouselActionData.split("T")[1]}
                           </div>
                         </div>
                         <div className="carousel_action-children">
-                          {action.child_id &&
-                            `Дети: ${action.child_id[0]} ${
-                              action.child_id.length > 1
-                                ? `и еще ${action.child_id.length - 1}`
+                          {action.carouselActionCategory &&
+                            `Дети: ${action.children[0].name} ${
+                              action.children.length > 1
+                                ? `и еще ${action.children.length - 1}`
                                 : ""
                             }`}
                         </div>
@@ -229,12 +237,12 @@ export const Carousel = ({ organization, currentDate }: CarouselProps) => {
           ))}
         </Slider>
       </div>
-      {/*<ModalActive*/}
-      {/*  isOpen={isOpenModal}*/}
-      {/*  onCloseModal={handleModalClose}*/}
-      {/*  currentActivity={currentActivity}*/}
-      {/*  currentGroup={currentGroup}*/}
-      {/*/>*/}
+      <ModalActive
+        isOpen={isOpenModal}
+        onCloseModal={handleModalClose}
+        currentActivity={currentActivity}
+        currentGroup={currentGroup}
+      />
     </>
   );
 };

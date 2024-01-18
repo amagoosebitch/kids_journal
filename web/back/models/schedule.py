@@ -7,7 +7,7 @@ from pydantic import BaseModel
 class ScheduleModel(BaseModel):
     schedule_id: UUID = uuid4()
     group_id: UUID
-    teacher_id: UUID
+    teacher_id: UUID | None = None
     subject_id: UUID
     presentation_id: UUID
     start_lesson: datetime

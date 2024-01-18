@@ -5,6 +5,7 @@ import { DescriptionForm } from "../../components/userForm/DescriptionForm";
 import React, { FormEvent, useState } from "react";
 import { Header } from "../../components/header/Header";
 import "./CreateActivityPage.css";
+import { ApiRoute } from "../../const";
 
 type FormData = {
   group: string;
@@ -18,12 +19,12 @@ type FormData = {
 
 const INITIAL_DATA: FormData = {
   group: "",
-  isIndividual: false,
-  listChildren: [],
-  date: "",
   subject: "",
   topic: "",
+  date: "",
+  listChildren: [],
   description: "",
+  isIndividual: false,
 };
 
 export default function CreateActivityPage() {
@@ -42,7 +43,31 @@ export default function CreateActivityPage() {
 
   function onSubmitForm(e: FormEvent) {
     e.preventDefault();
-    return !isLastStep ? next() : alert("GOOD!!!");
+    if (!isLastStep) return next();
+    else {
+      const headers = new Headers();
+      headers.append("Content-Type", "application/json");
+
+      let lesson = JSON.stringify({
+        group_id: data.group,
+        subject_id: data.subject,
+        presentation_id: data.topic,
+        start_lesson: data.date,
+        child_id: data.listChildren.map(
+          (child: { name: string; id: string }) => child.name,
+        ),
+        description: data.description,
+      });
+      console.log(lesson);
+
+      let requestOptions = {
+        method: "POST",
+        headers: headers,
+        body: lesson,
+      };
+
+      fetch(ApiRoute + `/lessons`, requestOptions);
+    }
   }
 
   return (

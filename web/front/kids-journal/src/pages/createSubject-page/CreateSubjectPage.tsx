@@ -72,12 +72,17 @@ function CreateSubjectPage({}: CreateSubjectPageProps): JSX.Element {
     const headers = new Headers();
     headers.append("Content-Type", "application/json");
 
+    let nameSubjectForm = !isIndividual
+      ? subjectsCur[Number(valueName)].name
+      : valueName;
+    console.log(valueAge, 1111);
+
     if (isIndividual) {
-      console.log(isIndividual)
       let subject = JSON.stringify({
         organization_id: organization,
-        subject_id: valueName,
-        name: valueName,
+        subject_id: nameSubjectForm,
+        name: nameSubjectForm,
+        age_range: optionsAge[Number(valueAge) - 1].age,
       });
       console.log(subject);
 
@@ -87,16 +92,19 @@ function CreateSubjectPage({}: CreateSubjectPageProps): JSX.Element {
         body: subject,
       };
 
-      fetch(ApiRoute + `/organizations/${organization}/subjects`, requestOptions);
+      fetch(
+        ApiRoute + `/organizations/${organization}/subjects`,
+        requestOptions,
+      );
     }
 
     let presentation = JSON.stringify({
-      subject_id: valueName,
       presentation_id: valueTopic,
       name: valueTopic,
       description: valueDescription,
     });
-    console.log(presentation);
+
+    console.log(nameSubjectForm, presentation);
 
     let requestOptions1 = {
       method: "POST",
@@ -104,7 +112,10 @@ function CreateSubjectPage({}: CreateSubjectPageProps): JSX.Element {
       body: presentation,
     };
 
-    fetch(ApiRoute + `/subjects/${valueName}/presentations`, requestOptions1);
+    fetch(
+      ApiRoute + `/subjects/${nameSubjectForm}/presentations`,
+      requestOptions1,
+    );
   }
 
   return (
@@ -159,21 +170,23 @@ function CreateSubjectPage({}: CreateSubjectPageProps): JSX.Element {
                 }}
               />
             </div>
-            <div className="subject-creat__form-items">
-              <Select
-                placeholder="Выберете возраст детей"
-                onChange={(event: React.FormEvent<HTMLSelectElement>) =>
-                  setValueAge(event.currentTarget.value)
-                }
-                style={{
-                  background: "white",
-                }}
-              >
-                {optionsAge.map((option) => (
-                  <option value={option.value}>{option.age}</option>
-                ))}
-              </Select>
-            </div>
+            {isIndividual && (
+              <div className="subject-creat__form-items">
+                <Select
+                  placeholder="Выберете возраст детей"
+                  onChange={(event: React.FormEvent<HTMLSelectElement>) =>
+                    setValueAge(event.currentTarget.value)
+                  }
+                  style={{
+                    background: "white",
+                  }}
+                >
+                  {optionsAge.map((option) => (
+                    <option value={option.value}>{option.age}</option>
+                  ))}
+                </Select>
+              </div>
+            )}
             <div className="subject-creat__form-items">
               <Textarea
                 placeholder="Введите описание темы"

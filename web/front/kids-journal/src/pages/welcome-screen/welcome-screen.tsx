@@ -13,7 +13,7 @@ type WelcomeScreenProps = {};
 export const cookieType = {
   phone_number: "",
   role:"",
-  user_id:"805667021",
+  user_id:"",
 }
 
 function WelcomeScreen({}: WelcomeScreenProps): JSX.Element {

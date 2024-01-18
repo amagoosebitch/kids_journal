@@ -8,9 +8,10 @@ import { MenuButton } from "../menuButton/MenuButton";
 import "../menuButton/MenuButton.css";
 import "../menuList/MenuList.css";
 import "./Header.css";
-import {AppRoute, infoOrganization} from "../../const";
-import {Select, SelectOption} from "../singleSelect/SingleSelect";
-
+import { AppRoute, ApiRoute, infoOrganization } from "../../const";
+import { Select, SelectOption } from "../singleSelect/SingleSelect";
+import { jwtDecode } from "jwt-decode";
+import Cookies from "js-cookie";
 
 const optionsMenu = [
   { label: "Профиль", value: 1, link: "/profile" },
@@ -21,6 +22,8 @@ export type MenuListOption = {
   label: string;
   value: string | number;
 };
+
+export const organizationInfo = [""];
 
 export const Header = () => {
   const { organization } = useParams();

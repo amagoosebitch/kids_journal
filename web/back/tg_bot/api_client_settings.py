@@ -11,7 +11,7 @@ class ApiClientSettings(BaseSettings):
     parent_endpoint: str = "parents/{tg_id}"
     parents_by_child_endpoint: str = "parents/child/{child_id}"
     group_endpoint: str = "groups/{group_id}"
-    children_by_group_endpoint: str = "child/{group_id}"
+    children_by_group_endpoint: str = "{group_id}/child"
 
     def get_parents_by_child_url(self, child_id: str) -> URL:
         return URL(self.url) / self.parents_by_child_endpoint.format(child_id=child_id)

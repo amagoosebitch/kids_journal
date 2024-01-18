@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from models.utils import CleverBaseModel as BaseModel
 
 
 class TelegramAuth(BaseModel):

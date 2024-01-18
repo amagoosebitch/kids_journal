@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from pydantic import BaseModel
+from models.utils import CleverBaseModel as BaseModel
 
 from models.entity import Gender
 from models.parents import ParentModelResponse

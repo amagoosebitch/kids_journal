@@ -1,7 +1,7 @@
 from datetime import datetime
 from uuid import uuid4
 
-from pydantic import BaseModel
+from models.utils import CleverBaseModel as BaseModel
 
 
 class ScheduleModel(BaseModel):

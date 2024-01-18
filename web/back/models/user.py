@@ -1,6 +1,6 @@
 from enum import StrEnum
 
-from pydantic import BaseModel
+from models.utils import CleverBaseModel as BaseModel
 
 from models.employees import EmployeeModel
 from models.parents import ParentModel

@@ -1,6 +1,5 @@
-from uuid import UUID, uuid4
-
-from pydantic import BaseModel
+from uuid import uuid4
+from models.utils import CleverBaseModel as BaseModel
 
 from models.entity import Gender
 

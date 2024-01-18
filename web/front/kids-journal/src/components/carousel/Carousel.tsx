@@ -3,9 +3,9 @@ import "slick-carousel/slick/slick-theme.css";
 import "./Carousel.css";
 
 import Slider from "react-slick";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
-import { infoGroups, ApiRoute } from "../../const";
+import { infoGroups } from "../../const";
 import { Link } from "react-router-dom";
 import { ModalActive } from "../modalActive/ModalActive";
 
@@ -209,6 +209,7 @@ export const Carousel = ({ organization, currentDate }: CarouselProps) => {
                             onClick={() => doDo([lesson], group.name)}
                             className={`carousel_box-action ${
                               lesson.is_for_child ? "isOrange" : "isGreen"
+
                             }`}
                           >
                             <div className="carousel_action-info">

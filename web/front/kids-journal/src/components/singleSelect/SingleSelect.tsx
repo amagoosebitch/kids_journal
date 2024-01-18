@@ -80,6 +80,7 @@ export const Select = ({ value, onChange, options }: SelectProps) => {
         <span className={"select-value"}>{value?.label}</span>
         <div className={"select-caret"}></div>
 
+
         <ul className={`select-options ${isOpen ? "show" : ""}`}>
           {options.map((option, index) => (
             <li
@@ -98,6 +99,7 @@ export const Select = ({ value, onChange, options }: SelectProps) => {
             </li>
           ))}
         </ul>
+
       </div>
       <Link
         to={AppRoute.CreateOrganization}

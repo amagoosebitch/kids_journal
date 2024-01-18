@@ -19,14 +19,20 @@ class S3PicklePersistence(PicklePersistence):
             "bot_data": self.bot_data,
             "callback_data": self.callback_data,
         }
-        print(f'saving state {data}')
+        print(f"saving state {data}")
         self._byte_file = BytesIO()
-        _BotPickler(self.bot, self._byte_file, protocol=pickle.HIGHEST_PROTOCOL).dump(data)
+        _BotPickler(self.bot, self._byte_file, protocol=pickle.HIGHEST_PROTOCOL).dump(
+            data
+        )
 
     def _load_singlefile(self) -> None:
         try:
-            get_obj_response = s3.get_object(Bucket="dobry-mir-tg-bot-b1gf54qrjkrq75uriq7l", Key="persistence")
-            data = _BotUnpickler(self.bot, BytesIO(get_obj_response['Body'].read())).load()
+            get_obj_response = s3.get_object(
+                Bucket="dobry-mir-tg-bot-b1gf54qrjkrq75uriq7l", Key="persistence"
+            )
+            data = _BotUnpickler(
+                self.bot, BytesIO(get_obj_response["Body"].read())
+            ).load()
             self.user_data = data["user_data"]
             self.chat_data = data["chat_data"]
             # For backwards compatibility with files not containing bot data
@@ -46,4 +52,8 @@ class S3PicklePersistence(PicklePersistence):
         await super().flush()
 
         self._byte_file.seek(0)
-        s3.put_object(Bucket="dobry-mir-tg-bot-b1gf54qrjkrq75uriq7l", Key="persistence", Body=self._byte_file)
+        s3.put_object(
+            Bucket="dobry-mir-tg-bot-b1gf54qrjkrq75uriq7l",
+            Key="persistence",
+            Body=self._byte_file,
+        )

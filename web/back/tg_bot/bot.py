@@ -11,7 +11,11 @@ from telegram.ext import (
 )
 
 from tg_bot.callbacks import ReportTypeCallback
-from tg_bot.handlers.command_handlers import start_command_handler, stop_command_handler, merge_users_by_phone
+from tg_bot.handlers.command_handlers import (
+    merge_users_by_phone,
+    start_command_handler,
+    stop_command_handler,
+)
 from tg_bot.handlers.message.employee import (
     handle_accept_presentation,
     handle_choose_child,

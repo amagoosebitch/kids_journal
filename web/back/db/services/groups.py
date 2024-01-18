@@ -1,12 +1,9 @@
-import logging
-from itertools import groupby
 from typing import Any
-from uuid import UUID
 
 from db.utils import _format_unix_time
-from models.child import ChildModel, ChildModelResponse
+from models.child import ChildModelResponse
 from models.groups import GroupModel
-from models.parents import ParentModel, ParentModelResponse
+from models.parents import ParentModelResponse
 
 
 class GroupService:
@@ -115,22 +112,23 @@ class GroupService:
         for row in rows:
             parent1 = None
             parent2 = None
-            if row['p1.parent_id'] is not None:
+            if row["p1.parent_id"] is not None:
                 parent1 = ParentModelResponse(
-                    parent_id=row['p1.parent_id'],
-                    name=row['p1.name'],
-                    phone_number=row['p1.phone_number'])
-            if row['p2.parent_id'] is not None:
+                    parent_id=row["p1.parent_id"],
+                    name=row["p1.name"],
+                    phone_number=row["p1.phone_number"],
+                )
+            if row["p2.parent_id"] is not None:
                 parent2 = ParentModelResponse(
-                    parent_id=row['p2.parent_id'],
-                    name=row['p2.name'],
-                    phone_number=row['p2.phone_number'],
+                    parent_id=row["p2.parent_id"],
+                    name=row["p2.name"],
+                    phone_number=row["p2.phone_number"],
                 )
             result.append(
                 ChildModelResponse(
-                    child_id=row['c.child_id'],
-                    name=row['c.name'],
-                    birth_date=_format_unix_time(row['c.birth_date']),
+                    child_id=row["c.child_id"],
+                    name=row["c.name"],
+                    birth_date=_format_unix_time(row["c.birth_date"]),
                     parent_1=parent1,
                     parent_2=parent2,
                 )

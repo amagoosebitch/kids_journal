@@ -27,4 +27,3 @@ class RedirectSettings(BaseSettings):
 @cache
 def create_redirect_settings() -> RedirectSettings:
     return RedirectSettings()
-

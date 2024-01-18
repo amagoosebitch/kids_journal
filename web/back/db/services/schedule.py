@@ -1,4 +1,4 @@
-from datetime import datetime, timedelta
+from datetime import date, timedelta
 from itertools import groupby
 from typing import Any
 
@@ -72,75 +72,77 @@ class ScheduleService:
         return self._pool.retry_operation_sync(callee)
 
     def get_for_children_by_time(
-        self, group_id: str, date: datetime
+        self, group_id: str, date_day: date
     ) -> list[ScheduleModelResponse] | None:
         def callee(session: Any):
             return session.transaction().execute(
                 """
                 PRAGMA TablePathPrefix("{db_prefix}");
-                SELECT ch.name, ch.child_id, su.name, s.description, s.schedule_id
+                SELECT DISTINCT ch.name, ch.child_id, su.name, s.description, s.schedule_id, s.group_id, s.presentation_id, s.start_lesson
                 FROM schedule as s
                 JOIN child_schedule as cs on cs.schedule_id = s.schedule_id
                 JOIN child as ch on cs.child_id = ch.child_id
                 JOIN subject as su ON s.subject_id = su.subject_id
-                WHERE s.end_lesson < {date_str} AND s.group_id = "{group_id}"
+                WHERE s.start_lesson > {date_str_start} AND s.start_lesson < {date_str_end} AND s.group_id = "{group_id}"
                 """.format(
                     db_prefix=self._db_prefix,
                     group_id=group_id,
-                    date_str=self._get_time_str(date),
+                    date_str_end=self._get_time_str(date_day, timedelta(days=1)),
+                    date_str_start=self._get_time_str(date_day, timedelta(days=0)),
                 ),
                 commit_tx=True,
             )
 
         rows = self._pool.retry_operation_sync(callee)[0].rows
-        if not rows:
-            return None
         result = []
-        child_ids = set()
+        if not rows:
+            return result
         for key, group in groupby(rows, lambda x: x["s.schedule_id"]):
-            child_names = []
+            child_ids = set()
             for row in group:
-                child_names.append(row["ch.name"])
+                if row["ch.child_id"] in child_ids:
+                    continue
                 child_ids.add(row["ch.child_id"])
             result.append(
                 ScheduleModelResponse(
                     schedule_id=key,
-                    child_names=child_names,
+                    child_names=list(child_ids),
                     is_for_child=True,
                     subject_name=row["su.name"],
                     description=row["s.description"],
-                    date=date,
-                    group_name=row["g.name"],
+                    date_day=row["s.start_lesson"],
+                    group_name=row["s.group_id"],
+                    presentation_id=row["s.presentation_id"],
                 )
             )
         return result
 
     def get_for_group_by_time(
-        self, group_id: str, date: datetime
+        self, group_id: str, date_day: date
     ) -> list[ScheduleModelResponse] | None:
         def callee(session: Any):
             return session.transaction().execute(
                 """
                 PRAGMA TablePathPrefix("{db_prefix}");
-                SELECT su.name, g.name, s.description, s.schedule_id
+                SELECT su.name, g.name, s.description, s.schedule_id, s.presentation_id, s.start_lesson
                 FROM schedule as s
                 left JOIN child_schedule as cs on cs.schedule_id = s.schedule_id
                 JOIN group as g ON g.group_id = s.group_id
-                JOIN group_child as gc on gc.group_id = g.group_id
                 JOIN subject as su ON s.subject_id = su.subject_id
-                WHERE s.end_lesson < {date_str} AND s.group_id = "{group_id}"./src/routers/presentation.py AND cs.child_id is null
+                WHERE s.start_lesson > {date_str_start} AND s.start_lesson < {date_str_end} AND s.group_id = "{group_id}" AND cs.child_id is null
                 """.format(
                     db_prefix=self._db_prefix,
                     group_id=group_id,
-                    date_str=self._get_time_str(date),
+                    date_str_end=self._get_time_str(date_day, timedelta(days=1)),
+                    date_str_start=self._get_time_str(date_day, timedelta(days=0)),
                 ),
                 commit_tx=True,
             )
 
         rows = self._pool.retry_operation_sync(callee)[0].rows
-        if not rows:
-            return None
         result = []
+        if not rows:
+            return result
         for row in rows:
             result.append(
                 ScheduleModelResponse(
@@ -148,13 +150,13 @@ class ScheduleService:
                     is_for_child=False,
                     subject_name=row["su.name"],
                     description=row["s.description"],
-                    date=date,
+                    date_day=row["s.start_lesson"],
                     group_name=row["g.name"],
+                    presentation_id=row["s.presentation_id"],
                 )
             )
         return result
 
     @classmethod
-    def _get_time_str(cls, date: datetime) -> str:
-        date = date.date() + timedelta(days=1)
-        return _format_date_time(str(date))
+    def _get_time_str(cls, date_day: date, delta: timedelta) -> str:
+        return _format_date_time(str(date_day + delta))

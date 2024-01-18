@@ -1,6 +1,6 @@
 {
   "type": "backend",
   "info": "Api for anekdotelnya",
-  "version": 63,
+  "version": 84,
   "inherit": true
 }

@@ -1,10 +1,8 @@
-from datetime import datetime
-from uuid import UUID
+from datetime import date
 
 from fastapi import Depends
 
-from db.services.organization import OrganizationModel
-from models.schedule import ScheduleModel
+from models.schedule import ScheduleModel, ScheduleModelResponse
 from src.dependencies import create_schedule_service
 
 
@@ -13,18 +11,18 @@ async def create_lesson(
     schedule_service=Depends(create_schedule_service),
 ) -> None:
     schedule_service.create_schedule(schedule)
-    if len(schedule.child_ids) == 0:
+    if len(schedule.child_id) == 0:
         return
     schedule_service.create_child_schedule_pairs(
-        schedule.schedule_id, schedule.child_ids
+        schedule.schedule_id, schedule.child_id
     )
 
 
 async def get_schedule_for_group(
     group_id: str,
-    date: datetime,
+    date_day: date,
     schedule_service=Depends(create_schedule_service),
-) -> list[OrganizationModel]:
+) -> list[ScheduleModelResponse]:
     return schedule_service.get_for_children_by_time(
-        group_id, date
-    ) + schedule_service.get_for_group_by_time(group_id, date)
+        group_id, date_day
+    ) + schedule_service.get_for_group_by_time(group_id, date_day)

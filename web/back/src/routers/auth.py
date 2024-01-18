@@ -6,7 +6,7 @@ from starlette import status
 from starlette.responses import HTMLResponse, RedirectResponse
 from starlette.templating import Jinja2Templates
 
-from auth.settings import JWTSettings, create_redirect_settings, RedirectSettings
+from auth.settings import JWTSettings, RedirectSettings, create_redirect_settings
 from db.services.employee import EmployeeService
 from dependencies import create_employee_service, jwt_settings
 from models.employees import EmployeeModel
@@ -31,17 +31,28 @@ def _create_jwt_token(
     if employee is None:
         return None
     token = jwt.encode(
-        {"user_id": employee.tg_user_id, "role": employee.role_id.name, "phone_number": employee.phone_number},
+        {
+            "user_id": employee.tg_user_id,
+            "role": employee.role_id.name,
+            "phone_number": employee.phone_number,
+        },
         jwt_settings.secret_key,
         algorithm=jwt_settings.algorithm,
     )
     return token
 
 
-def _get_redirect_response(jwt_token: str | None, redirect_settings: RedirectSettings) -> RedirectResponse:
+def _get_redirect_response(
+    jwt_token: str | None, redirect_settings: RedirectSettings
+) -> RedirectResponse:
     if jwt_token is None:
-        return RedirectResponse(url=redirect_settings.main_url, status_code=status.HTTP_304_NOT_MODIFIED)
-    response = RedirectResponse(url=redirect_settings.main_url + f'?cookie={jwt_token}', status_code=status.HTTP_302_FOUND)
+        return RedirectResponse(
+            url=redirect_settings.main_url, status_code=status.HTTP_304_NOT_MODIFIED
+        )
+    response = RedirectResponse(
+        url=redirect_settings.main_url + f"?cookie={jwt_token}",
+        status_code=status.HTTP_302_FOUND,
+    )
     return response
 
 

@@ -107,10 +107,10 @@ export function DescriptionForm({
           <option value={index}>{subject.name}</option>
         ))}
       </Select>
-      <label>Презентация</label>
+      <label>Тема</label>
       <Select
         required
-        placeholder="Выберите презентацию"
+        placeholder="Выберите тему"
         onChange={(e) =>
           updateFields({ topic: handleTopicName(e.target.value) })
         }

@@ -15,7 +15,6 @@ import Cookies from 'js-cookie';
 import { jwtDecode } from "jwt-decode";
 
 const optionsMenu = [
-  { label: "Профиль", value: 1, link: "/profile" },
   { label: "Выйти", value: 2, link: AppRoute.WelcomeScreen },
 ];
 

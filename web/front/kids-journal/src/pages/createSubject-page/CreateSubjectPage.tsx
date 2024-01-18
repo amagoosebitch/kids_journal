@@ -51,8 +51,7 @@ function CreateSubjectPage({}: CreateSubjectPageProps): JSX.Element {
       });
   }, []);
 
-  const [valueName, setName] = useState(subjectsCur[0].name);
-
+  const [valueName, setName] = useState("");
   function onSubmitForm() {
     const headers = new Headers();
     headers.append("Content-Type", "application/json");
@@ -129,6 +128,7 @@ function CreateSubjectPage({}: CreateSubjectPageProps): JSX.Element {
                 />
               ) : (
                 <Select
+                  placeholder="Выберите название предмета"
                   style={{
                     background: "white",
                   }}

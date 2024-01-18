@@ -16,7 +16,7 @@ class EmployeeModel(BaseModel):
     phone_number: str | None = None
     tg_user_id: str | None = None
     role_id: Role | None = None
-    group_ids: list[UUID] = []
+    group_ids: list[str] = []
 
 
 class EmployeeResponse(BaseModel):

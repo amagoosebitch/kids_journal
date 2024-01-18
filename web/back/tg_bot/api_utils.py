@@ -21,7 +21,9 @@ def get_employee_by_tg_id(tg_id: int) -> EmployeeModel | None:
 def get_children_by_group_id(group_id: str) -> list[ChildModel]:
     response = requests.get(
         api_settings.get_children_by_group_url(group_id=group_id),
-    ).json()
+    )
+    print(response)
+    response = response.json()
     return [ChildModel.model_validate(row) for row in response]
 
 

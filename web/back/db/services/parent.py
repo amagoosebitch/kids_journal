@@ -57,7 +57,7 @@ class ParentService:
             return None
         return ParentModel.model_validate(rows[0])
 
-    def get_by_child_id(self, child_id: str) -> tuple[ParentModel, ParentModel] | None:
+    def get_by_child_id(self, child_id: str) -> tuple[ParentModel | None, ParentModel | None] | None:
         parent_columns = ", ".join(
             f"parent.{column} as {column}"
             for column in [
@@ -109,6 +109,8 @@ class ParentService:
         rows.extend(self._pool.retry_operation_sync(callee_2)[0].rows or [])
         if not rows:
             return None
+        if len(rows) == 1:
+            return ParentModel.model_validate(rows[0]), None
         return ParentModel.model_validate(rows[0]), ParentModel.model_validate(rows[1])
 
     def get_by_phone(self, phone_number: str) -> ParentModel | None:

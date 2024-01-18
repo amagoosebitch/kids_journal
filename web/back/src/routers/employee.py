@@ -46,4 +46,4 @@ async def get_employees_organization_names_by_phone(
     phone: str,
     employee_service=Depends(create_employee_service),
 ) -> list[str]:
-    return employee_service.get_get_organization_name_by_phone(phone)
+    return employee_service.get_organization_name_by_phone(phone)

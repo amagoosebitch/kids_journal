@@ -12,6 +12,8 @@ class ApiClientSettings(BaseSettings):
     parents_by_child_endpoint: str = "parents/child/{child_id}"
     group_endpoint: str = "groups/{group_id}"
     children_by_group_endpoint: str = "{group_id}/child"
+    organization_by_phone: str = "employee/{phone}/organizations"
+    groups_by_organization: str = "organizations/{organization_id}/groups"
 
     def get_parents_by_child_url(self, child_id: str) -> URL:
         return URL(self.url) / self.parents_by_child_endpoint.format(child_id=child_id)
@@ -30,6 +32,12 @@ class ApiClientSettings(BaseSettings):
 
     def get_group_url(self, group_id: str) -> URL:
         return URL(self.url) / self.group_endpoint.format(group_id=group_id)
+
+    def get_organization_by_phone_url(self, phone: str) -> URL:
+        return URL(self.url) / self.organization_by_phone.format(phone=phone)
+
+    def get_groups_by_organization_url(self, organization: str) -> URL:
+        return URL(self.url) / self.groups_by_organization.format(organization_id=organization)
 
     class Config:
         env_prefix = "API_CLIENT_"

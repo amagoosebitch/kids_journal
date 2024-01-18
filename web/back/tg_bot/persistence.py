@@ -33,6 +33,7 @@ class S3PicklePersistence(PicklePersistence):
             data = _BotUnpickler(
                 self.bot, BytesIO(get_obj_response["Body"].read())
             ).load()
+            print(f'loading state {data}')
             self.user_data = data["user_data"]
             self.chat_data = data["chat_data"]
             # For backwards compatibility with files not containing bot data

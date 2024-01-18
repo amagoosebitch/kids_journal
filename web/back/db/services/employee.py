@@ -159,7 +159,7 @@ class EmployeeService:
             )
         return result
 
-    def get_get_organization_name_by_phone(self, phone_number: str) -> str | None:
+    def get_organization_name_by_phone(self, phone_number: str) -> str | None:
         def callee(session: Any):
             return session.transaction().execute(
                 """
@@ -177,6 +177,7 @@ class EmployeeService:
                 commit_tx=True,
             )
 
+        breakpoint()
         return list(
             map(
                 lambda x: x["org.name"], self._pool.retry_operation_sync(callee)[0].rows

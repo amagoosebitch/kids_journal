@@ -10,7 +10,7 @@ from tg_bot.api_utils import (
     get_children_by_group_id,
     get_employee_by_tg_id,
     get_group_by_id,
-    get_parents_by_child_id,
+    get_parents_by_child_id, get_employee_organization, get_groups_by_organization,
 )
 from tg_bot.callbacks import ReportTypeCallback
 from tg_bot.message_replies import (
@@ -64,9 +64,12 @@ async def handle_single_child_report(
 ):
     if "group_page" not in context.chat_data:
         context.chat_data["group_page"] = 0
-    group_ids = get_employee_by_tg_id(
+    phone = get_employee_by_tg_id(
         tg_id=update.callback_query.from_user.id
-    ).group_ids
+    ).phone_number
+    organization_id = get_employee_organization(phone=phone).organization_id
+    group_ids = get_groups_by_organization(organization=organization_id)
+
     group_page = context.chat_data["group_page"]
     if group_page > len(group_ids):
         context.chat_data["group_page"] = 0
@@ -127,12 +130,14 @@ async def handle_choose_group(update: Update, context: ContextTypes.DEFAULT_TYPE
 
 async def handle_choose_child(update: Update, context: ContextTypes.DEFAULT_TYPE):
     context.chat_data["child_id"] = update.callback_query.data
+    print('child_id', context.chat_data["child_id"])
 
     await update.callback_query.edit_message_text(WRITE_REPORT)
     return EmployeeState.WRITE_REPORT.value
 
 
 async def handle_write_report(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    print('on handle_write_report', context.chat_data)
     context.chat_data["report_text"] = update.message.text
 
     await update.message.reply_text(SEND_PICTURE)
@@ -142,12 +147,14 @@ async def handle_write_report(update: Update, context: ContextTypes.DEFAULT_TYPE
 async def handle_send_picture(update: Update, context: ContextTypes.DEFAULT_TYPE):
     parent_1, parent_2 = get_parents_by_child_id(context.chat_data["child_id"])
 
-    await context.bot.send_message(
-        chat_id=parent_1.tg_user_id, text=context.chat_data["report_text"]
-    )
-    await context.bot.send_message(
-        chat_id=parent_2.tg_user_id, text=context.chat_data["report_text"]
-    )
+    if parent_1:
+        await context.bot.send_message(
+            chat_id=parent_1.tg_user_id, text=context.chat_data["report_text"]
+        )
+    if parent_2:
+        await context.bot.send_message(
+            chat_id=parent_2.tg_user_id, text=context.chat_data["report_text"]
+        )
 
     if update.message.photo:
         file = await update.message.photo[-1].get_file()

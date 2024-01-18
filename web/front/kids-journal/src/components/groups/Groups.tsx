@@ -39,12 +39,11 @@ export const Groups = ({ organization }: GroupProps) => {
       });
   }, []);
 
+
   const [value, setValue] = useState("");
   const filteredGroups = firstGroups.filter((group) => {
     return group.name.toLowerCase().includes(value.toLowerCase());
   });
-
-  console.log(filteredGroups);
 
   return (
     <>

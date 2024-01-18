@@ -3,7 +3,7 @@ import { Header } from "../../components/header/Header";
 import { ButtonMain } from "../../components/button/ButtonMain";
 import { useParams } from "react-router-dom";
 import { Input, Select, Textarea } from "@chakra-ui/react";
-import { infoGroups, ApiRoute, subjectInfo } from "../../const";
+import { infoGroups, ApiRoute, AppRoute, subjectInfo } from "../../const";
 import "./CreateSubject.css";
 
 type CreateSubjectPageProps = {};
@@ -27,26 +27,9 @@ export const infoSubject = [
 function CreateSubjectPage({}: CreateSubjectPageProps): JSX.Element {
   const { organization } = useParams();
 
-  const subjects = subjectInfo.filter((obj) => {
-    return obj.organization === organization;
-  });
-
-  const [valueName, setName] = useState(subjects[0]?.name);
   const [valueTopic, setValueTopic] = useState("");
   const [valueAge, setValueAge] = useState("");
   const [valueDescription, setValueDescription] = useState("");
-
-  const addSubject = {
-    organizationCur: organization,
-    name: valueName,
-    topic: [
-      {
-        name: valueTopic,
-        age: valueAge,
-        description: valueDescription,
-      },
-    ],
-  };
 
   const [isIndividual, setIsIndividual] = useState(false);
 
@@ -68,16 +51,22 @@ function CreateSubjectPage({}: CreateSubjectPageProps): JSX.Element {
       });
   }, []);
 
+  const [valueName, setName] = useState(subjectsCur[0].name);
+
   function onSubmitForm() {
     const headers = new Headers();
     headers.append("Content-Type", "application/json");
 
+    let nameSubjectForm = !isIndividual
+      ? subjectsCur[Number(valueName)].name
+      : valueName;
+
     if (isIndividual) {
-      console.log(isIndividual)
       let subject = JSON.stringify({
         organization_id: organization,
-        subject_id: valueName,
-        name: valueName,
+        subject_id: nameSubjectForm,
+        name: nameSubjectForm,
+        age_range: optionsAge[Number(valueAge) - 1].age,
       });
       console.log(subject);
 
@@ -87,16 +76,19 @@ function CreateSubjectPage({}: CreateSubjectPageProps): JSX.Element {
         body: subject,
       };
 
-      fetch(ApiRoute + `/organizations/${organization}/subjects`, requestOptions);
+      fetch(
+        ApiRoute + `/organizations/${organization}/subjects`,
+        requestOptions,
+      );
     }
 
     let presentation = JSON.stringify({
-      subject_id: valueName,
       presentation_id: valueTopic,
       name: valueTopic,
       description: valueDescription,
     });
-    console.log(presentation);
+
+    console.log(nameSubjectForm, presentation);
 
     let requestOptions1 = {
       method: "POST",
@@ -104,7 +96,10 @@ function CreateSubjectPage({}: CreateSubjectPageProps): JSX.Element {
       body: presentation,
     };
 
-    fetch(ApiRoute + `/subjects/${valueName}/presentations`, requestOptions1);
+    fetch(
+      ApiRoute + `/subjects/${nameSubjectForm}/presentations`,
+      requestOptions1,
+    );
   }
 
   return (
@@ -159,21 +154,23 @@ function CreateSubjectPage({}: CreateSubjectPageProps): JSX.Element {
                 }}
               />
             </div>
-            <div className="subject-creat__form-items">
-              <Select
-                placeholder="Выберете возраст детей"
-                onChange={(event: React.FormEvent<HTMLSelectElement>) =>
-                  setValueAge(event.currentTarget.value)
-                }
-                style={{
-                  background: "white",
-                }}
-              >
-                {optionsAge.map((option) => (
-                  <option value={option.value}>{option.age}</option>
-                ))}
-              </Select>
-            </div>
+            {isIndividual && (
+              <div className="subject-creat__form-items">
+                <Select
+                  placeholder="Выберете возраст детей"
+                  onChange={(event: React.FormEvent<HTMLSelectElement>) =>
+                    setValueAge(event.currentTarget.value)
+                  }
+                  style={{
+                    background: "white",
+                  }}
+                >
+                  {optionsAge.map((option) => (
+                    <option value={option.value}>{option.age}</option>
+                  ))}
+                </Select>
+              </div>
+            )}
             <div className="subject-creat__form-items">
               <Textarea
                 placeholder="Введите описание темы"
@@ -191,7 +188,7 @@ function CreateSubjectPage({}: CreateSubjectPageProps): JSX.Element {
                 className="creat-subject__button"
                 height="44px"
                 width="211px"
-                linkButton={""}
+                linkButton={`/${organization}${AppRoute.Subject}`}
                 onClick={onSubmitForm}
               >
                 Создать предмет/тему

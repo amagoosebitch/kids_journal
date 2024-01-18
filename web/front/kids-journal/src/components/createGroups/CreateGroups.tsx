@@ -1,9 +1,16 @@
 import "./CreateGroups.css";
 import React, { useState } from "react";
-import {Button, CloseButton, Grid, GridItem, Input, Select} from "@chakra-ui/react";
+import {
+  Button,
+  CloseButton,
+  Grid,
+  GridItem,
+  Input,
+  Select,
+} from "@chakra-ui/react";
 import { ButtonMain } from "../button/ButtonMain";
 import { InputPhone } from "../input-phone/InputPhone";
-import {ApiRoute} from "../../const";
+import { ApiRoute } from "../../const";
 
 const optionsAge = [
   { age: "0-3", value: 1 },
@@ -12,8 +19,8 @@ const optionsAge = [
 ];
 
 type CreateGroupsProps = {
-  organization: string | undefined,
-}
+  organization: string | undefined;
+};
 
 export const CreateGroups = ({ organization }: CreateGroupsProps) => {
   const [valueAge, setValueAge] = useState("");
@@ -55,18 +62,16 @@ export const CreateGroups = ({ organization }: CreateGroupsProps) => {
       organization_id: organization,
       age_range: optionsAge[Number(valueAge) - 1].age,
       name: valueName,
-      group_id: valueName
+      group_id: valueName,
     });
 
-    console.log(body);
-
     const requestOptions = {
-        method: 'POST',
-        headers: headers,
-        body: body,
+      method: "POST",
+      headers: headers,
+      body: body,
     };
 
-    fetch(ApiRoute + "/groups", requestOptions)
+    fetch(ApiRoute + "/groups", requestOptions);
   };
 
   return (
@@ -76,7 +81,7 @@ export const CreateGroups = ({ organization }: CreateGroupsProps) => {
         <div className="create-group">
           <div className="create-group__form-items">
             <Select
-              placeholder="Выберете возраст детей"
+              placeholder="Выберите возраст детей"
               onChange={(event: React.FormEvent<HTMLSelectElement>) =>
                 setValueAge(event.currentTarget.value)
               }

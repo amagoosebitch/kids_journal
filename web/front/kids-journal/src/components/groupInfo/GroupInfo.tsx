@@ -1,48 +1,58 @@
-import React, {MouseEventHandler, useEffect, useState} from "react";
+import React, { MouseEventHandler, useEffect, useState } from "react";
 import { ButtonMain } from "../button/ButtonMain";
-import {ApiRoute, AppRoute, infoGroups} from "../../const";
+import { ApiRoute, AppRoute, infoGroups } from "../../const";
 import { Link } from "react-router-dom";
 
 import "./GroupInfo.css";
 import { Modal } from "../modal/Modal";
-import {groupInfo} from "../groups/Groups";
+import { groupInfo } from "../groups/Groups";
 
 export type GroupInfoProps = {
   groupId: string | undefined;
   organization: string | undefined;
 };
 
+export type ParentProps = {
+  name: string;
+  phone_number: string;
+};
+
 export const parent = {
-    parent_id:'',
-    name:'',
-    phone_number:'',
-}
+  name: "",
+  phone_number: "",
+};
 
 export const child = {
-    name:'',
-    birth_date:new Date(),
-    parent_1: {
-            name:'',
-            phone_number:'',
-    },
-    parent_2:{
-            name:'',
-            phone_number:'',
-    },
-}
-
-
+  name: "",
+  birth_date: new Date(),
+  parent_1: {
+    name: "",
+    phone_number: "",
+  },
+  parent_2: {
+    name: "",
+    phone_number: "",
+  },
+};
 
 export const GroupInfo = ({ organization, groupId }: GroupInfoProps) => {
   const [children, setChildren] = useState([child]);
-    useEffect(() => {fetch(`${ApiRoute}/${groupId}/child`,
-          {method: 'GET', headers: {'Accept': 'application/json',}}).then(response => {
-          if (response.status === 200 || response.status === 201) {
-              return response;
-          }
-          throw new Error();
-      }).then(response => response.json()).then(data => {setChildren(data)});
-      }, [])
+  useEffect(() => {
+    fetch(`${ApiRoute}/${groupId}/child`, {
+      method: "GET",
+      headers: { Accept: "application/json" },
+    })
+      .then((response) => {
+        if (response.status === 200 || response.status === 201) {
+          return response;
+        }
+        throw new Error();
+      })
+      .then((response) => response.json())
+      .then((data) => {
+        setChildren(data);
+      });
+  }, []);
   const [groups, setGroups] = useState(infoGroups);
 
   const currentGroup = groups.filter((group) => {
@@ -53,10 +63,12 @@ export const GroupInfo = ({ organization, groupId }: GroupInfoProps) => {
 
   const [isOpenModal, setIsOpenModal] = useState(false);
 
-  const [currChild, setCurrChild] = useState([""]);
+  const [currChild, setCurrChild] = useState<
+    [string, ParentProps, ParentProps]
+  >(["", parent, parent]);
 
-  const doDo = (name: string, parent: string, number: string) => {
-    setCurrChild([name, parent, number]);
+  const doDo = (name: string, parent_1: ParentProps, parent_2: ParentProps) => {
+    setCurrChild([name, parent_1, parent_2]);
   };
 
   const handleModalOpen = () => {
@@ -95,36 +107,32 @@ export const GroupInfo = ({ organization, groupId }: GroupInfoProps) => {
             </tr>
           </thead>
           <tbody>
-                {children?.map((child) => (
-                  <>
-                    <tr
-                      className="children-item"
-                      onClick={() =>
-                        doDo(
-                          child.name,
-                          child.parent_1.name,
-                          child.parent_1.phone_number,
-                        )
-                      }
-                    >
-                      <td className="children-item_name">
-                        <Link to={""} onClick={handleModalOpen}>
-                          {child.name}
-                        </Link>
-                      </td>
-                      <td className="children-item_age">
-                        {new Date().getFullYear() -
-                          new Date(child.birth_date).getFullYear()}
-                      </td>
-                      <td className="children-item_number">
-                        {child.parent_1.phone_number}
-                      </td>
-                      <td className="children-item_parent">
-                        {child.parent_1.name}
-                      </td>
-                    </tr>
-                  </>
-                ))}
+            {children?.map((child) => (
+              <>
+                <tr
+                  className="children-item"
+                  onClick={() =>
+                    doDo(child.name, child.parent_1, child.parent_2)
+                  }
+                >
+                  <td className="children-item_name">
+                    <Link to={""} onClick={handleModalOpen}>
+                      {child.name}
+                    </Link>
+                  </td>
+                  <td className="children-item_age">
+                    {new Date().getFullYear() -
+                      new Date(child.birth_date).getFullYear()}
+                  </td>
+                  <td className="children-item_number">
+                    {child.parent_1.phone_number}
+                  </td>
+                  <td className="children-item_parent">
+                    {child.parent_1.name}
+                  </td>
+                </tr>
+              </>
+            ))}
           </tbody>
         </table>
       </div>

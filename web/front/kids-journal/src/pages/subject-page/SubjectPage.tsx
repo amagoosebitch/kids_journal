@@ -25,8 +25,6 @@ export const infoSubject = [
 
 export const infoTopic = [
   {
-    organization_id: "",
-    subject_id: "",
     presentation_id: "",
     name: "",
     description: "",
@@ -47,21 +45,35 @@ export const SubjectPage = () => {
   const { organization } = useParams();
   const [value, setValue] = useState("");
 
-  const filteredSubject = subjectInfo.filter((curSub) => {
-    return curSub.name.toLowerCase().includes(value.toLowerCase());
-  });
-
   const [subjects, setSubjects] = useState(infoSubject);
   const [presentations, setPresentations] = useState(infoTopic);
 
-  let allPresentations: allInfoTopicProps;
+  const [curSubject, setCurSubject] = useState("");
 
   useEffect(() => {
-    console.log(organization)
     fetch(`${ApiRoute}/organizations/${organization}/subjects`, {
       method: "GET",
       headers: { Accept: "application/json" },
     })
+      .then((response) => {
+        if (response.status === 200 || response.status === 201) {
+          return response;
+        }
+        throw new Error();
+      })
+      .then((response) => response.json())
+      .then((data) => {
+        setSubjects(data);
+      });
+  }, []);
+
+  useEffect(() => {
+    if (curSubject !== "") {
+      setPresentations(infoTopic)
+      fetch(`${ApiRoute}/subjects/${curSubject}/presentations`, {
+        method: "GET",
+        headers: { Accept: "application/json" },
+      })
         .then((response) => {
           if (response.status === 200 || response.status === 201) {
             return response;
@@ -70,9 +82,15 @@ export const SubjectPage = () => {
         })
         .then((response) => response.json())
         .then((data) => {
-          setSubjects(data);
+          setPresentations(data);
         });
-  }, []);
+    }
+  }, [curSubject]);
+
+
+  const filteredSubject = subjects.filter((curSub) => {
+    return curSub.name.toLowerCase().includes(value.toLowerCase());
+  });
 
   return (
     <>
@@ -103,48 +121,49 @@ export const SubjectPage = () => {
 
       <div className="subjects">
         <Accordion allowToggle>
-          {filteredSubject
-            .filter((subject) => {
-              return subject.organization === organization;
-            })
-            .map((subject) => (
-              <AccordionItem>
-                <h2>
-                  <AccordionButton>
-                    <Box as="span" flex="1" textAlign="left">
-                      {subject.name}
-                    </Box>
-                    <AccordionIcon />
-                  </AccordionButton>
-                </h2>
-                <AccordionPanel pb={4}>
-                  <table className="subject__table">
-                    <thead className="subject-title">
-                      <tr>
-                        <td className="subject-title_name">Название темы</td>
-                        <td className="subject-title_age">Возраст</td>
-                        <td className="subject-description">Описание</td>
+          {filteredSubject.map((subject) => (
+            <AccordionItem>
+              <h2>
+                <AccordionButton>
+                  <Box
+                    onClick={() => setCurSubject(subject.name)}
+                    as="span"
+                    flex="1"
+                    textAlign="left"
+                  >
+                    {subject.name}
+                  </Box>
+                  <AccordionIcon />
+                </AccordionButton>
+              </h2>
+              <AccordionPanel pb={4}>
+                <table className="subject__table">
+                  <thead className="subject-title">
+                    <tr>
+                      <td className="subject-title_name">Название темы</td>
+                      <td className="subject-title_age">Возраст</td>
+                      <td className="subject-description">Описание</td>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {presentations?.map((currentTopic) => (
+                      <tr className="subject-item">
+                        <td className="subject-item_name">
+                          {currentTopic.name}
+                        </td>
+                        <td className="subject-item_age">
+                          {subject.age_range}
+                        </td>
+                        <td className="subject-item_description">
+                          {currentTopic.description}
+                        </td>
                       </tr>
-                    </thead>
-                    <tbody>
-                      {subject.topic.map((currentTopic) => (
-                        <tr className="subject-item">
-                          <td className="subject-item_name">
-                            {currentTopic.name}
-                          </td>
-                          <td className="subject-item_age">
-                            {currentTopic.age}
-                          </td>
-                          <td className="subject-item_description">
-                            {currentTopic.description}
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </AccordionPanel>
-              </AccordionItem>
-            ))}
+                    ))}
+                  </tbody>
+                </table>
+              </AccordionPanel>
+            </AccordionItem>
+          ))}
         </Accordion>
       </div>
     </>

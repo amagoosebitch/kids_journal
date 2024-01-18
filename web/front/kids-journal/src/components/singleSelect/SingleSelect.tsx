@@ -69,44 +69,42 @@ export const Select = ({ value, onChange, options }: SelectProps) => {
   }, [isOpen, highlightedIndex, options]);
 
   return (
-      <div className='organization-select'>
-        <div
-            ref={containerRef}
-            onBlur={() => setIsOpen(false)}
-            onClick={() => setIsOpen((prev) => !prev)}
-            tabIndex={0}
-            className={"select-container"}
-        >
-          <span className={"select-value"}>{value?.label}</span>
-          <div className={"select-caret"}></div>
+    <div className="organization-select">
+      <div
+        ref={containerRef}
+        onBlur={() => setIsOpen(false)}
+        onClick={() => setIsOpen((prev) => !prev)}
+        tabIndex={0}
+        className={"select-container"}
+      >
+        <span className={"select-value"}>{value?.label}</span>
+        <div className={"select-caret"}></div>
 
-          <ul className={`select-options ${isOpen ? "show" : ""}`}>
-            {options.map((option, index) => (
-                <li
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      selectOption(option);
-                      setIsOpen(false);
-                    }}
-                    onMouseEnter={() => setHighlightedIndex(index)}
-                    key={option.value}
-                    className={`select-option ${
-                        isOptionSelected(option) ? "selected" : ""
-                    } ${index === highlightedIndex ? "highlighted" : ""}`}
-                >
-                  {option.label}
-                </li>
-            ))}
-          </ul>
-        </div>
-        <Link
-            to={AppRoute.CreateOrganization}
-            className={"menu__creat-institution"}
-        >
-          <li className={"select-option-last"}>
-            + создать учреждение
-          </li>
-        </Link>
+        <ul className={`select-options ${isOpen ? "show" : ""}`}>
+          {options.map((option, index) => (
+            <li
+              onClick={(e) => {
+                e.stopPropagation();
+                selectOption(option);
+                setIsOpen(false);
+              }}
+              onMouseEnter={() => setHighlightedIndex(index)}
+              key={option.value}
+              className={`select-option ${
+                isOptionSelected(option) ? "selected" : ""
+              } ${index === highlightedIndex ? "highlighted" : ""}`}
+            >
+              {option.label}
+            </li>
+          ))}
+        </ul>
       </div>
+      <Link
+        to={AppRoute.CreateOrganization}
+        className={"menu__creat-institution"}
+      >
+        <li className={"select-option-last"}>+ создать учреждение</li>
+      </Link>
+    </div>
   );
-}
+};

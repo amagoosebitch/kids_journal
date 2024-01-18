@@ -30,6 +30,8 @@
 
 .Modal {
   display: flex;
+  width: 324px;
+  height: 398px;
 }
 
 .Modal-img {

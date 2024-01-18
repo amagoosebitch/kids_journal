@@ -5,6 +5,8 @@ import { DescriptionForm } from "../../components/userForm/DescriptionForm";
 import React, { FormEvent, useState } from "react";
 import { Header } from "../../components/header/Header";
 import "./CreateActivityPage.css";
+import { ApiRoute, AppRoute } from "../../const";
+import { useNavigate, useParams } from "react-router-dom";
 
 type FormData = {
   group: string;
@@ -18,15 +20,16 @@ type FormData = {
 
 const INITIAL_DATA: FormData = {
   group: "",
-  isIndividual: false,
-  listChildren: [],
-  date: "",
   subject: "",
   topic: "",
+  date: "",
+  listChildren: [],
   description: "",
+  isIndividual: false,
 };
 
 export default function CreateActivityPage() {
+  const { organization } = useParams();
   const [data, setData] = useState(INITIAL_DATA);
   function updateFields(fields: Partial<FormData>) {
     setData((prev) => {
@@ -40,9 +43,38 @@ export default function CreateActivityPage() {
       <DescriptionForm {...data} updateFields={updateFields} />,
     ]);
 
+  const navigate = useNavigate();
+
   function onSubmitForm(e: FormEvent) {
     e.preventDefault();
-    return !isLastStep ? next() : alert("GOOD!!!");
+    if (!isLastStep) return next();
+    else {
+      const headers = new Headers();
+      headers.append("Content-Type", "application/json");
+
+      console.log(data.topic)
+
+      let lesson = JSON.stringify({
+        group_id: data.group,
+        subject_id: data.subject,
+        presentation_id: data.topic,
+        start_lesson: data.date,
+        child_id: data.listChildren.map(
+          (child: { name: string; id: string }) => child.name,
+        ),
+        description: data.description,
+      });
+      console.log(lesson);
+
+      let requestOptions = {
+        method: "POST",
+        headers: headers,
+        body: lesson,
+      };
+
+      fetch(ApiRoute + `/lessons`, requestOptions);
+    }
+    navigate(`/${organization}${AppRoute.Main}`);
   }
 
   return (
@@ -64,11 +96,17 @@ export default function CreateActivityPage() {
             }}
           >
             {!isFirstStep && (
-              <button type="button" onClick={back}>
+              <button
+                className="creat-button-activity"
+                type="button"
+                onClick={back}
+              >
                 Назад
               </button>
             )}
-            <button type="submit">{isLastStep ? "Сохранить" : "Дальше"}</button>
+            <button className="creat-button-activity" type="submit">
+              {isLastStep ? "Сохранить" : "Дальше"}
+            </button>
           </div>
         </form>
       </div>

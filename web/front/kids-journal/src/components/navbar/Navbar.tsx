@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { Avatar } from '@chakra-ui/react'
+import { Avatar } from "@chakra-ui/react";
 import "./Navbar.css";
 import { ButtonHeader } from "../button-head/ButtonHead";
 
@@ -32,9 +32,7 @@ function Navbar() {
           <Link to="/" className="navbar-logo" onClick={closeMobileMenu}>
             Kids Journal
           </Link>
-          <span className="organization">
-            Садик №1
-          </span>
+          <span className="organization">Садик №1</span>
           <div className="menu-icon" onClick={handleClick}>
             <i className={click ? "fas fa-times" : "fas fa-bars"} />
           </div>
@@ -64,7 +62,7 @@ function Navbar() {
             </li>
 
             <li className="nav-item">
-              <Avatar size='lg'/>
+              <Avatar size="lg" />
             </li>
 
             <li>

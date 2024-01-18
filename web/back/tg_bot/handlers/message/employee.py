@@ -8,9 +8,8 @@ from telegram.ext import ContextTypes
 
 from tg_bot.api_utils import (
     get_children_by_group_id,
-    get_employee_by_tg_id,
     get_group_by_id,
-    get_parents_by_child_id, get_employee_organization, get_groups_by_organization,
+    get_parents_by_child_id, get_groups_by_organization,
 )
 from tg_bot.callbacks import ReportTypeCallback
 from tg_bot.message_replies import (
@@ -64,7 +63,7 @@ async def handle_single_child_report(
 ):
     if "group_page" not in context.chat_data:
         context.chat_data["group_page"] = 0
-    group_ids = get_groups_by_organization(organization="Добрый Мир")
+    group_ids = ["маленькие дети", "Солнышки"]  # Пиздец
 
     group_page = context.chat_data["group_page"]
     if group_page > len(group_ids):
@@ -73,6 +72,7 @@ async def handle_single_child_report(
 
     group_info_buttons: list[list[InlineKeyboardButton]] = [[]]
     for group_id in group_ids[group_page : group_page + 3]:
+        print('group_id', group_id)
         group = get_group_by_id(group_id=str(group_id))
         msg = GROUP_INFO.format(group_name=group.name, group_age_range=group.age_range)
         group_info_buttons.append(
@@ -143,11 +143,11 @@ async def handle_write_report(update: Update, context: ContextTypes.DEFAULT_TYPE
 async def handle_send_picture(update: Update, context: ContextTypes.DEFAULT_TYPE):
     parent_1, parent_2 = get_parents_by_child_id(context.chat_data["child_id"])
 
-    if parent_1:
+    if parent_1 and parent_1.tg_user_id is not None:
         await context.bot.send_message(
             chat_id=parent_1.tg_user_id, text=context.chat_data["report_text"]
         )
-    if parent_2:
+    if parent_2 and parent_2.tg_user_id is not None:
         await context.bot.send_message(
             chat_id=parent_2.tg_user_id, text=context.chat_data["report_text"]
         )

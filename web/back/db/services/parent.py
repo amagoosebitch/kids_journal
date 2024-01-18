@@ -107,6 +107,7 @@ class ParentService:
 
         rows = self._pool.retry_operation_sync(callee_1)[0].rows or []
         rows.extend(self._pool.retry_operation_sync(callee_2)[0].rows or [])
+        print(rows)
         if not rows:
             return None
         if len(rows) == 1:

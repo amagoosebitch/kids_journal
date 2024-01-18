@@ -19,7 +19,8 @@ async def create_subject(
         str(group.group_id)
         for group in groups_service.get_all_for_organization(organization_id)
     ]
-    subject_service.create_group_subject_pair(group_ids, str(subject.subject_id))
+    if group_ids:
+        subject_service.create_group_subject_pair(group_ids, str(subject.subject_id))
 
 
 async def get_subject(

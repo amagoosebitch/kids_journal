@@ -129,7 +129,7 @@ def create_tables(session_pool: Any, path: Path):
             .with_primary_keys("schedule_id")
             .with_columns(
                 ydb.Column("schedule_id", ydb.PrimitiveType.Utf8),
-                ydb.Column("group_id", ydb.PrimitiveType.Utf8),
+                ydb.Column("group_id", ydb.OptionalType(ydb.PrimitiveType.Utf8)),
                 ydb.Column(
                     "start_lesson", ydb.OptionalType(ydb.PrimitiveType.Datetime)
                 ),
@@ -154,8 +154,8 @@ def create_tables(session_pool: Any, path: Path):
             .with_primary_keys("note_id")
             .with_columns(
                 ydb.Column("note_id", ydb.PrimitiveType.Utf8),
-                ydb.Column("schedule_id", ydb.PrimitiveType.Utf8),
-                ydb.Column("text", ydb.PrimitiveType.Utf8),
+                ydb.Column("schedule_id", ydb.OptionalType(ydb.PrimitiveType.Utf8)),
+                ydb.Column("text", ydb.OptionalType(ydb.PrimitiveType.Utf8)),
             ),
         )
 

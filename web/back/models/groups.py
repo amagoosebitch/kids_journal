@@ -13,5 +13,5 @@ class GroupModel(BaseModel):
 
 
 class GroupChildModel(BaseModel):
-    group_id: UUID = uuid4()
-    child_ids: list[UUID] = []
+    group_id: str = uuid4()
+    child_ids: list[str] = []

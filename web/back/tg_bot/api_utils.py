@@ -59,7 +59,7 @@ def try_merge_user_by_phone(
 ) -> ParentModel | EmployeeModel | None:
     response = requests.post(
         api_settings.get_user_url(),
-        json={'phone_number': phone, 'tg_user_id': str(tg_id)},
+        json={"phone_number": phone, "tg_user_id": str(tg_id)},
     ).json()
     if response is None:
         return None

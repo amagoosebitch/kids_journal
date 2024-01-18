@@ -1,5 +1,4 @@
 export const ApiRoute = "https://d5de0lctsr23htkj7hlj.apigw.yandexcloud.net"
-//export const ApiRoute = "http://0.0.0.0:8080"
 export const AppRoute = {
   WelcomeScreen: "/",
   Main: "/main",
@@ -20,7 +19,6 @@ export const AppRoute = {
 };
 
 export const LoginUrl = "https://d5de0lctsr23htkj7hlj.apigw.yandexcloud.net/login";
-export const JwtKey = process.env.REACT_APP_JWT_SECRET_KEY
 
 export enum AuthorizationStatus {
   Auth = "AUTH",
@@ -30,13 +28,9 @@ export enum AuthorizationStatus {
 
 export const infoOrganization = [
   {
-    name: "Садик №1",
+    name: "Добрый Мир",
     id: "1",
-  },
-  {
-    name: "Садик Вишенка",
-    id: "2",
-  },
+  }
 ];
 
 export const infoGroups = [

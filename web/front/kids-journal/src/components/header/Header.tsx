@@ -10,6 +10,7 @@ import "../menuList/MenuList.css";
 import "./Header.css";
 import {AppRoute, infoOrganization} from "../../const";
 import {Select, SelectOption} from "../singleSelect/SingleSelect";
+import Cookies from 'js-cookie';
 
 
 const optionsMenu = [
@@ -159,6 +160,9 @@ export const Header = () => {
                         e.stopPropagation();
                         MenuListOption(option);
                         setOpenMenu(false);
+                        if (option.label == "Выйти") {
+                          Cookies.remove("Authorization");
+                        }
                       }}
                       onMouseEnter={() => setHighlightedIndexMenu(index)}
                       key={option.value}

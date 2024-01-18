@@ -151,10 +151,10 @@ class EmployeeService:
             row["role_id"] = Role[row["e.role_id"]].value
             result.append(
                 EmployeeResponse(
-                    employee_id=row['e.employee_id'],
-                    name=row['e.name'],
-                    phone_number=row['e.phone_number'],
-                    role_id=row['role_id'],
+                    employee_id=row["e.employee_id"],
+                    name=row["e.name"],
+                    phone_number=row["e.phone_number"],
+                    role_id=row["role_id"],
                 )
             )
         return result
@@ -177,4 +177,8 @@ class EmployeeService:
                 commit_tx=True,
             )
 
-        return list(map(lambda x: x['org.name'], self._pool.retry_operation_sync(callee)[0].rows))
+        return list(
+            map(
+                lambda x: x["org.name"], self._pool.retry_operation_sync(callee)[0].rows
+            )
+        )

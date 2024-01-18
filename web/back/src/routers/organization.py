@@ -19,6 +19,13 @@ async def get_organizations(
     return organization_service.get_all()
 
 
+async def get_organizations_for_user_by_phone(
+    phone_number: str,
+    organization_service=Depends(create_organization_service),
+) -> list[str]:
+    return organization_service.get_names_for_user(phone_number)
+
+
 async def get_organization(
     organization_id: str,
     organization_service=Depends(create_organization_service),

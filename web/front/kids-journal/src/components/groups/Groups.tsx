@@ -2,7 +2,8 @@ import React, { useEffect, useState } from "react";
 import { AppRoute, ApiRoute, infoGroups } from "../../const";
 import { ButtonMain } from "../button/ButtonMain";
 import "./Groups.css";
-import { Link } from "react-router-dom";
+import {Link, useNavigate} from "react-router-dom";
+import {AuthMiddleware} from "../../middlewares";
 
 export type GroupProps = {
   organization: string | undefined;
@@ -18,6 +19,8 @@ export const groupInfo = [
 ];
 
 export const Groups = ({ organization }: GroupProps) => {
+  const navigate = useNavigate();
+  AuthMiddleware(navigate);
   const [firstGroups, setFirstGroups] = useState(groupInfo);
   useEffect(() => {
     fetch(`${ApiRoute}/organizations/${organization}/groups`, {

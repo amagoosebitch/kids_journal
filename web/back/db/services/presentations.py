@@ -92,11 +92,11 @@ class PresentationService:
         for row in rows:
             result.append(
                 PresentationModel(
-                    presentation_id=row['p.presentation_id'],
-                    name=row['p.name'],
-                    description=row['p.description'],
-                    photo_url=row['p.photo_url'],
-                    file_url=row['p.file_url'],
+                    presentation_id=row["p.presentation_id"],
+                    name=row["p.name"],
+                    description=row["p.description"],
+                    photo_url=row["p.photo_url"],
+                    file_url=row["p.file_url"],
                 )
             )
         return result

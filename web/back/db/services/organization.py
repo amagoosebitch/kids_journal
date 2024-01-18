@@ -1,5 +1,4 @@
 from typing import Any
-from uuid import UUID
 
 from pydantic import ValidationError
 
@@ -80,6 +79,26 @@ class OrganizationService:
                 #  ToDo: Мега пепега опасное место
                 continue
         return response
+
+    def get_names_for_user(self, phone_number: str) -> list[str]:
+        def callee(session: Any):
+            return session.transaction().execute(
+                """
+                PRAGMA TablePathPrefix("{db_prefix}");
+                SELECT distinct o.name
+                FROM organization as o
+                JOIN group as g on g.organization_id = o.organization_id
+                JOIN group_teacher as gt ON gt.group_id = g.group_id
+                JOIN teacher as t ON gt.teacher_id = t.employee_id
+                WHERE t.phone_number = {phone_number}
+                """.format(
+                    db_prefix=self._db_prefix, phone_number=phone_number
+                ),
+                commit_tx=True,
+            )
+
+        results = self._pool.retry_operation_sync(callee)[0].rows
+        return list(map(lambda x: x["o.name"], results))
 
     def get_by_id(self, organization_id: str) -> OrganizationModel:
         def callee(session: Any):

@@ -1,8 +1,6 @@
-from uuid import UUID
 
 from fastapi import Depends
 
-from db.services.organization import OrganizationModel
 from db.services.presentations import PresentationService
 from models.presentations import PresentationModel
 from src.dependencies import create_presentation_service

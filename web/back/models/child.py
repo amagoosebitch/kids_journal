@@ -1,10 +1,9 @@
 from datetime import datetime
-from uuid import UUID, uuid4
 
 from pydantic import BaseModel
 
 from models.entity import Gender
-from models.parents import ParentModel, ParentModelResponse
+from models.parents import ParentModelResponse
 
 
 class ChildModel(BaseModel):

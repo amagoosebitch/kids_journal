@@ -4,7 +4,11 @@ import uvicorn
 from fastapi import APIRouter, FastAPI
 from starlette.middleware.cors import CORSMiddleware
 
-from routers.presentation import create_presentation, get_presentation, get_presentations
+from routers.presentation import (
+    create_presentation,
+    get_presentation,
+    get_presentations,
+)
 from routers.schedule import create_lesson, get_schedule_for_group
 from routers.subject import (
     create_subject,
@@ -14,8 +18,13 @@ from routers.subject import (
 from src.exception_handlers.unauthorized import handle_auth_error
 from src.routers.auth import login
 from src.routers.child import create_child
-from src.routers.employee import create_employee, get_employee_by_tg_id, get_employees_for_organization, \
-    get_employee_by_phone, get_employees_organization_names_by_phone
+from src.routers.employee import (
+    create_employee,
+    get_employee_by_phone,
+    get_employee_by_tg_id,
+    get_employees_for_organization,
+    get_employees_organization_names_by_phone,
+)
 from src.routers.groups import (
     add_children_to_group,
     add_group_to_organization,
@@ -27,6 +36,7 @@ from src.routers.organization import (
     create_organization,
     get_organization,
     get_organizations,
+    get_organizations_for_user_by_phone,
 )
 from src.routers.parent import (
     create_parent,
@@ -57,6 +67,11 @@ def init_app() -> FastAPI:
     router.add_api_route("/organizations", create_organization, methods=["POST"])
     router.add_api_route("/organizations", get_organizations, methods=["GET"])
     router.add_api_route(
+        "/organizations/{phone_number}",
+        get_organizations_for_user_by_phone,
+        methods=["GET"],
+    )
+    router.add_api_route(
         "/organizations/{organization_id}", get_organization, methods=["GET"]
     )
 
@@ -75,11 +90,19 @@ def init_app() -> FastAPI:
         "/organizations/{organization_id}/employee", create_employee, methods=["POST"]
     )
     router.add_api_route(
-        "/organizations/{organization_id}/employee", get_employees_for_organization, methods=["GET"]
+        "/organizations/{organization_id}/employee",
+        get_employees_for_organization,
+        methods=["GET"],
     )
     router.add_api_route("/employee/{tg_id}", get_employee_by_tg_id, methods=["GET"])
-    router.add_api_route("/employee/phone/{phone}", get_employee_by_phone, methods=["GET"])
-    router.add_api_route("/employee/{phone}/organizations", get_employees_organization_names_by_phone, methods=["GET"])
+    router.add_api_route(
+        "/employee/phone/{phone}", get_employee_by_phone, methods=["GET"]
+    )
+    router.add_api_route(
+        "/employee/{phone}/organizations",
+        get_employees_organization_names_by_phone,
+        methods=["GET"],
+    )
 
     # Child
     router.add_api_route("/{group_id}/child", create_child, methods=["POST"])

@@ -1,12 +1,8 @@
-import logging
-from typing import Any
-from uuid import UUID
-
 from fastapi import Depends
 from fastapi.params import Path
 
 from db.services.groups import GroupModel, GroupService
-from models.child import ChildModel, ChildModelResponse
+from models.child import ChildModelResponse
 from models.groups import GroupChildModel
 from src.dependencies import create_group_service
 
@@ -43,7 +39,6 @@ async def add_children_to_group(
 
 
 async def get_children_by_group_id(
-    group_id: str,
-    group_service: GroupService = Depends(create_group_service)
+    group_id: str, group_service: GroupService = Depends(create_group_service)
 ) -> list[ChildModelResponse]:
     return group_service.get_children_by_group_id(group_id)

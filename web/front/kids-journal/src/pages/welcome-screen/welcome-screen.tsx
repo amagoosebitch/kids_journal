@@ -68,19 +68,10 @@ function WelcomeScreen({}: WelcomeScreenProps): JSX.Element {
           Сервис для автоматизации работы детских садиков с методикой Монтессори
         </div>
       </div>
-      <div className="home-buttons">
+    <div className="home-buttons">
         <div className="home-button">
-          <ButtonMain
-            linkButton={LoginUrl}
-            height="44px"
-            width="316px"
-          >
-            Войти
-          </ButtonMain>
-        </div>
-        <div className="home-button">
-          <ButtonMain isDisable={true} linkButton={AppRoute.SignUp} height="50px" width="288px" background={"#54A9EB"}>
-            Зарегистрироваться
+          <ButtonMain linkButton={LoginUrl} height="50px" width="288px" background={"#54A9EB"}>
+            Войти через Telegram
           </ButtonMain>
         </div>
       </div>

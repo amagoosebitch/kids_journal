@@ -79,7 +79,7 @@ function WelcomeScreen({}: WelcomeScreenProps): JSX.Element {
           </ButtonMain>
         </div>
         <div className="home-button">
-          <ButtonMain isDisable={true} linkButton={AppRoute.SignUp} height="44px" width="316px">
+          <ButtonMain isDisable={true} linkButton={AppRoute.SignUp} height="50px" width="288px" background={"#54A9EB"}>
             Зарегистрироваться
           </ButtonMain>
         </div>

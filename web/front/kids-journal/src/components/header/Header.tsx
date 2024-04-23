@@ -108,23 +108,16 @@ export const Header = () => {
         Kids Journal
       </Link>
 
-      <div className="organization">
-        <Select
-          options={options}
-          value={value}
-          onChange={(e: SelectOption) => changeSelect(e)}
-        />
-      </div>
 
       <nav className={`header__nav ${isOpen ? "active" : ""}`} ref={menuRef}>
         <ul className="header__nav-list">
           <li className="header__nav-item">
             <Link
-              to={`/${value?.label}/groups`}
-              className="nav-links"
-              onClick={closeMobileMenu}
+                to={`/${value?.label}/activity`}
+                className="nav-links"
+                onClick={closeMobileMenu}
             >
-              Группы
+              Активности
             </Link>
           </li>
           <li className="header__nav-item">
@@ -138,19 +131,20 @@ export const Header = () => {
           </li>
           <li className="header__nav-item">
             <Link
-              to={`/${value?.label}/activity`}
-              className="nav-links"
-              onClick={closeMobileMenu}
+                to={`/${value?.label}/groups`}
+                className="nav-links"
+                onClick={closeMobileMenu}
             >
-              Активности
+              Группы
             </Link>
           </li>
+
           <li className="header__nav-item">
             <button
               className="menu-button"
               onClick={() => setOpenMenu(!isOpenMenu)}
             >
-              <Avatar size="lg" />
+              <Avatar size="md" />
             </button>
 
             <nav className={`menu ${isOpenMenu ? "active" : ""}`}>

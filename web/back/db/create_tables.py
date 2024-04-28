@@ -15,14 +15,14 @@ def create_tables(session_pool: Any, path: Path):
             .with_primary_keys("organization_id")
             .with_columns(
                 ydb.Column("organization_id", ydb.PrimitiveType.Utf8),
-                ydb.Column("name", ydb.OptionalType(ydb.PrimitiveType.Utf8)),
+                ydb.Column("name", ydb.PrimitiveType.Utf8),
                 ydb.Column("description", ydb.OptionalType(ydb.PrimitiveType.Utf8)),
                 ydb.Column("photo_url", ydb.OptionalType(ydb.PrimitiveType.Utf8)),
                 ydb.Column(
-                    "start_education_time", ydb.OptionalType(ydb.PrimitiveType.Datetime)
+                    "start_education_time", ydb.OptionalType(ydb.PrimitiveType.Date)
                 ),
                 ydb.Column(
-                    "end_education_time", ydb.OptionalType(ydb.PrimitiveType.Datetime)
+                    "end_education_time", ydb.OptionalType(ydb.PrimitiveType.Date)
                 ),
                 ydb.Column(
                     "registration_date", ydb.OptionalType(ydb.PrimitiveType.Timestamp)
@@ -40,8 +40,8 @@ def create_tables(session_pool: Any, path: Path):
             .with_primary_keys("group_id")
             .with_columns(
                 ydb.Column("group_id", ydb.PrimitiveType.Utf8),
-                ydb.Column("organization_id", ydb.OptionalType(ydb.PrimitiveType.Utf8)),
-                ydb.Column("name", ydb.OptionalType(ydb.PrimitiveType.Utf8)),
+                ydb.Column("organization_id", ydb..PrimitiveType.Utf8),
+                ydb.Column("name", ydb.PrimitiveType.Utf8),
                 ydb.Column("age_range", ydb.OptionalType(ydb.PrimitiveType.Utf8)),
             )
             .with_indexes(
@@ -129,22 +129,13 @@ def create_tables(session_pool: Any, path: Path):
             .with_primary_keys("schedule_id")
             .with_columns(
                 ydb.Column("schedule_id", ydb.PrimitiveType.Utf8),
-                ydb.Column("group_id", ydb.OptionalType(ydb.PrimitiveType.Utf8)),
                 ydb.Column(
                     "start_lesson", ydb.OptionalType(ydb.PrimitiveType.Datetime)
                 ),
                 ydb.Column("end_lesson", ydb.OptionalType(ydb.PrimitiveType.Datetime)),
-                ydb.Column("description", ydb.OptionalType(ydb.PrimitiveType.Utf8)),
-                ydb.Column("teacher_id", ydb.OptionalType(ydb.PrimitiveType.Utf8)),
-                ydb.Column("subject_id", ydb.OptionalType(ydb.PrimitiveType.Utf8)),
                 ydb.Column("presentation_id", ydb.OptionalType(ydb.PrimitiveType.Utf8)),
-                ydb.Column("note_id", ydb.OptionalType(ydb.PrimitiveType.Utf8)),
                 ydb.Column("canceled", ydb.OptionalType(ydb.PrimitiveType.Bool)),
             )
-            .with_indexes(
-                ydb.TableIndex("teacher_index").with_index_columns("teacher_id"),
-                ydb.TableIndex("subject_index").with_index_columns("subject_id"),
-            ),
         )
 
         # note

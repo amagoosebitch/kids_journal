@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from datetime import date, timedelta
 from itertools import groupby
 from typing import Any
@@ -31,14 +33,9 @@ class ScheduleService:
                 UPSERT INTO schedule ({keys}) VALUES
                     (
                         "{schedule_id}",
-                        "{group_id}",
-                        "{teacher_id}",
-                        "{subject_id}",
                         "{presentation_id}",
                         {start_lesson},
                         {end_lesson},
-                        "{description}",
-                        "{note_id}",
                         {canceled}
                     );
                 """.format(
@@ -78,11 +75,10 @@ class ScheduleService:
             return session.transaction().execute(
                 """
                 PRAGMA TablePathPrefix("{db_prefix}");
-                SELECT DISTINCT ch.name, ch.child_id, su.name, s.description, s.schedule_id, s.group_id, s.presentation_id, s.start_lesson
+                SELECT DISTINCT ch.name, ch.child_id, s.schedule_id, s.start_lesson
                 FROM schedule as s
                 JOIN child_schedule as cs on cs.schedule_id = s.schedule_id
                 JOIN child as ch on cs.child_id = ch.child_id
-                JOIN subject as su ON s.subject_id = su.subject_id
                 WHERE s.start_lesson > {date_str_start} AND s.start_lesson < {date_str_end} AND s.group_id = "{group_id}"
                 """.format(
                     db_prefix=self._db_prefix,
@@ -106,13 +102,13 @@ class ScheduleService:
             result.append(
                 ScheduleModelResponse(
                     schedule_id=key,
-                    child_names=list(child_ids),
+                    child_ids=list(child_ids),
                     is_for_child=True,
-                    subject_name=row["su.name"],
-                    description=row["s.description"],
+                    # subject_name=row["su.name"],
+                    # description=row["s.description"],
                     date_day=row["s.start_lesson"],
-                    group_name=row["s.group_id"],
-                    presentation_id=row["s.presentation_id"],
+                    # group_name=row["s.group_id"],
+                    # presentation_id=row["s.presentation_id"],
                 )
             )
         return result

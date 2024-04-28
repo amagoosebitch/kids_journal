@@ -1,6 +1,6 @@
 from typing import Any
 
-from models.parents import ParentModel
+from models.user import UserModel
 
 
 class ParentService:
@@ -8,7 +8,7 @@ class ParentService:
         self._pool = ydb_pool
         self._db_prefix = db_prefix
 
-    def create_parent(self, args_model: ParentModel):
+    def create_parent(self, args_model: UserModel):
         args = args_model.model_dump(exclude_none=False, mode="json")
 
         def callee(session: Any):
@@ -37,7 +37,7 @@ class ParentService:
 
         return self._pool.retry_operation_sync(callee)
 
-    def get_by_tg_user_id(self, tg_user_id: str) -> ParentModel | None:
+    def get_by_tg_user_id(self, tg_user_id: str) -> UserModel | None:
         def callee(session: Any):
             return session.transaction().execute(
                 """
@@ -55,9 +55,9 @@ class ParentService:
         rows = self._pool.retry_operation_sync(callee)[0].rows
         if not rows:
             return None
-        return ParentModel.model_validate(rows[0])
+        return UserModel.model_validate(rows[0])
 
-    def get_by_child_id(self, child_id: str) -> tuple[ParentModel | None, ParentModel | None] | None:
+    def get_by_child_id(self, child_id: str) -> tuple[UserModel | None, UserModel | None] | None:
         parent_columns = ", ".join(
             f"parent.{column} as {column}"
             for column in [
@@ -111,10 +111,10 @@ class ParentService:
         if not rows:
             return None
         if len(rows) == 1:
-            return ParentModel.model_validate(rows[0]), None
-        return ParentModel.model_validate(rows[0]), ParentModel.model_validate(rows[1])
+            return UserModel.model_validate(rows[0]), None
+        return UserModel.model_validate(rows[0]), UserModel.model_validate(rows[1])
 
-    def get_by_phone(self, phone_number: str) -> ParentModel | None:
+    def get_by_phone(self, phone_number: str) -> UserModel | None:
         def callee(session: Any):
             return session.transaction().execute(
                 """
@@ -132,7 +132,7 @@ class ParentService:
         rows = self._pool.retry_operation_sync(callee)[0].rows
         if not rows:
             return None
-        return ParentModel.model_validate(rows[0])
+        return UserModel.model_validate(rows[0])
 
     def set_telegram_id(self, phone_number: str, tg_user_id: str) -> None:
         def callee(session: Any):

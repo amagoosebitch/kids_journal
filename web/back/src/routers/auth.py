@@ -9,7 +9,7 @@ from starlette.templating import Jinja2Templates
 from auth.settings import JWTSettings, RedirectSettings, create_redirect_settings
 from db.services.employee import EmployeeService
 from dependencies import create_employee_service, jwt_settings
-from models.employees import EmployeeModel
+from models.user import UserModel
 from src.auth import (
     TelegramAuth,
     TelegramDataError,
@@ -26,7 +26,7 @@ templates = Jinja2Templates(Path(__file__).parent.parent / "templates")
 def _create_jwt_token(
     *,
     jwt_settings: JWTSettings,
-    employee: EmployeeModel | None,
+    employee: UserModel | None,
 ) -> str | None:
     if employee is None:
         return None

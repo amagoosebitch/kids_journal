@@ -2,12 +2,12 @@ from uuid import UUID
 
 from fastapi import Depends, Path
 
-from models.employees import EmployeeModel, EmployeeResponse
+from models.user import UserModel, EmployeeResponse
 from src.dependencies import create_employee_service, create_group_service
 
 
 def create_employee(
-    employee: EmployeeModel,
+    employee: UserModel,
     organization_id: str = Path(...),
     employee_service=Depends(create_employee_service),
     groups_service=Depends(create_group_service),
@@ -24,14 +24,14 @@ def create_employee(
 async def get_employee_by_tg_id(
     tg_id: str,
     employee_service=Depends(create_employee_service),
-) -> EmployeeModel | None:
+) -> UserModel | None:
     return employee_service.get_by_tg_user_id(tg_id)
 
 
 async def get_employee_by_phone(
     phone: str,
     employee_service=Depends(create_employee_service),
-) -> EmployeeModel | None:
+) -> UserModel | None:
     return employee_service.get_by_phone(phone)
 
 

@@ -5,7 +5,7 @@ from datetime import datetime
 from models.utils import CleverBaseModel as BaseModel
 
 from models.entity import Gender
-from models.parents import ParentModelResponse
+from models.user import UserModelResponse
 
 
 class ChildModel(BaseModel):
@@ -28,5 +28,5 @@ class ChildModelResponse(BaseModel):
     child_id: str
     name: str
     birth_date: datetime | None = None
-    # parent_1: ParentModelResponse | None = None
-    # parent_2: ParentModelResponse | None = None
+    # parent_1: UserModelResponse | None = None
+    # parent_2: UserModelResponse | None = None

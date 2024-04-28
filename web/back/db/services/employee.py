@@ -1,8 +1,8 @@
 import json
 from typing import Any
 
-from models.employees import EmployeeModel, EmployeeResponse
-from models.role import Role
+from models.user import UserModel, EmployeeResponse
+from models.role import Roles
 
 
 class EmployeeService:
@@ -10,7 +10,7 @@ class EmployeeService:
         self._pool = ydb_pool
         self._db_prefix = db_prefix
 
-    def create_employee(self, args_model: EmployeeModel) -> None:
+    def create_employee(self, args_model: UserModel) -> None:
         args = args_model.model_dump(exclude_none=False, mode="json")
 
         args["role_id"] = args_model.role_id.name
@@ -42,7 +42,7 @@ class EmployeeService:
 
         return self._pool.retry_operation_sync(callee)
 
-    def get_by_tg_user_id(self, tg_user_id: str) -> EmployeeModel | None:
+    def get_by_tg_user_id(self, tg_user_id: str) -> UserModel | None:
         def callee(session: Any):
             return session.transaction().execute(
                 """
@@ -62,10 +62,10 @@ class EmployeeService:
             return None
 
         rows[0]["group_ids"] = json.loads(rows[0]["group_ids"].replace("'", '"'))
-        rows[0]["role_id"] = Role[rows[0]["role_id"]].value
-        return EmployeeModel.model_validate(rows[0])
+        rows[0]["role_id"] = Roles[rows[0]["role_id"]].value
+        return UserModel.model_validate(rows[0])
 
-    def get_by_phone(self, phone_number: str) -> EmployeeModel | None:
+    def get_by_phone(self, phone_number: str) -> UserModel | None:
         def callee(session: Any):
             return session.transaction().execute(
                 """
@@ -85,8 +85,8 @@ class EmployeeService:
             return None
 
         rows[0]["group_ids"] = json.loads(rows[0]["group_ids"].replace("'", '"'))
-        rows[0]["role_id"] = Role[rows[0]["role_id"]].value
-        return EmployeeModel.model_validate(rows[0])
+        rows[0]["role_id"] = Roles[rows[0]["role_id"]].value
+        return UserModel.model_validate(rows[0])
 
     def set_telegram_id(self, phone_number: str, tg_user_id: str) -> None:
         def callee(session: Any):
@@ -148,13 +148,11 @@ class EmployeeService:
         result = []
 
         for row in rows:
-            row["role_id"] = Role[row["e.role_id"]].value
             result.append(
                 EmployeeResponse(
                     employee_id=row["e.employee_id"],
                     name=row["e.name"],
                     phone_number=row["e.phone_number"],
-                    role_id=row["role_id"],
                 )
             )
         return result

@@ -2,8 +2,8 @@ from typing import Any
 
 from db.utils import _format_unix_time
 from models.child import ChildModelResponse
-from models.groups import GroupModel
-from models.parents import ParentModelResponse
+from models.group import GroupModel
+from models.user import UserModelResponse
 
 
 class GroupService:

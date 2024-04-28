@@ -3,7 +3,7 @@ from fastapi.params import Path
 
 from db.services.groups import GroupModel, GroupService
 from models.child import ChildModelResponse
-from models.groups import GroupChildModel
+from models.group import GroupChildModel
 from src.dependencies import create_group_service
 
 

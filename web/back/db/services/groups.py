@@ -1,4 +1,8 @@
+from __future__ import annotations
+
 from typing import Any
+
+import ydb
 
 from db.utils import _format_unix_time
 from models.child import ChildModelResponse
@@ -7,14 +11,14 @@ from models.user import UserModelResponse
 
 
 class GroupService:
-    def __init__(self, ydb_pool: Any, db_prefix: str):
+    def __init__(self, ydb_pool: ydb.SessionPool, db_prefix: str):
         self._pool = ydb_pool
         self._db_prefix = db_prefix
 
     def create_group(self, args_model: GroupModel):
         args = args_model.model_dump(exclude_none=False, mode="json")
 
-        def callee(session: Any):
+        def callee(session: ydb.Session):
             session.transaction().execute(
                 """
                 PRAGMA TablePathPrefix("{db_prefix}");

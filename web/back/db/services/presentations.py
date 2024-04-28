@@ -1,10 +1,14 @@
+from __future__ import annotations
+
 from typing import Any
+
+import ydb
 
 from models.presentations import PresentationModel
 
 
 class PresentationService:
-    def __init__(self, ydb_pool: Any, db_prefix: str):
+    def __init__(self, ydb_pool: ydb.SessionPool, db_prefix: str):
         self._pool = ydb_pool
         self._db_prefix = db_prefix
 

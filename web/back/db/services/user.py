@@ -1,27 +1,27 @@
+from __future__ import annotations
+
 import json
 from typing import Any
 
-from models.user import UserModel, EmployeeResponse
+from models.user import UserModel, UserModelResponse
 from models.role import Roles
 
 
-class EmployeeService:
+class UserService:
     def __init__(self, ydb_pool: Any, db_prefix: str):
         self._pool = ydb_pool
         self._db_prefix = db_prefix
 
-    def create_employee(self, args_model: UserModel) -> None:
+    def create_user(self, args_model: UserModel) -> None:
         args = args_model.model_dump(exclude_none=False, mode="json")
-
-        args["role_id"] = args_model.role_id.name
 
         def callee(session: Any):
             session.transaction().execute(
                 """
                 PRAGMA TablePathPrefix("{db_prefix}");
-                UPSERT INTO employee ({keys}) VALUES
+                UPSERT INTO user ({keys}) VALUES
                     (
-                        "{employee_id}",
+                        "{user_id}",
                         "{name}",
                         "{first_name}",
                         "{last_name}",
@@ -29,8 +29,6 @@ class EmployeeService:
                         "{gender}",
                         "{phone_number}",
                         "{tg_user_id}",
-                        "{role_id}",
-                        "{group_ids}"
                     );
                 """.format(
                     db_prefix=self._db_prefix,
@@ -48,7 +46,7 @@ class EmployeeService:
                 """
                 PRAGMA TablePathPrefix("{db_prefix}");
                 SELECT *
-                FROM employee
+                FROM user
                 WHERE tg_user_id = "{tg_user_id}"
                 """.format(
                     db_prefix=self._db_prefix,
@@ -71,7 +69,7 @@ class EmployeeService:
                 """
                 PRAGMA TablePathPrefix("{db_prefix}");
                 SELECT *
-                FROM employee
+                FROM user
                 WHERE phone_number = "{phone_number}"
                 """.format(
                     db_prefix=self._db_prefix,
@@ -93,7 +91,7 @@ class EmployeeService:
             return session.transaction().execute(
                 """
                 PRAGMA TablePathPrefix("{db_prefix}");
-                UPDATE employee
+                UPDATE user
                 SET tg_user_id = "{tg_user_id}"
                 WHERE phone_number = "{phone_number}"
                 """.format(
@@ -106,7 +104,7 @@ class EmployeeService:
 
         return self._pool.retry_operation_sync(callee)
 
-    def link_to_groups(self, group_ids: list[str], teacher_id: str):
+    def link_teacher_to_groups(self, group_ids: list[str], teacher_id: str):
         def callee(session: Any):
             session.transaction().execute(
                 """
@@ -124,14 +122,14 @@ class EmployeeService:
 
         return self._pool.retry_operation_sync(callee)
 
-    def get_by_organization_id(self, organization_id: str) -> list[EmployeeResponse]:
+    def get_by_organization_id(self, organization_id: str) -> list[UserModelResponse]:
         def callee(session: Any):
             return session.transaction().execute(
                 """
                 PRAGMA TablePathPrefix("{db_prefix}");
-                SELECT DISTINCT e.employee_id, e.name, e.phone_number, e.role_id
-                FROM employee as e
-                JOIN group_teacher as gt ON gt.teacher_id = e.employee_id
+                SELECT DISTINCT e.user_id, e.name, e.phone_number, e.role_id
+                FROM user as e
+                JOIN group_teacher as gt ON gt.teacher_id = e.user_id
                 JOIN group as g ON g.group_id = gt.group_id
                 JOIN organization as org ON org.organization_id = g.organization_id
                 WHERE org.organization_id = "{organization_id}"
@@ -149,8 +147,8 @@ class EmployeeService:
 
         for row in rows:
             result.append(
-                EmployeeResponse(
-                    employee_id=row["e.employee_id"],
+                UserModelResponse(
+                    user_id=row["e.user_id"],
                     name=row["e.name"],
                     phone_number=row["e.phone_number"],
                 )
@@ -163,11 +161,11 @@ class EmployeeService:
                 """
                 PRAGMA TablePathPrefix("{db_prefix}");
                 SELECT distinct org.name
-                FROM employee as e
-                JOIN group_teacher as gt ON gt.teacher_id = e.employee_id
+                FROM user as u
+                JOIN group_teacher as gt ON gt.teacher_id = u.user_id
                 JOIN group as g ON g.group_id = gt.group_id
                 JOIN organization as org ON org.organization_id = g.organization_id
-                WHERE e.phone_number = "{phone_number}"
+                WHERE u.phone_number = "{phone_number}"
                 """.format(
                     db_prefix=self._db_prefix,
                     phone_number=phone_number,
@@ -180,3 +178,62 @@ class EmployeeService:
                 lambda x: x["org.name"], self._pool.retry_operation_sync(callee)[0].rows
             )
         )
+
+    def get_parent_by_child_id(self, child_id: str) -> tuple[UserModel | None, UserModel | None] | None:
+        parent_columns = ", ".join(
+            f"parent.{column} as {column}"
+            for column in [
+                "parent_id",
+                "name",
+                "first_name",
+                "last_name",
+                "email",
+                "gender",
+                "phone_number",
+                "freq_notifications",
+                "tg_user_id",
+            ]
+        )
+
+        def callee_1(session: Any):
+            return session.transaction().execute(
+                """
+                PRAGMA TablePathPrefix("{db_prefix}");
+                SELECT {parent_columns}
+                FROM parent
+                JOIN child on child.parent_1_id = parent.parent_id
+                WHERE child_id = "{child_id}"
+                """.format(
+                    db_prefix=self._db_prefix,
+                    parent_columns=parent_columns,
+                    child_id=child_id,
+                ),
+                commit_tx=True,
+            )
+
+        def callee_2(session: Any):
+            return session.transaction().execute(
+                """
+                PRAGMA TablePathPrefix("{db_prefix}");
+                SELECT {parent_columns}
+                FROM parent
+                JOIN child on child.parent_2_id = parent.parent_id
+                WHERE child_id = "{child_id}"
+                """.format(
+                    db_prefix=self._db_prefix,
+                    parent_columns=parent_columns,
+                    child_id=child_id,
+                ),
+                commit_tx=True,
+            )
+
+        rows = self._pool.retry_operation_sync(callee_1)[0].rows or []
+        rows.extend(self._pool.retry_operation_sync(callee_2)[0].rows or [])
+        print(rows)
+        if not rows:
+            return None
+        if len(rows) == 1:
+            return UserModel.model_validate(rows[0]), None
+        return UserModel.model_validate(rows[0]), UserModel.model_validate(rows[1])
+
+

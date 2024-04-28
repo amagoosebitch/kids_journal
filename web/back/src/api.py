@@ -20,8 +20,8 @@ from src.routers.auth import login
 from src.routers.child import create_child
 from src.routers.employee import (
     create_employee,
-    get_employee_by_phone,
-    get_employee_by_tg_id,
+    get_user_by_phone,
+    get_user_by_tg_id,
     get_employees_for_organization,
     get_employees_organization_names_by_phone,
 )
@@ -94,9 +94,9 @@ def init_app() -> FastAPI:
         get_employees_for_organization,
         methods=["GET"],
     )
-    router.add_api_route("/employee/{tg_id}", get_employee_by_tg_id, methods=["GET"])
+    router.add_api_route("/employee/{tg_id}", get_user_by_tg_id, methods=["GET"])
     router.add_api_route(
-        "/employee/phone/{phone}", get_employee_by_phone, methods=["GET"]
+        "/employee/phone/{phone}", get_user_by_phone, methods=["GET"]
     )
     router.add_api_route(
         "/employee/{phone}/organizations",

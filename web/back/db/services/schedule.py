@@ -123,7 +123,8 @@ class ScheduleService:
                 SELECT su.name, g.name, s.description, s.schedule_id, s.presentation_id, s.start_lesson
                 FROM schedule as s
                 left JOIN child_schedule as cs on cs.schedule_id = s.schedule_id
-                JOIN group as g ON g.group_id = s.group_id
+                JOIN group_schedule as gs ON gs.group_id = s.group_id
+                JOIN group as g ON g.group_id = gs.group_id
                 JOIN subject as su ON s.subject_id = su.subject_id
                 WHERE s.start_lesson > {date_str_start} AND s.start_lesson < {date_str_end} AND s.group_id = "{group_id}" AND cs.child_id is null
                 """.format(

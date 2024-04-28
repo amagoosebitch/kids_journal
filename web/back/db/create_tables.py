@@ -50,7 +50,7 @@ def create_tables(session_pool: Any, path: Path):
             .with_primary_keys("group_id")
             .with_columns(
                 ydb.Column("group_id", ydb.PrimitiveType.Utf8),
-                ydb.Column("organization_id", ydb..PrimitiveType.Utf8),
+                ydb.Column("organization_id", ydb.PrimitiveType.Utf8),
                 ydb.Column("name", ydb.PrimitiveType.Utf8),
                 ydb.Column("age_range", ydb.OptionalType(ydb.PrimitiveType.Utf8)),
             )
@@ -65,7 +65,7 @@ def create_tables(session_pool: Any, path: Path):
         session.create_table(
             str(path / "group_teacher"),
             ydb.TableDescription()
-            .with_primary_key(("group_id", "teacher_id"))  # точно оба форяки ?
+            .with_primary_key(("group_id", "teacher_id"))
             .with_columns(
                 ydb.Column("group_id", ydb.PrimitiveType.Utf8),
                 ydb.Column("teacher_id", ydb.PrimitiveType.Utf8),

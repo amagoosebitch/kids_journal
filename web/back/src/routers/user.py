@@ -1,16 +1,15 @@
 from fastapi import Depends
 
-from db.services.employee import EmployeeService
-from db.services.parent import ParentService
+from db.services.user import UserService, UserService
 from models.user import MergeUserModel
 from models.role import UserRole, UserRoleResponse
-from src.dependencies import create_employee_service, create_parent_service
+from src.dependencies import create_user_service, create_user_service
 
 
 async def try_merge_user_by_phone(
     user: MergeUserModel,
-    employee_service: EmployeeService = Depends(create_employee_service),
-    parent_service: ParentService = Depends(create_parent_service),
+    employee_service: UserService = Depends(create_user_service),
+    parent_service: UserService = Depends(create_user_service),
 ) -> UserRoleResponse:
     unknown_user = UserRoleResponse(role=UserRole.UNKNOWN)
     employee = employee_service.get_by_phone(user.phone_number)

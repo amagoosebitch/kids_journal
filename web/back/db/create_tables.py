@@ -33,8 +33,20 @@ def create_tables(session_pool: Any, path: Path):
             ),
         )
 
+        # organizations_users
         session.create_table(
             str(path / "organizations_users"),
+            ydb.TableDescription()
+            .with_primary_key(("organization_id", "user_id"))
+            .with_columns(
+                ydb.Column("organization_id", ydb.PrimitiveType.Utf8),
+                ydb.Column("user_id", ydb.PrimitiveType.Utf8),
+            ),
+        )
+
+        # organizations_admins
+        session.create_table(
+            str(path / "organizations_admins"),
             ydb.TableDescription()
             .with_primary_key(("organization_id", "user_id"))
             .with_columns(

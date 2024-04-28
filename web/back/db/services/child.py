@@ -28,16 +28,14 @@ class ChildService:
                 UPSERT INTO child ({keys}) VALUES
                     (
                         "{child_id}",
-                        "{name}",
                         "{first_name}",
+                        "{middle_name}"
                         "{last_name}",
                         {birth_date},
                         {start_education_date},
-                        {start_education_time},
-                        {end_education_time},
+                        {end_education_date},
                         "{gender}",
-                        "{parent_1_id}",
-                        "{parent_2_id}"
+                        "{avatar_url}"
                     );
                 """.format(
                     db_prefix=self._db_prefix,
@@ -64,3 +62,25 @@ class ChildService:
             )
 
         return self._pool.retry_operation_sync(callee)
+
+    def get_child_by_id(self, child_id: str):
+        def callee(session: Any):
+            return session.transaction().execute(
+                """
+                PRAGMA TablePathPrefix("{db_prefix}");
+                SELECT *
+                FROM child
+                WHERE id = "{child_id}"
+                """.format(
+                    db_prefix=self._db_prefix,
+                    child_id=child_id,
+                ),
+                commit_tx=True,
+            )
+
+        rows = self._pool.retry_operation_sync(callee)[0].rows
+        if not rows:
+            return None
+        if len(rows) > 1:
+            raise ValueError("Duplicated id in db table")
+        return ChildModel.model_validate(rows[0])

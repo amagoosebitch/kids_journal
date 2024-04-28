@@ -91,23 +91,23 @@ def create_tables(session_pool: Any, path: Path):
             .with_primary_keys("child_id")
             .with_columns(
                 ydb.Column("child_id", ydb.PrimitiveType.Utf8),
-                ydb.Column("name", ydb.OptionalType(ydb.PrimitiveType.Utf8)),
-                ydb.Column("first_name", ydb.OptionalType(ydb.PrimitiveType.Utf8)),
-                ydb.Column("last_name", ydb.OptionalType(ydb.PrimitiveType.Utf8)),
-                ydb.Column("birth_date", ydb.OptionalType(ydb.PrimitiveType.Datetime)),
+                ydb.Column("first_name", ydb.PrimitiveType.Utf8),
+                ydb.Column("middle_name", ydb.OptionalType(ydb.PrimitiveType.Utf8)),
+                ydb.Column("last_name", ydb.PrimitiveType.Utf8),
+                ydb.Column("birth_date", ydb.OptionalType(ydb.PrimitiveType.Date)),
                 ydb.Column(
-                    "start_education_date", ydb.OptionalType(ydb.PrimitiveType.Datetime)
+                    "start_education_date", ydb.OptionalType(ydb.PrimitiveType.Date)
                 ),
+                # ydb.Column(
+                #     "start_education_time",
+                #     ydb.OptionalType(ydb.PrimitiveType.Timestamp),
+                # ),
                 ydb.Column(
-                    "start_education_time",
-                    ydb.OptionalType(ydb.PrimitiveType.Timestamp),
-                ),
-                ydb.Column(
-                    "end_education_time", ydb.OptionalType(ydb.PrimitiveType.Timestamp)
+                    "end_education_date", ydb.OptionalType(ydb.PrimitiveType.Date)
                 ),
                 ydb.Column("gender", ydb.OptionalType(ydb.PrimitiveType.Utf8)),
-                ydb.Column("parent_1_id", ydb.OptionalType(ydb.PrimitiveType.Utf8)),
-                ydb.Column("parent_2_id", ydb.OptionalType(ydb.PrimitiveType.Utf8)),
+                # ydb.Column("parent_1_id", ydb.OptionalType(ydb.PrimitiveType.Utf8)),
+                # ydb.Column("parent_2_id", ydb.OptionalType(ydb.PrimitiveType.Utf8)),
             ),
         )
 

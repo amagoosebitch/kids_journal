@@ -26,7 +26,7 @@ from src.routers.employee import (
     get_employees_organization_names_by_phone,
 )
 from src.routers.groups import (
-    add_children_to_group,
+    # add_children_to_group,
     add_group_to_organization,
     get_children_by_group_id,
     get_group,
@@ -59,9 +59,9 @@ def init_app() -> FastAPI:
         methods=["GET"],
     )
     router.add_api_route("/groups/{group_id}", get_group, methods=["GET"])
-    router.add_api_route(
-        "/groups/link_children", add_children_to_group, methods=["POST"]
-    )
+    # router.add_api_route(
+    #     "/groups/link_children", add_children_to_group, methods=["POST"]
+    # )
 
     # Organizations
     router.add_api_route("/organizations", create_organization, methods=["POST"])

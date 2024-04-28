@@ -31,11 +31,11 @@ async def get_group(
     return response
 
 
-async def add_children_to_group(
-    group_child_model: GroupChildModel,
-    group_service: GroupService = Depends(create_group_service),
-) -> None:
-    return group_service.link_to_children(group_child_model)
+# async def add_children_to_group(
+#     group_child_model: GroupChildModel,
+#     group_service: GroupService = Depends(create_group_service),
+# ) -> None:
+#     return group_service.link_to_children(group_child_model)
 
 
 async def get_children_by_group_id(

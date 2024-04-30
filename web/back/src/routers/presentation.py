@@ -12,9 +12,6 @@ async def create_presentation(
     presentation_service: PresentationService = Depends(create_presentation_service),
 ) -> None:
     presentation_service.create_presentation(presentation)
-    presentation_service.create_subject_presentations_pair(
-        str(subject_id), str(presentation.presentation_id)
-    )
 
 
 async def get_presentation(

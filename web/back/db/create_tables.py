@@ -211,17 +211,6 @@ def create_tables(session_pool: Any, path: Path):
             ),
         )
 
-        # subject_presentation
-        session.create_table(
-            str(path / "subject_presentation"),
-            ydb.TableDescription()
-            .with_primary_key(("subject_id", "presentation_id"))
-            .with_columns(
-                ydb.Column("subject_id", ydb.PrimitiveType.Utf8),
-                ydb.Column("presentation_id", ydb.PrimitiveType.Utf8),
-            ),
-        )
-
         # user
         session.create_table(
             str(path / "user"),
@@ -281,6 +270,7 @@ def create_tables(session_pool: Any, path: Path):
                 ydb.Column("file_url", ydb.OptionalType(ydb.PrimitiveType.Utf8)),
                 ydb.Column("photo_url", ydb.OptionalType(ydb.PrimitiveType.Utf8)),
                 ydb.Column("description", ydb.OptionalType(ydb.PrimitiveType.Utf8)),
+                ydb.Column("subject_id", ydb.PrimitiveType.Utf8),
             ),
         )
 

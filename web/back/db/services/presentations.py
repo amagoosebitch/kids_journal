@@ -25,7 +25,8 @@ class PresentationService:
                         "{name}",
                         "{description}",
                         "{file_url}",
-                        "{photo_url}"
+                        "{photo_url}",
+                        "{subject_id}"
                     );
                 """.format(
                     db_prefix=self._db_prefix,
@@ -34,22 +35,6 @@ class PresentationService:
                 ),
                 commit_tx=True,
             )
-
-        return self._pool.retry_operation_sync(callee)
-
-    def create_subject_presentations_pair(self, subject_id: str, presentation_id: str):
-        def callee(session: ydb.Session):
-            session.transaction().execute(
-                """
-                PRAGMA TablePathPrefix("{db_prefix}");
-                UPSERT INTO subject_presentation ({keys}) VALUES ({values});
-                """.format(
-                    db_prefix=self._db_prefix,
-                    keys="subject_id, presentation_id",
-                    values=f'"{subject_id}", "{presentation_id}"',
-                ),
-                commit_tx=True,
-            ),
 
         return self._pool.retry_operation_sync(callee)
 
@@ -78,10 +63,9 @@ class PresentationService:
             return session.transaction().execute(
                 """
                 PRAGMA TablePathPrefix("{db_prefix}");
-                SELECT distinct p.presentation_id, p.name, p.description, p.photo_url, p.file_url
+                SELECT distinct p.presentation_id, p.name, p.description, p.photo_url, p.file_url, p.subject_id
                 FROM presentation as p
-                JOIN subject_presentation as sp ON sp.presentation_id = p.presentation_id
-                WHERE sp.subject_id = "{subject_id}"
+                WHERE p.subject_id = "{subject_id}"
                 """.format(
                     db_prefix=self._db_prefix,
                     subject_id=subject_id,
@@ -101,6 +85,7 @@ class PresentationService:
                     description=row["p.description"],
                     photo_url=row["p.photo_url"],
                     file_url=row["p.file_url"],
+                    subject_id=row["p.subject_id"]
                 )
             )
         return result

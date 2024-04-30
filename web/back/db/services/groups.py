@@ -40,7 +40,7 @@ class GroupService:
         return self._pool.retry_operation_sync(callee)
 
     def get_all(self) -> list[GroupModel]:
-        def callee(session: Any):
+        def callee(session: ydb.Session):
             return session.transaction().execute(
                 """
                 PRAGMA TablePathPrefix("{db_prefix}");
@@ -56,7 +56,7 @@ class GroupService:
         return [GroupModel.model_validate(result) for result in results]
 
     def get_all_for_organization(self, organization_id: str) -> list[GroupModel]:
-        def callee(session: Any):
+        def callee(session: ydb.Session):
             return session.transaction().execute(
                 """
                 PRAGMA TablePathPrefix("{db_prefix}");
@@ -73,7 +73,7 @@ class GroupService:
         return [GroupModel.model_validate(result) for result in results]
 
     def get_by_id(self, group_id: str) -> GroupModel | None:
-        def callee(session: Any):
+        def callee(session: ydb.Session):
             return session.transaction().execute(
                 """
                 PRAGMA TablePathPrefix("{db_prefix}");
@@ -92,7 +92,7 @@ class GroupService:
         return GroupModel.model_validate(rows[0])
 
     def get_children_by_group_id(self, group_id: str) -> list[ChildModelResponse]:
-        def callee(session: Any):
+        def callee(session: ydb.Session):
             return session.transaction().execute(
                 """
                 PRAGMA TablePathPrefix("{db_prefix}");

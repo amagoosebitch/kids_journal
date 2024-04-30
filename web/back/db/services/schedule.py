@@ -4,12 +4,14 @@ from datetime import date, timedelta
 from itertools import groupby
 from typing import Any
 
+import ydb
+
 from db.utils import _format_date_time
 from models.schedule import ScheduleModel, ScheduleModelResponse
 
 
 class ScheduleService:
-    def __init__(self, ydb_pool: Any, db_prefix: str):
+    def __init__(self, ydb_pool: ydb.SessionPool, db_prefix: str):
         self._pool = ydb_pool
         self._db_prefix = db_prefix
 
@@ -26,7 +28,7 @@ class ScheduleService:
             args[field] = _format_date_time(args[field])
         args["canceled"] = str(args_model.canceled).lower()
 
-        def callee(session: Any):
+        def callee(session: ydb.Session):
             session.transaction().execute(
                 """
                 PRAGMA TablePathPrefix("{db_prefix}");
@@ -51,7 +53,7 @@ class ScheduleService:
     def create_child_schedule_pairs(
         self, schedule_id: str, child_ids: list[str]
     ) -> None:
-        def callee(session: Any):
+        def callee(session: ydb.Session):
             session.transaction().execute(
                 """
                 PRAGMA TablePathPrefix("{db_prefix}");
@@ -71,7 +73,7 @@ class ScheduleService:
     def get_for_children_by_time(
         self, group_id: str, date_day: date
     ) -> list[ScheduleModelResponse] | None:
-        def callee(session: Any):
+        def callee(session: ydb.Session):
             return session.transaction().execute(
                 """
                 PRAGMA TablePathPrefix("{db_prefix}");
@@ -116,7 +118,7 @@ class ScheduleService:
     def get_for_group_by_time(
         self, group_id: str, date_day: date
     ) -> list[ScheduleModelResponse] | None:
-        def callee(session: Any):
+        def callee(session: ydb.Session):
             return session.transaction().execute(
                 """
                 PRAGMA TablePathPrefix("{db_prefix}");

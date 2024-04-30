@@ -15,7 +15,7 @@ class PresentationService:
     def create_presentation(self, args_model: PresentationModel) -> None:
         args = args_model.model_dump(exclude_none=False, mode="json")
 
-        def callee(session: Any):
+        def callee(session: ydb.Session):
             session.transaction().execute(
                 """
                 PRAGMA TablePathPrefix("{db_prefix}");
@@ -38,7 +38,7 @@ class PresentationService:
         return self._pool.retry_operation_sync(callee)
 
     def create_subject_presentations_pair(self, subject_id: str, presentation_id: str):
-        def callee(session: Any):
+        def callee(session: ydb.Session):
             session.transaction().execute(
                 """
                 PRAGMA TablePathPrefix("{db_prefix}");
@@ -54,7 +54,7 @@ class PresentationService:
         return self._pool.retry_operation_sync(callee)
 
     def get_by_id(self, presentation_id: str) -> PresentationModel | None:
-        def callee(session: Any):
+        def callee(session: ydb.Session):
             return session.transaction().execute(
                 """
                 PRAGMA TablePathPrefix("{db_prefix}");
@@ -74,7 +74,7 @@ class PresentationService:
         return PresentationModel.model_validate(rows[0])
 
     def get_all_for_subject(self, subject_id: str) -> list[PresentationModel] | None:
-        def callee(session: Any):
+        def callee(session: ydb.Session):
             return session.transaction().execute(
                 """
                 PRAGMA TablePathPrefix("{db_prefix}");

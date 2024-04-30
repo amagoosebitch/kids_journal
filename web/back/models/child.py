@@ -10,18 +10,14 @@ from models.user import UserModelResponse
 
 class ChildModel(BaseModel):
     child_id: str
-    # name: str
     first_name: str
     middle_name: str | None = None
     last_name: str | None = None
     birth_date: datetime | None = None
     start_education_date: datetime | None = None
-    # start_education_time: datetime | None = None
     end_education_date: datetime | None = None
     gender: Gender | None = None
     avatar_url: str |  None = None
-    # parent_1_id: str | None = None
-    # parent_2_id: str | None = None
 
 
 class ChildModelResponse(BaseModel):

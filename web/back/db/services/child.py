@@ -1,11 +1,13 @@
 from typing import Any
 
+import ydb
+
 from db.utils import _format_date_time
 from models.child import ChildModel
 
 
 class ChildService:
-    def __init__(self, ydb_pool: Any, db_prefix: str):
+    def __init__(self, ydb_pool: ydb.SessionPool, db_prefix: str):
         self._pool = ydb_pool
         self._db_prefix = db_prefix
 
@@ -21,7 +23,7 @@ class ChildService:
         for field in datetime_fields:
             args[field] = _format_date_time(args[field])
 
-        def callee(session: Any):
+        def callee(session: ydb.Session):
             session.transaction().execute(
                 """
                 PRAGMA TablePathPrefix("{db_prefix}");
@@ -48,7 +50,7 @@ class ChildService:
         return self._pool.retry_operation_sync(callee)
 
     def link_to_group(self, group_id: str, child_id: str) -> None:
-        def callee(session: Any):
+        def callee(session: ydb.Session):
             session.transaction().execute(
                 """
                 PRAGMA TablePathPrefix("{db_prefix}");
@@ -64,7 +66,7 @@ class ChildService:
         return self._pool.retry_operation_sync(callee)
 
     def get_child_by_id(self, child_id: str):
-        def callee(session: Any):
+        def callee(session: ydb.Session):
             return session.transaction().execute(
                 """
                 PRAGMA TablePathPrefix("{db_prefix}");

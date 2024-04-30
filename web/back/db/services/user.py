@@ -3,19 +3,21 @@ from __future__ import annotations
 import json
 from typing import Any
 
+import ydb
+
 from models.user import UserModel, UserModelResponse
 from models.role import Roles
 
 
 class UserService:
-    def __init__(self, ydb_pool: Any, db_prefix: str):
+    def __init__(self, ydb_pool: ydb.SessionPool, db_prefix: str):
         self._pool = ydb_pool
         self._db_prefix = db_prefix
 
     def create_user(self, args_model: UserModel) -> None:
         args = args_model.model_dump(exclude_none=False, mode="json")
 
-        def callee(session: Any):
+        def callee(session: ydb.Session):
             session.transaction().execute(
                 """
                 PRAGMA TablePathPrefix("{db_prefix}");
@@ -41,7 +43,7 @@ class UserService:
         return self._pool.retry_operation_sync(callee)
 
     def get_by_tg_user_id(self, tg_user_id: str) -> UserModel | None:
-        def callee(session: Any):
+        def callee(session: ydb.Session):
             return session.transaction().execute(
                 """
                 PRAGMA TablePathPrefix("{db_prefix}");
@@ -64,7 +66,7 @@ class UserService:
         return UserModel.model_validate(rows[0])
 
     def get_by_phone(self, phone_number: str) -> UserModel | None:
-        def callee(session: Any):
+        def callee(session: ydb.Session):
             return session.transaction().execute(
                 """
                 PRAGMA TablePathPrefix("{db_prefix}");
@@ -87,7 +89,7 @@ class UserService:
         return UserModel.model_validate(rows[0])
 
     def set_telegram_id(self, phone_number: str, tg_user_id: str) -> None:
-        def callee(session: Any):
+        def callee(session: ydb.Session):
             return session.transaction().execute(
                 """
                 PRAGMA TablePathPrefix("{db_prefix}");
@@ -105,7 +107,7 @@ class UserService:
         return self._pool.retry_operation_sync(callee)
 
     def link_teacher_to_groups(self, group_ids: list[str], teacher_id: str):
-        def callee(session: Any):
+        def callee(session: ydb.Session):
             session.transaction().execute(
                 """
                 PRAGMA TablePathPrefix("{db_prefix}");
@@ -123,7 +125,7 @@ class UserService:
         return self._pool.retry_operation_sync(callee)
 
     def get_by_organization_id(self, organization_id: str) -> list[UserModelResponse]:
-        def callee(session: Any):
+        def callee(session: ydb.Session):
             return session.transaction().execute(
                 """
                 PRAGMA TablePathPrefix("{db_prefix}");
@@ -156,7 +158,7 @@ class UserService:
         return result
 
     def get_organization_name_by_phone(self, phone_number: str) -> str | None:
-        def callee(session: Any):
+        def callee(session: ydb.Session):
             return session.transaction().execute(
                 """
                 PRAGMA TablePathPrefix("{db_prefix}");
@@ -195,7 +197,7 @@ class UserService:
             ]
         )
 
-        def callee_1(session: Any):
+        def callee_1(session: ydb.Session):
             return session.transaction().execute(
                 """
                 PRAGMA TablePathPrefix("{db_prefix}");
@@ -211,7 +213,7 @@ class UserService:
                 commit_tx=True,
             )
 
-        def callee_2(session: Any):
+        def callee_2(session: ydb.Session):
             return session.transaction().execute(
                 """
                 PRAGMA TablePathPrefix("{db_prefix}");

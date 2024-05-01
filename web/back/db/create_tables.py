@@ -228,10 +228,10 @@ def create_tables(session_pool: Any, path: Path):
                 ydb.Column("tg_user_id", ydb.OptionalType(ydb.PrimitiveType.Utf8)),
             )
             .with_indexes(
-                ydb.TableIndex("user_index").with_index_columns(
-                    "tg_user_id",
-                    "phone_number"
-                )
+                ydb.TableIndex("user_index_by_tg_user_id").with_index_columns("tg_user_id")
+            )
+            .with_indexes(
+                ydb.TableIndex("user_index_by_phone_number").with_index_columns("phone_number")
             ),
         )
 

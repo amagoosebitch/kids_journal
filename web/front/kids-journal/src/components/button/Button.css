@@ -1,21 +1,29 @@
 @import "../../style/index.css";
 
-.Button {
-  padding: 10px 10px;
-  border-radius: 10px;
-  color: white;
-  background-color: var(--color-orang_main);
+
+.button {
+  font-family: "Inter", sans-serif;
+  font-size: 14px;
+  font-weight: 400;
+  border-radius: 8px;
+  background-color: var(--color-brown_main);
+  color: #ffffff;
+  padding: 10px 20px;
+  text-decoration: none;
   outline: transparent;
   transition: all 0.3s;
   cursor: pointer;
 }
 
-.Button:hover {
+
+.button:hover{
   background-color: var(--color-lightorange_main);
   color: var(--color-darkgrey);
 }
 
-.Button.Button__disabled {
-  color: var(--color-darkgrey);
-  background-color: var(--color-lightgrey);
+.button_children {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }

@@ -3,20 +3,22 @@
 
 .date__container {
     font-family: "Inter", sans-serif;
-    font-size: 26px;
-    width: 203px;
-    height: 49px;
+    font-size: 32px;
+    width: 359px;
+    height: 56px;
+    padding: 4px 8px;
 
-    text-align: center;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 
     color: black;
-    background-color: var(--color-lightorange);
-    border-radius: 10px;
-}
-.date__container:hover{
-    background-color: var(--color-lightorange_main_07)
+    border-radius: 8px;
 }
 
+.date__container:hover {
+    outline: 3px solid black;
+}
 
 .calendar-move {
     visibility: hidden;

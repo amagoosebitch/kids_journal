@@ -87,11 +87,33 @@ export const GroupInfo = ({ organization, groupId }: GroupInfoProps) => {
         <div className="group_name">Группа {groupId}</div>
         <div>
           <ButtonMain
-            height="44px"
-            width="211px"
+            height="40px"
+            width="224px"
             linkButton={`/${organization}/${groupId}${AppRoute.AddChild}`}
           >
-            Добавить ребенка
+            <svg
+                width="14"
+                height="14"
+                viewBox="0 0 14 14"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                  d="M1 7L13 7"
+                  stroke="white"
+                  stroke-width="1.5"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+              />
+              <path
+                  d="M7 1L7 13"
+                  stroke="white"
+                  stroke-width="1.5"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+              />
+            </svg>
+            Редактировать группу
           </ButtonMain>
         </div>
       </div>

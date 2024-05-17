@@ -1,5 +1,5 @@
 import "./CreateGroups.css";
-import React, { useState } from "react";
+import React, { ChangeEventHandler, useState } from "react";
 import {
   Button,
   CloseButton,
@@ -9,8 +9,7 @@ import {
   Select,
 } from "@chakra-ui/react";
 import { ButtonMain } from "../button/ButtonMain";
-import { InputPhone } from "../input-phone/InputPhone";
-import { ApiRoute } from "../../const";
+import {ApiRoute, AppRoute} from "../../const";
 
 const optionsAge = [
   { age: "0-3", value: 1 },
@@ -76,45 +75,89 @@ export const CreateGroups = ({ organization }: CreateGroupsProps) => {
 
   return (
     <form className="create-group-main__container">
-      <div className="create-group__text">Создание новой группы</div>
+      <div className="create-group__text">Общая информация</div>
       <div className="create-group__form">
         <div className="create-group">
           <div className="create-group__form-items">
-            <Select
-              placeholder="Выберите возраст детей"
-              onChange={(event: React.FormEvent<HTMLSelectElement>) =>
-                setValueAge(event.currentTarget.value)
-              }
-              style={{
-                background: "white",
-              }}
-            >
-              {optionsAge.map((option) => (
-                <option value={option.value}>{option.age}</option>
-              ))}
-            </Select>
+            <div className="create-group__form-items_name">
+              Выберите возраст детей
+            </div>
+            <div>
+              <Select
+                placeholder="Выберите возраст детей"
+                onChange={(event: React.FormEvent<HTMLSelectElement>) =>
+                  setValueAge(event.currentTarget.value)
+                }
+                style={{
+                  background: "white",
+                }}
+              >
+                {optionsAge.map((option) => (
+                  <option value={option.value}>{option.age}</option>
+                ))}
+              </Select>
+            </div>
           </div>
           <div className="create-group__form-items">
-            <Input
-              type="text"
-              placeholder="Введите название группы"
-              onChange={(event: React.FormEvent<HTMLInputElement>) =>
-                setNameInput(event.currentTarget.value)
-              }
-              style={{
-                background: "white",
-              }}
-            />
+            <div className="create-group__form-items_name">
+              Введите название группы
+            </div>
+            <div>
+              <Input
+                type="text"
+                placeholder="Введите название группы"
+                onChange={(event: React.FormEvent<HTMLInputElement>) =>
+                  setNameInput(event.currentTarget.value)
+                }
+                style={{
+                  background: "white",
+                }}
+              />
+            </div>
+          </div>
+          <div className="create-group__form-items">
+            <div className="create-group__form-items_name">
+              Выберите преподавателя
+            </div>
+            <div>
+              <Select
+                placeholder="Выберите преподавателя"
+                onChange={(event: React.FormEvent<HTMLSelectElement>) =>
+                  setValueAge(event.currentTarget.value)
+                }
+                style={{
+                  background: "white",
+                }}
+              >
+                {optionsAge.map((option) => (
+                  <option value={option.value}>{option.age}</option>
+                ))}
+              </Select>
+            </div>
           </div>
           <div className="create-group__form-button">
             <ButtonMain
               className="create-group__button"
-              height="44px"
-              width="211px"
-              linkButton={`/${organization}/groups`}
+              height="40px"
+              width="160px"
+              linkButton={`/${organization}/${valueName}${AppRoute.AddChild}`}
               onClick={() => createGroup()}
             >
-              Создать группу
+              Продолжить
+              <svg
+                width="18"
+                height="10"
+                viewBox="0 0 18 10"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M12.7073 9L16.0002 5.70711C16.3907 5.31658 16.3907 4.68342 16.0002 4.29289L12.7073 1M15.7073 5L1.70728 5"
+                  stroke="white"
+                  stroke-width="1.5"
+                  stroke-linecap="round"
+                />
+              </svg>
             </ButtonMain>
           </div>
         </div>

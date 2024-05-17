@@ -1,5 +1,15 @@
 .creat__form {
   margin-top: 30px;
+  margin-right: 208px;
+  margin-left: 208px;
+  background: white;
+  padding: 48px 32px;
+}
+.add_children{
+}
+
+.creat__text {
+  padding-top: 100px !important;
 }
 
 .childrenScroll {
@@ -17,11 +27,12 @@
 }
 
 .add_children-item {
-  margin-bottom: 20px;
+  margin-bottom: 30px;
 }
 
 .button-addChild {
   text-align: center;
+  margin-top: 20px;
   margin-bottom: 5px;
 }
 

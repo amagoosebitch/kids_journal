@@ -14,7 +14,6 @@ function ActivityPage({}: ActivityPageProps): JSX.Element {
       <Header />
       <div className="activity_container">
         <ButtonMain
-          isDisable
           className="activity_item"
           height="30vh"
           linkButton=""
@@ -31,7 +30,6 @@ function ActivityPage({}: ActivityPageProps): JSX.Element {
           Предметы
         </ButtonMain>
         <ButtonMain
-          isDisable
           className="activity_item"
           height="30vh"
           linkButton=''

@@ -204,7 +204,7 @@ export const Carousel = ({ organization, currentDate }: CarouselProps) => {
                     })
                     .map((action) =>
                       action.lessons.map((lesson) => (
-                        <Link to={""} onClick={handleModalOpen}>
+                        <Link className="carousel_box-container" to={""} onClick={handleModalOpen}>
                           <div
                             onClick={() => doDo([lesson], group.name)}
                             className={`carousel_box-action ${

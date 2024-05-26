@@ -115,13 +115,10 @@ class OrganizationService:
                 commit_tx=True,
             )
 
-        row = self._pool.retry_operation_sync(callee)[0][0]
+        row = self._pool.retry_operation_sync(callee)[0].rows[0]
 
         row["start_education_time"] = _format_unix_time(row["start_education_time"])
         row["end_education_time"] = _format_unix_time(row["end_education_time"])
         row["registration_date"] = _format_unix_time(row["registration_date"])
         row["updated_date"] = _format_unix_time(row["updated_date"])
-        try:
-            return OrganizationModel.model_validate(row)
-        except ValidationError:
-            return None
+        return OrganizationModel.model_validate(row)

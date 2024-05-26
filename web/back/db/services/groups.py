@@ -96,7 +96,7 @@ class GroupService:
             return session.transaction().execute(
                 """
                 PRAGMA TablePathPrefix("{db_prefix}");
-                SELECT c.child_id, c.first_name, c.name, c.birth_date, p1.parent_id, p1.name, p1.phone_number, p2.parent_id, p2.name, p2.phone_number
+                SELECT c.child_id, c.first_name, c.last_name, c.birth_date
                 FROM child as c
                 JOIN group_child on c.child_id = group_child.child_id
                 WHERE group_id = "{group_id}"
@@ -115,7 +115,7 @@ class GroupService:
             result.append(
                 ChildModelResponse(
                     child_id=row["c.child_id"],
-                    name=row["c.name"],
+                    name=f'{row["c.first_name"]} {row["c.last_name"]}',
                     birth_date=_format_unix_time(row["c.birth_date"]),
                 )
             )

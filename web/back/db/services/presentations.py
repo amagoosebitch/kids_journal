@@ -63,9 +63,9 @@ class PresentationService:
             return session.transaction().execute(
                 """
                 PRAGMA TablePathPrefix("{db_prefix}");
-                SELECT distinct p.presentation_id, p.name, p.description, p.photo_url, p.file_url, p.subject_id
-                FROM presentation as p
-                WHERE p.subject_id = "{subject_id}"
+                SELECT distinct presentation_id, name, description, photo_url, file_url, subject_id
+                FROM presentation
+                WHERE subject_id = "{subject_id}"
                 """.format(
                     db_prefix=self._db_prefix,
                     subject_id=subject_id,
@@ -80,12 +80,12 @@ class PresentationService:
         for row in rows:
             result.append(
                 PresentationModel(
-                    presentation_id=row["p.presentation_id"],
-                    name=row["p.name"],
-                    description=row["p.description"],
-                    photo_url=row["p.photo_url"],
-                    file_url=row["p.file_url"],
-                    subject_id=row["p.subject_id"]
+                    presentation_id=row["presentation_id"],
+                    name=row["name"],
+                    description=row["description"],
+                    photo_url=row["photo_url"],
+                    file_url=row["file_url"],
+                    subject_id=row["subject_id"],
                 )
             )
         return result

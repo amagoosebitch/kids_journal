@@ -5,8 +5,8 @@ from typing import Any
 
 import ydb
 
-from models.user import UserModel, UserModelResponse
 from models.role import Roles
+from models.user import UserModel, UserModelResponse
 
 
 class UserService:
@@ -24,13 +24,13 @@ class UserService:
                 UPSERT INTO user ({keys}) VALUES
                     (
                         "{user_id}",
-                        "{name}",
                         "{first_name}",
+                        "{middle_name}",
                         "{last_name}",
                         "{email}",
                         "{gender}",
                         "{phone_number}",
-                        "{tg_user_id}",
+                        "{tg_user_id}"
                     );
                 """.format(
                     db_prefix=self._db_prefix,
@@ -61,8 +61,6 @@ class UserService:
         if not rows:
             return None
 
-        rows[0]["group_ids"] = json.loads(rows[0]["group_ids"].replace("'", '"'))
-        rows[0]["role_id"] = Roles[rows[0]["role_id"]].value
         return UserModel.model_validate(rows[0])
 
     def get_by_phone(self, phone_number: str) -> UserModel | None:
@@ -84,8 +82,6 @@ class UserService:
         if not rows:
             return None
 
-        rows[0]["group_ids"] = json.loads(rows[0]["group_ids"].replace("'", '"'))
-        rows[0]["role_id"] = Roles[rows[0]["role_id"]].value
         return UserModel.model_validate(rows[0])
 
     def set_telegram_id(self, phone_number: str, tg_user_id: str) -> None:
@@ -129,7 +125,7 @@ class UserService:
             return session.transaction().execute(
                 """
                 PRAGMA TablePathPrefix("{db_prefix}");
-                SELECT DISTINCT e.user_id, e.name, e.phone_number, e.role_id
+                SELECT DISTINCT e.user_id, e.first_name, e.last_name, e.phone_number
                 FROM user as e
                 JOIN group_teacher as gt ON gt.teacher_id = e.user_id
                 JOIN group as g ON g.group_id = gt.group_id
@@ -145,13 +141,13 @@ class UserService:
         rows = self._pool.retry_operation_sync(callee)[0].rows
         if not rows:
             return []
-        result = []
 
+        result = []
         for row in rows:
             result.append(
                 UserModelResponse(
                     user_id=row["e.user_id"],
-                    name=row["e.name"],
+                    name=f'{row["e.first_name"]} {row["e.last_name"]}',
                     phone_number=row["e.phone_number"],
                 )
             )
@@ -181,7 +177,9 @@ class UserService:
             )
         )
 
-    def get_parent_by_child_id(self, child_id: str) -> tuple[UserModel | None, UserModel | None] | None:
+    def get_parent_by_child_id(
+        self, child_id: str
+    ) -> tuple[UserModel | None, UserModel | None] | None:
         parent_columns = ", ".join(
             f"parent.{column} as {column}"
             for column in [
@@ -237,5 +235,3 @@ class UserService:
         if len(rows) == 1:
             return UserModel.model_validate(rows[0]), None
         return UserModel.model_validate(rows[0]), UserModel.model_validate(rows[1])
-
-

@@ -9,7 +9,8 @@ from telegram.ext import ContextTypes
 from tg_bot.api_utils import (
     get_children_by_group_id,
     get_group_by_id,
-    get_parents_by_child_id, get_groups_by_organization,
+    get_groups_by_organization,
+    get_parents_by_child_id,
 )
 from tg_bot.callbacks import ReportTypeCallback
 from tg_bot.message_replies import (
@@ -72,7 +73,7 @@ async def handle_single_child_report(
 
     group_info_buttons: list[list[InlineKeyboardButton]] = [[]]
     for group_id in group_ids[group_page : group_page + 3]:
-        print('group_id', group_id)
+        print("group_id", group_id)
         group = get_group_by_id(group_id=str(group_id))
         msg = GROUP_INFO.format(group_name=group.name, group_age_range=group.age_range)
         group_info_buttons.append(
@@ -126,14 +127,14 @@ async def handle_choose_group(update: Update, context: ContextTypes.DEFAULT_TYPE
 
 async def handle_choose_child(update: Update, context: ContextTypes.DEFAULT_TYPE):
     context.chat_data["child_id"] = update.callback_query.data
-    print('child_id', context.chat_data["child_id"])
+    print("child_id", context.chat_data["child_id"])
 
     await update.callback_query.edit_message_text(WRITE_REPORT)
     return EmployeeState.WRITE_REPORT.value
 
 
 async def handle_write_report(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    print('on handle_write_report', context.chat_data)
+    print("on handle_write_report", context.chat_data)
     context.chat_data["report_text"] = update.message.text
 
     await update.message.reply_text(SEND_PICTURE)

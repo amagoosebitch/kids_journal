@@ -2,13 +2,12 @@ from __future__ import annotations
 
 from uuid import uuid4
 
-from models.utils import CleverBaseModel as BaseModel
-
 from models.entity import Gender
+from models.utils import CleverBaseModel as BaseModel
 
 
 class UserModel(BaseModel):
-    employee_id: str = uuid4()
+    user_id: str = uuid4()
     first_name: str
     middle_name: str | None = None
     last_name: str
@@ -27,7 +26,3 @@ class UserModelResponse(BaseModel):
 class MergeUserModel(BaseModel):
     phone_number: str
     tg_user_id: str
-
-
-
-

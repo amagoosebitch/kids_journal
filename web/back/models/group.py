@@ -1,8 +1,7 @@
 from uuid import uuid4
 
-from models.utils import CleverBaseModel as BaseModel
-
 from models.entity import AgeRanges
+from models.utils import CleverBaseModel as BaseModel
 
 
 class GroupModel(BaseModel):

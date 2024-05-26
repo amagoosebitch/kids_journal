@@ -1,4 +1,3 @@
-
 from fastapi import Depends
 
 from db.services.presentations import PresentationService

@@ -6,12 +6,12 @@ from fastapi import Depends
 
 from auth.settings import JWTSettings
 from db.services.child import ChildService
-from db.services.user import UserService, UserService
 from db.services.groups import GroupService
 from db.services.organization import OrganizationService
 from db.services.presentations import PresentationService
 from db.services.schedule import ScheduleService
 from db.services.subjects import SubjectService
+from db.services.user import UserService
 from db.settings import YDBSettings
 
 
@@ -75,6 +75,7 @@ def create_user_service(
     settings: Annotated[YDBSettings, Depends(ydb_settings)],
 ) -> UserService:
     return UserService(pool, settings.database)
+
 
 def create_child_service(
     pool: Annotated[Any, Depends(create_pool)],

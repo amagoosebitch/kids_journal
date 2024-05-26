@@ -5,7 +5,7 @@ from uuid import UUID
 from fastapi import Depends, Path
 
 from models.user import UserModel, UserModelResponse
-from src.dependencies import create_user_service, create_group_service
+from src.dependencies import create_group_service, create_user_service
 
 
 def create_employee(
@@ -14,13 +14,13 @@ def create_employee(
     user_service=Depends(create_user_service),
     groups_service=Depends(create_group_service),
 ) -> None:
-    user_service.create_employee(employee)
+    user_service.create_user(employee)
     group_ids = [
         str(group.group_id)
         for group in groups_service.get_all_for_organization(organization_id)
     ]
     if group_ids:
-        user_service.link_teacher_to_groups(group_ids, str(employee.employee_id))
+        user_service.link_teacher_to_groups(group_ids, str(employee.user_id))
     # todo: link role
 
 

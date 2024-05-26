@@ -2,7 +2,7 @@ from typing import Any
 
 import ydb
 
-from db.utils import _format_date_time
+from db.utils import _format_date_time, _format_date_time_to_date
 from models.child import ChildModel
 
 
@@ -17,11 +17,10 @@ class ChildService:
         datetime_fields = [
             "birth_date",
             "start_education_date",
-            "start_education_time",
-            "end_education_time",
+            "end_education_date",
         ]
         for field in datetime_fields:
-            args[field] = _format_date_time(args[field])
+            args[field] = _format_date_time_to_date(args[field])
 
         def callee(session: ydb.Session):
             session.transaction().execute(
@@ -31,7 +30,7 @@ class ChildService:
                     (
                         "{child_id}",
                         "{first_name}",
-                        "{middle_name}"
+                        "{middle_name}",
                         "{last_name}",
                         {birth_date},
                         {start_education_date},

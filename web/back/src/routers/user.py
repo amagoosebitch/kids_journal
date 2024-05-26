@@ -1,9 +1,9 @@
 from fastapi import Depends
 
-from db.services.user import UserService, UserService
-from models.user import MergeUserModel
+from db.services.user import UserService
 from models.role import UserRole, UserRoleResponse
-from src.dependencies import create_user_service, create_user_service
+from models.user import MergeUserModel
+from src.dependencies import create_user_service
 
 
 async def try_merge_user_by_phone(

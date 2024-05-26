@@ -8,9 +8,7 @@ from starlette import status
 from starlette.responses import HTMLResponse, RedirectResponse
 from starlette.templating import Jinja2Templates
 
-from src.auth.settings import JWTSettings, RedirectSettings, create_redirect_settings
 from db.services.user import UserService
-from src.dependencies import create_user_service, jwt_settings
 from models.user import UserModel
 from src.auth import (
     TelegramAuth,
@@ -20,6 +18,8 @@ from src.auth import (
     WidgetSize,
     validate_telegram_data,
 )
+from src.auth.settings import JWTSettings, RedirectSettings, create_redirect_settings
+from src.dependencies import create_user_service, jwt_settings
 from src.settings import BotConfig, load_bot_config
 
 templates = Jinja2Templates(Path(__file__).parent.parent / "templates")

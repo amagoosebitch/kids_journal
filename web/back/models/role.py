@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from enum import StrEnum
 
-from models.user import UserModel, UserModel
+from models.user import UserModel
 from models.utils import CleverBaseModel as BaseModel
 
 

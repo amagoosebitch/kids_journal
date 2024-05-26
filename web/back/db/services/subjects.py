@@ -85,7 +85,7 @@ class SubjectService:
                 SELECT distinct s.subject_id as subject_id, s.name as name,
                 s.description as description, s.age_range as age_range
                 FROM subject as s
-                JOIN group_subject as gs 
+                JOIN group_subject as gs
                 ON s.subject_id = gs.subject_id
                 JOIN group as g
                 ON gs.group_id = g.group_id

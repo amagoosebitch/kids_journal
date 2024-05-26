@@ -15,14 +15,14 @@ def create_tables(session_pool: Any, path: Path):
             .with_primary_keys("organization_id")
             .with_columns(
                 ydb.Column("organization_id", ydb.PrimitiveType.Utf8),
-                ydb.Column("name", ydb.PrimitiveType.Utf8),
+                ydb.Column("name", ydb.OptionalType(ydb.PrimitiveType.Utf8)),
                 ydb.Column("description", ydb.OptionalType(ydb.PrimitiveType.Utf8)),
                 ydb.Column("photo_url", ydb.OptionalType(ydb.PrimitiveType.Utf8)),
                 ydb.Column(
-                    "start_education_time", ydb.OptionalType(ydb.PrimitiveType.Date)
+                    "start_education_time", ydb.OptionalType(ydb.PrimitiveType.Datetime)
                 ),
                 ydb.Column(
-                    "end_education_time", ydb.OptionalType(ydb.PrimitiveType.Date)
+                    "end_education_time", ydb.OptionalType(ydb.PrimitiveType.Datetime)
                 ),
                 ydb.Column(
                     "registration_date", ydb.OptionalType(ydb.PrimitiveType.Timestamp)
@@ -37,7 +37,7 @@ def create_tables(session_pool: Any, path: Path):
         session.create_table(
             str(path / "organizations_users"),
             ydb.TableDescription()
-            .with_primary_key(("organization_id", "user_id"))
+            .with_primary_keys("organization_id", "user_id")
             .with_columns(
                 ydb.Column("organization_id", ydb.PrimitiveType.Utf8),
                 ydb.Column("user_id", ydb.PrimitiveType.Utf8),
@@ -48,7 +48,7 @@ def create_tables(session_pool: Any, path: Path):
         session.create_table(
             str(path / "organizations_admins"),
             ydb.TableDescription()
-            .with_primary_key(("organization_id", "user_id"))
+            .with_primary_keys("organization_id", "user_id")
             .with_columns(
                 ydb.Column("organization_id", ydb.PrimitiveType.Utf8),
                 ydb.Column("user_id", ydb.PrimitiveType.Utf8),
@@ -59,11 +59,11 @@ def create_tables(session_pool: Any, path: Path):
         session.create_table(
             str(path / "group"),
             ydb.TableDescription()
-            .with_primary_keys("group_id")
+            .with_primary_key("group_id")
             .with_columns(
                 ydb.Column("group_id", ydb.PrimitiveType.Utf8),
-                ydb.Column("organization_id", ydb.PrimitiveType.Utf8),
-                ydb.Column("name", ydb.PrimitiveType.Utf8),
+                ydb.Column("organization_id", ydb.OptionalType(ydb.PrimitiveType.Utf8)),
+                ydb.Column("name", ydb.OptionalType(ydb.PrimitiveType.Utf8)),
                 ydb.Column("age_range", ydb.OptionalType(ydb.PrimitiveType.Utf8)),
             )
             .with_indexes(
@@ -77,7 +77,7 @@ def create_tables(session_pool: Any, path: Path):
         session.create_table(
             str(path / "group_teacher"),
             ydb.TableDescription()
-            .with_primary_key(("group_id", "teacher_id"))
+            .with_primary_keys("group_id", "teacher_id")
             .with_columns(
                 ydb.Column("group_id", ydb.PrimitiveType.Utf8),
                 ydb.Column("teacher_id", ydb.PrimitiveType.Utf8),
@@ -88,7 +88,7 @@ def create_tables(session_pool: Any, path: Path):
         session.create_table(
             str(path / "group_child"),
             ydb.TableDescription()
-            .with_primary_key(("group_id", "child_id"))
+            .with_primary_keys("group_id", "child_id")
             .with_columns(
                 ydb.Column("group_id", ydb.PrimitiveType.Utf8),
                 ydb.Column("child_id", ydb.PrimitiveType.Utf8),
@@ -99,7 +99,7 @@ def create_tables(session_pool: Any, path: Path):
         session.create_table(
             str(path / "group_subject"),
             ydb.TableDescription()
-            .with_primary_key(("group_id", "subject_id"))
+            .with_primary_keys("group_id", "subject_id")
             .with_columns(
                 ydb.Column("group_id", ydb.PrimitiveType.Utf8),
                 ydb.Column("subject_id", ydb.PrimitiveType.Utf8),
@@ -110,12 +110,12 @@ def create_tables(session_pool: Any, path: Path):
         session.create_table(
             str(path / "child"),
             ydb.TableDescription()
-            .with_primary_keys("child_id")
+            .with_primary_key("child_id")
             .with_columns(
                 ydb.Column("child_id", ydb.PrimitiveType.Utf8),
-                ydb.Column("first_name", ydb.PrimitiveType.Utf8),
+                ydb.Column("first_name", ydb.OptionalType(ydb.PrimitiveType.Utf8)),
                 ydb.Column("middle_name", ydb.OptionalType(ydb.PrimitiveType.Utf8)),
-                ydb.Column("last_name", ydb.PrimitiveType.Utf8),
+                ydb.Column("last_name", ydb.OptionalType(ydb.PrimitiveType.Utf8)),
                 ydb.Column("birth_date", ydb.OptionalType(ydb.PrimitiveType.Date)),
                 ydb.Column(
                     "start_education_date", ydb.OptionalType(ydb.PrimitiveType.Date)
@@ -124,6 +124,7 @@ def create_tables(session_pool: Any, path: Path):
                     "end_education_date", ydb.OptionalType(ydb.PrimitiveType.Date)
                 ),
                 ydb.Column("gender", ydb.OptionalType(ydb.PrimitiveType.Utf8)),
+                ydb.Column("avatar_url", ydb.OptionalType(ydb.PrimitiveType.Utf8)),
             ),
         )
 
@@ -131,7 +132,7 @@ def create_tables(session_pool: Any, path: Path):
         session.create_table(
             str(path / "child_parent"),
             ydb.TableDescription()
-            .with_primary_key(("child_id", "parent_id"))
+            .with_primary_keys("child_id", "parent_id")
             .with_columns(
                 ydb.Column("child_id", ydb.PrimitiveType.Utf8),
                 ydb.Column("parent_id", ydb.PrimitiveType.Utf8),
@@ -142,7 +143,7 @@ def create_tables(session_pool: Any, path: Path):
         session.create_table(
             str(path / "child_schedule"),
             ydb.TableDescription()
-            .with_primary_key(("child_id", "schedule_id"))
+            .with_primary_keys("child_id", "schedule_id")
             .with_columns(
                 ydb.Column("child_id", ydb.PrimitiveType.Utf8),
                 ydb.Column("schedule_id", ydb.PrimitiveType.Utf8),
@@ -153,7 +154,7 @@ def create_tables(session_pool: Any, path: Path):
         session.create_table(
             str(path / "schedule"),
             ydb.TableDescription()
-            .with_primary_keys("schedule_id")
+            .with_primary_key("schedule_id")
             .with_columns(
                 ydb.Column("schedule_id", ydb.PrimitiveType.Utf8),
                 ydb.Column(
@@ -162,19 +163,19 @@ def create_tables(session_pool: Any, path: Path):
                 ydb.Column("end_lesson", ydb.OptionalType(ydb.PrimitiveType.Datetime)),
                 ydb.Column("presentation_id", ydb.OptionalType(ydb.PrimitiveType.Utf8)),
                 ydb.Column("canceled", ydb.OptionalType(ydb.PrimitiveType.Bool)),
-            )
+            ),
         )
 
         # note
         session.create_table(
             str(path / "note"),
             ydb.TableDescription()
-            .with_primary_keys("note_id")
+            .with_primary_key("note_id")
             .with_columns(
                 ydb.Column("note_id", ydb.PrimitiveType.Utf8),
                 ydb.Column("presentation_id", ydb.OptionalType(ydb.PrimitiveType.Utf8)),
                 ydb.Column("child_id", ydb.OptionalType(ydb.PrimitiveType.Utf8)),
-                ydb.Column("user_id", ydb.PrimitiveType.Utf8),
+                ydb.Column("user_id", ydb.OptionalType(ydb.PrimitiveType.Utf8)),
                 ydb.Column("text", ydb.OptionalType(ydb.PrimitiveType.Utf8)),
             ),
         )
@@ -183,7 +184,7 @@ def create_tables(session_pool: Any, path: Path):
         session.create_table(
             str(path / "subject"),
             ydb.TableDescription()
-            .with_primary_keys("subject_id")
+            .with_primary_key("subject_id")
             .with_columns(
                 ydb.Column("subject_id", ydb.PrimitiveType.Utf8),
                 ydb.Column("name", ydb.OptionalType(ydb.PrimitiveType.Utf8)),
@@ -196,18 +197,14 @@ def create_tables(session_pool: Any, path: Path):
         session.create_table(
             str(path / "child_skills"),
             ydb.TableDescription()
-            .with_primary_key(("child_id", "skill_id"))
+            .with_primary_keys("child_id", "skill_id")
             .with_columns(
                 ydb.Column("child_id", ydb.PrimitiveType.Utf8),
                 ydb.Column("skill_id", ydb.PrimitiveType.Utf8),
-                ydb.Column(
-                    "skill_level_id", ydb.OptionalType(ydb.PrimitiveType.Utf8)
-                ),
+                ydb.Column("skill_level_id", ydb.OptionalType(ydb.PrimitiveType.Utf8)),
             )
             .with_indexes(
-                ydb.TableIndex("skill_level_index").with_index_columns(
-                    "skill_level_id"
-                )
+                ydb.TableIndex("skill_level_index").with_index_columns("skill_level_id")
             ),
         )
 
@@ -215,12 +212,12 @@ def create_tables(session_pool: Any, path: Path):
         session.create_table(
             str(path / "user"),
             ydb.TableDescription()
-            .with_primary_keys("user_id")
+            .with_primary_key("user_id")
             .with_columns(
                 ydb.Column("user_id", ydb.PrimitiveType.Utf8),
-                ydb.Column("first_name", ydb.PrimitiveType.Utf8),
+                ydb.Column("first_name", ydb.OptionalType(ydb.PrimitiveType.Utf8)),
                 ydb.Column("middle_name", ydb.OptionalType(ydb.PrimitiveType.Utf8)),
-                ydb.Column("last_name", ydb.PrimitiveType.Utf8),
+                ydb.Column("last_name", ydb.OptionalType(ydb.PrimitiveType.Utf8)),
                 ydb.Column("email", ydb.OptionalType(ydb.PrimitiveType.Utf8)),
                 ydb.Column("gender", ydb.OptionalType(ydb.PrimitiveType.Utf8)),
                 ydb.Column("phone_number", ydb.OptionalType(ydb.PrimitiveType.Utf8)),
@@ -228,10 +225,14 @@ def create_tables(session_pool: Any, path: Path):
                 ydb.Column("tg_user_id", ydb.OptionalType(ydb.PrimitiveType.Utf8)),
             )
             .with_index(
-                ydb.TableIndex("user_index_by_tg_user_id").with_index_columns("tg_user_id")
+                ydb.TableIndex("user_index_by_tg_user_id").with_index_columns(
+                    "tg_user_id"
+                )
             )
             .with_index(
-                ydb.TableIndex("user_index_by_phone_number").with_index_columns("phone_number")
+                ydb.TableIndex("user_index_by_phone_number").with_index_columns(
+                    "phone_number"
+                )
             ),
         )
 
@@ -239,7 +240,7 @@ def create_tables(session_pool: Any, path: Path):
         session.create_table(
             str(path / "skill_level"),
             ydb.TableDescription()
-            .with_primary_keys("skill_level_id")
+            .with_primary_key("skill_level_id")
             .with_columns(
                 ydb.Column("skill_level_id", ydb.PrimitiveType.Utf8),
                 ydb.Column("name", ydb.OptionalType(ydb.PrimitiveType.Utf8)),
@@ -251,10 +252,10 @@ def create_tables(session_pool: Any, path: Path):
         session.create_table(
             str(path / "skill"),
             ydb.TableDescription()
-            .with_primary_keys("skill_id")
+            .with_primary_key("skill_id")
             .with_columns(
                 ydb.Column("skill_id", ydb.PrimitiveType.Utf8),
-                ydb.Column("subject_id", ydb.PrimitiveType.Utf8),
+                ydb.Column("subject_id", ydb.OptionalType(ydb.PrimitiveType.Utf8)),
                 ydb.Column("name", ydb.OptionalType(ydb.PrimitiveType.Utf8)),
             ),
         )
@@ -263,14 +264,14 @@ def create_tables(session_pool: Any, path: Path):
         session.create_table(
             str(path / "presentation"),
             ydb.TableDescription()
-            .with_primary_keys("presentation_id")
+            .with_primary_key("presentation_id")
             .with_columns(
                 ydb.Column("presentation_id", ydb.PrimitiveType.Utf8),
                 ydb.Column("name", ydb.OptionalType(ydb.PrimitiveType.Utf8)),
                 ydb.Column("file_url", ydb.OptionalType(ydb.PrimitiveType.Utf8)),
                 ydb.Column("photo_url", ydb.OptionalType(ydb.PrimitiveType.Utf8)),
                 ydb.Column("description", ydb.OptionalType(ydb.PrimitiveType.Utf8)),
-                ydb.Column("subject_id", ydb.PrimitiveType.Utf8),
+                ydb.Column("subject_id", ydb.OptionalType(ydb.PrimitiveType.Utf8)),
             ),
         )
 
@@ -278,7 +279,7 @@ def create_tables(session_pool: Any, path: Path):
         session.create_table(
             str(path / "role"),
             ydb.TableDescription()
-            .with_primary_keys("role_id")
+            .with_primary_key("role_id")
             .with_columns(
                 ydb.Column("role_id", ydb.PrimitiveType.Utf8),
                 ydb.Column("name", ydb.OptionalType(ydb.PrimitiveType.Utf8)),
@@ -289,7 +290,7 @@ def create_tables(session_pool: Any, path: Path):
         session.create_table(
             str(path / "user_role"),
             ydb.TableDescription()
-            .with_primary_key(("user_id", "role_id"))
+            .with_primary_keys("user_id", "role_id")
             .with_columns(
                 ydb.Column("user_id", ydb.PrimitiveType.Utf8),
                 ydb.Column("role_id", ydb.PrimitiveType.Utf8),
@@ -303,8 +304,8 @@ def create_tables(session_pool: Any, path: Path):
             .with_primary_keys("tg_user_id", "username")
             .with_columns(
                 ydb.Column("tg_user_id", ydb.PrimitiveType.Utf8),
-                ydb.Column("username", ydb.PrimitiveType.Utf8)
-            )
+                ydb.Column("username", ydb.PrimitiveType.Utf8),
+            ),
         )
 
     session_pool.retry_operation_sync(callee)

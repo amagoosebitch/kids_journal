@@ -1,10 +1,14 @@
+from __future__ import annotations
+
 from typing import Any
+
+import ydb
 
 from models.subjects import SubjectModel
 
 
 class SubjectService:
-    def __init__(self, ydb_pool: Any, db_prefix: str):
+    def __init__(self, ydb_pool: ydb.SessionPool, db_prefix: str):
         self._pool = ydb_pool
         self._db_prefix = db_prefix
 
@@ -13,7 +17,7 @@ class SubjectService:
             exclude_none=False, mode="json", exclude={"presentations"}
         )
 
-        def callee(session: Any):
+        def callee(session: ydb.Session):
             session.transaction().execute(
                 """
                 PRAGMA TablePathPrefix("{db_prefix}");
@@ -35,7 +39,7 @@ class SubjectService:
         return self._pool.retry_operation_sync(callee)
 
     def create_group_subject_pair(self, group_ids: list[str], subject_id: str):
-        def callee(session: Any):
+        def callee(session: ydb.Session):
             session.transaction().execute(
                 """
                 PRAGMA TablePathPrefix("{db_prefix}");
@@ -53,7 +57,7 @@ class SubjectService:
         return self._pool.retry_operation_sync(callee)
 
     def get_by_id(self, subject_id: str) -> SubjectModel | None:
-        def callee(session: Any):
+        def callee(session: ydb.Session):
             return session.transaction().execute(
                 """
                 PRAGMA TablePathPrefix("{db_prefix}");
@@ -74,14 +78,14 @@ class SubjectService:
         return SubjectModel.model_validate(rows[0])
 
     def get_all_for_organization(self, organization_id: str) -> list[SubjectModel]:
-        def callee(session: Any):
+        def callee(session: ydb.Session):
             return session.transaction().execute(
                 """
                 PRAGMA TablePathPrefix("{db_prefix}");
                 SELECT distinct s.subject_id as subject_id, s.name as name,
                 s.description as description, s.age_range as age_range
                 FROM subject as s
-                JOIN group_subject as gs 
+                JOIN group_subject as gs
                 ON s.subject_id = gs.subject_id
                 JOIN group as g
                 ON gs.group_id = g.group_id

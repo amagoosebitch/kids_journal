@@ -11,7 +11,7 @@ class ChildService:
         self._pool = ydb_pool
         self._db_prefix = db_prefix
 
-    def create_child(self, args_model: ChildModel) -> None:
+    def upsert_child(self, args_model: ChildModel) -> None:
         args = args_model.model_dump(exclude_none=False, mode="json")
 
         datetime_fields = [
@@ -58,6 +58,22 @@ class ChildService:
                     db_prefix=self._db_prefix,
                     keys="(group_id, child_id)",
                     values=f'("{group_id}", "{child_id}")',
+                ),
+                commit_tx=True,
+            )
+
+        return self._pool.retry_operation_sync(callee)
+
+    def unlink_from_groups(self, child_id: str):
+        def callee(session: ydb.Session):
+            session.transaction().execute(
+                """
+                PRAGMA TablePathPrefix("{db_prefix}");
+                DELETE FROM group_child
+                WHERE child_id = "{child_id}"
+                """.format(
+                    db_prefix=self._db_prefix,
+                    child_id=child_id,
                 ),
                 commit_tx=True,
             )

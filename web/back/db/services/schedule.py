@@ -15,7 +15,7 @@ class ScheduleService:
         self._pool = ydb_pool
         self._db_prefix = db_prefix
 
-    def create_schedule(self, args_model: ScheduleModel) -> None:
+    def upsert_schedule(self, args_model: ScheduleModel) -> None:
         args = args_model.model_dump(
             exclude_none=False, mode="json", exclude={"child_id"}
         )
@@ -70,8 +70,59 @@ class ScheduleService:
 
         return self._pool.retry_operation_sync(callee)
 
-    def get_for_children_by_time(
-        self, group_id: str, date_day: date
+    def create_group_schedule_pair(
+        self, schedule_id: str, group_id: str
+    ) -> None:
+        def callee(session: ydb.Session):
+            session.transaction().execute(
+                """
+                PRAGMA TablePathPrefix("{db_prefix}");
+                UPSERT INTO group_schedule ({keys}) VALUES {values};
+                """.format(
+                    db_prefix=self._db_prefix,
+                    keys="group_id, schedule_id",
+                    values=f'("{group_id}", "{schedule_id}")',
+                ),
+                commit_tx=True,
+            )
+
+        return self._pool.retry_operation_sync(callee)
+
+    def remove_all_group_pairs(self, schedule_id: str) -> None:
+        def callee(session: ydb.Session):
+            session.transaction().execute(
+                """
+                PRAGMA TablePathPrefix("{db_prefix}");
+                DELETE FROM group_schedule
+                WHERE schedule_id = "{schedule_id}";
+                """.format(
+                    db_prefix=self._db_prefix,
+                    schedule_id=schedule_id,
+                ),
+                commit_tx=True,
+            )
+
+        return self._pool.retry_operation_sync(callee)
+
+    def remove_all_child_pairs(self, schedule_id: str) -> None:
+        def callee(session: ydb.Session):
+            session.transaction().execute(
+                """
+                PRAGMA TablePathPrefix("{db_prefix}");
+                DELETE FROM child_schedule ({keys})
+                WHERE schedule_id = "{schedule_id}";
+                """.format(
+                    db_prefix=self._db_prefix,
+                    schedule_id=schedule_id,
+                    keys="group_id, schedule_id",
+                ),
+                commit_tx=True,
+            )
+
+        return self._pool.retry_operation_sync(callee)
+
+    def get_for_child_by_time(
+        self, child_id: str, date_day: date
     ) -> list[ScheduleModelResponse] | None:
         def callee(session: ydb.Session):
             return session.transaction().execute(
@@ -81,10 +132,10 @@ class ScheduleService:
                 FROM schedule as s
                 JOIN child_schedule as cs on cs.schedule_id = s.schedule_id
                 JOIN child as ch on cs.child_id = ch.child_id
-                WHERE s.start_lesson > {date_str_start} AND s.start_lesson < {date_str_end} AND s.group_id = "{group_id}"
+                WHERE cs.child_id = "{child_id}" AND s.start_lesson > {date_str_start} AND s.start_lesson < {date_str_end}
                 """.format(
                     db_prefix=self._db_prefix,
-                    group_id=group_id,
+                    child_id=child_id,
                     date_str_end=self._get_time_str(date_day, timedelta(days=1)),
                     date_str_start=self._get_time_str(date_day, timedelta(days=0)),
                 ),
@@ -101,18 +152,15 @@ class ScheduleService:
                 if row["ch.child_id"] in child_ids:
                     continue
                 child_ids.add(row["ch.child_id"])
-            result.append(
-                ScheduleModelResponse(
-                    schedule_id=key,
-                    child_ids=list(child_ids),
-                    is_for_child=True,
-                    # subject_name=row["su.name"],
-                    # description=row["s.description"],
-                    date_day=row["s.start_lesson"],
-                    # group_name=row["s.group_id"],
-                    # presentation_id=row["s.presentation_id"],
+                result.append(
+                    ScheduleModelResponse(
+                        schedule_id=key,
+                        child_ids=list(child_ids),
+                        is_for_child=True,
+                        date_day=row["s.start_lesson"],
+                        presentation_id=row["s.presentation_id"],
+                    )
                 )
-            )
         return result
 
     def get_for_group_by_time(
@@ -122,13 +170,11 @@ class ScheduleService:
             return session.transaction().execute(
                 """
                 PRAGMA TablePathPrefix("{db_prefix}");
-                SELECT su.name, g.name, s.description, s.schedule_id, s.presentation_id, s.start_lesson
+                SELECT s.description, s.schedule_id, s.presentation_id, s.start_lesson
                 FROM schedule as s
-                left JOIN child_schedule as cs on cs.schedule_id = s.schedule_id
                 JOIN group_schedule as gs ON gs.group_id = s.group_id
                 JOIN group as g ON g.group_id = gs.group_id
-                JOIN subject as su ON s.subject_id = su.subject_id
-                WHERE s.start_lesson > {date_str_start} AND s.start_lesson < {date_str_end} AND s.group_id = "{group_id}" AND cs.child_id is null
+                WHERE s.group_id = "{group_id}" AND s.start_lesson > {date_str_start} AND s.start_lesson < {date_str_end} 
                 """.format(
                     db_prefix=self._db_prefix,
                     group_id=group_id,
@@ -147,10 +193,7 @@ class ScheduleService:
                 ScheduleModelResponse(
                     schedule_id=row["s.schedule_id"],
                     is_for_child=False,
-                    subject_name=row["su.name"],
-                    description=row["s.description"],
                     date_day=row["s.start_lesson"],
-                    group_name=row["g.name"],
                     presentation_id=row["s.presentation_id"],
                 )
             )

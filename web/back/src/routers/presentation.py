@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from fastapi import Depends
 
 from db.services.presentations import PresentationService
@@ -14,15 +16,13 @@ async def create_presentation(
 
 
 async def get_presentation(
-    organization_id: str,
-    subject_id: str,
     presentation_id: str,
     presentation_service: PresentationService = Depends(create_presentation_service),
 ) -> PresentationModel | None:
     return presentation_service.get_by_id(str(presentation_id))
 
 
-async def get_presentations(
+async def get_all_presentations_for_subject(
     subject_id: str,
     presentation_service: PresentationService = Depends(create_presentation_service),
 ) -> list[PresentationModel] | None:

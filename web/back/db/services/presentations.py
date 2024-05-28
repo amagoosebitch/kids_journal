@@ -74,6 +74,10 @@ class PresentationService:
             )
 
         rows = self._pool.retry_operation_sync(callee)[0].rows
+        result = self._make_result_from_rows(rows)
+        return result
+
+    def _make_result_from_rows(self, rows: list[dict]) -> list[PresentationModel] | None:
         if not rows:
             return None
         result = []

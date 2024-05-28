@@ -16,10 +16,7 @@ class ScheduleModel(BaseModel):
 
 class ScheduleModelResponse(BaseModel):
     schedule_id: str
-    # subject_name: str | None = None
-    # presentation_id: str | None = None
-    # group_name: str | None = None
+    presentation_id: str | None = None
     child_ids: list[str] | None = None
     date_day: datetime
-    # description: str | None = None
     is_for_child: bool = False

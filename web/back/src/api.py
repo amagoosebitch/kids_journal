@@ -9,7 +9,7 @@ from routers.presentation import (
     get_presentation,
     get_all_presentations_for_subject,
 )
-from routers.schedule import upsert_lesson, get_schedule_for_group, get, get_schedule_for_child
+from routers.schedule import upsert_lesson, get_schedule_for_group, get_schedule_for_child
 from routers.subject import (
     create_subject,
     get_all_subjects_for_organization,

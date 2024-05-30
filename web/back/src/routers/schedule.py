@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from datetime import date
 
-from fastapi import Depends
+from fastapi import Depends, Path
 
 from models.schedule import ScheduleModel, ScheduleModelResponse
 from src.dependencies import create_schedule_service
@@ -10,8 +10,8 @@ from src.dependencies import create_schedule_service
 
 async def upsert_lesson(
     schedule: ScheduleModel,
-    group_id: str | None,
-    child_ids: str | None,
+    group_id: str | None = None,
+    child_ids: str | None = None,
     schedule_service=Depends(create_schedule_service),
 ) -> None:
     schedule_service.upsert_schedule(schedule)
@@ -36,8 +36,8 @@ async def get_schedule_for_group(
 
 
 async def get_schedule_for_child(
-    child_id: str,
     date_day: date,
+    child_id: str = Path(...),
     schedule_service=Depends(create_schedule_service),
 ) -> list[ScheduleModelResponse]:
     return schedule_service.get_for_child_by_time(child_id, date_day)

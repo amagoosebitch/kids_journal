@@ -16,3 +16,9 @@ class SkillLevelModel(BaseModel):
     skill_level_id: str = uuid.uuid4()
     name: str
     description: str | None = None
+
+
+class ChildSkillModel(BaseModel):
+    child_id: str
+    skill_id: str
+    skill_level_id: str

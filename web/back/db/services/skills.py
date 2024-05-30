@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import ydb
 
-from models.skills import SkillModel, SkillLevelModel
+from models.skills import SkillModel, SkillLevelModel, ChildSkillModel
 
 
 class SkillService:
@@ -133,5 +133,23 @@ class SkillService:
             )
 
         return self._pool.retry_operation_sync(callee)
+
+    def get_all_skills_for_child(self, child_id) -> ChildSkillModel:
+        def callee(session: ydb.Session):
+            session.transaction().execute(
+                """
+                PRAGMA TablePathPrefix("{db_prefix}");
+                SELECT * FROM child_skills
+                WHERE child_id = "{child_id}"
+                """.format(
+                    db_prefix=self._db_prefix,
+                    child_id=child_id,
+                ),
+                commit_tx=True,
+            )
+
+        return self._pool.retry_operation_sync(callee)
+
+
 
 

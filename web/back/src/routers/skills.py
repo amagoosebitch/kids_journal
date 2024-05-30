@@ -1,6 +1,7 @@
 from fastapi import Depends, Path, Body
 
 from db.services.skills import SkillModel, SkillLevelModel
+from models.skills import ChildSkillModel
 from src.dependencies import create_skill_service
 
 
@@ -40,3 +41,10 @@ async def upsert_skill_for_child(
 ) -> None:
     skill_service.unlink_from_child(child_id=child_id, skill_id=skill_id)
     skill_service.link_to_child(child_id=child_id, skill_id=skill_id, skill_level_id=skill_level_id)
+
+
+async def get_all_skills_for_child(
+    child_id: str,
+    skill_service=Depends(create_skill_service)
+) -> ChildSkillModel:
+    return skill_service.get_all_skills_for_child(child_id=child_id)

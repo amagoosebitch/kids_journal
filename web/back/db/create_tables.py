@@ -268,6 +268,7 @@ def create_tables(session_pool: Any, path: Path):
                 ydb.Column("skill_id", ydb.PrimitiveType.Utf8),
                 ydb.Column("subject_id", ydb.OptionalType(ydb.PrimitiveType.Utf8)),
                 ydb.Column("name", ydb.OptionalType(ydb.PrimitiveType.Utf8)),
+                ydb.Column("description", ydb.OptionalType(ydb.PrimitiveType.Utf8)),
             ),
         )
 

@@ -19,6 +19,12 @@ async def get_skill_by_id(
     return skill_service.get_skill_by_id(skill_id)
 
 
+async def get_all_skills(
+    skill_service=Depends(create_skill_service),
+) -> list[SkillModel]:
+    return skill_service.get_all_skills()
+
+
 async def upsert_skill_level(
     skill_level: SkillLevelModel,
     skill_service=Depends(create_skill_service),
@@ -31,6 +37,12 @@ async def get_skill_level_by_id(
     skill_service=Depends(create_skill_service),
 ) -> SkillLevelModel:
     return skill_service.get_skill_level_by_id(skill_level_id)
+
+
+async def get_all_skill_levels(
+    skill_service=Depends(create_skill_service),
+) -> list[SkillModel]:
+    return skill_service.get_all_skill_levels()
 
 
 async def upsert_skill_for_child(

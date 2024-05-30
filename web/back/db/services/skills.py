@@ -81,6 +81,24 @@ class SkillService:
             return None
         return SkillModel.model_validate(rows[0])
 
+    def get_all_skills(self) -> list[SkillModel] | None:
+        def callee(session: ydb.Session):
+            return session.transaction().execute(
+                """
+                PRAGMA TablePathPrefix("{db_prefix}");
+                SELECT *
+                FROM skill
+                """.format(
+                    db_prefix=self._db_prefix,
+                ),
+                commit_tx=True,
+            )
+
+        rows = self._pool.retry_operation_sync(callee)[0].rows
+        if not rows:
+            return None
+        return [SkillModel.model_validate(rows[i]) for i in range(len(rows))]
+
     def get_skill_level_by_id(self, skill_level_id: str) -> SkillLevelModel | None:
         def callee(session: ydb.Session):
             return session.transaction().execute(
@@ -100,6 +118,24 @@ class SkillService:
         if not rows:
             return None
         return SkillLevelModel.model_validate(rows[0])
+
+    def get_all_skill_levels(self) -> list[SkillLevelModel] | None:
+        def callee(session: ydb.Session):
+            return session.transaction().execute(
+                """
+                PRAGMA TablePathPrefix("{db_prefix}");
+                SELECT *
+                FROM skill_level
+                """.format(
+                    db_prefix=self._db_prefix,
+                ),
+                commit_tx=True,
+            )
+
+        rows = self._pool.retry_operation_sync(callee)[0].rows
+        if not rows:
+            return None
+        return [SkillLevelModel.model_validate(rows[i]) for i in range(len(rows))]
 
     def link_to_child(self, skill_id, child_id, skill_level_id) -> None:
         def callee(session: ydb.Session):
@@ -149,7 +185,3 @@ class SkillService:
             )
 
         return self._pool.retry_operation_sync(callee)
-
-
-
-

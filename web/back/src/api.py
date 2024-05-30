@@ -44,7 +44,7 @@ from src.routers.parent import (
     get_parents_by_child_id,
 )
 from src.routers.skills import upsert_skill, get_skill_by_id, upsert_skill_level, get_skill_level_by_id, \
-    upsert_skill_for_child, get_all_skills_for_child
+    upsert_skill_for_child, get_all_skills_for_child, get_all_skill_levels, get_all_skills
 from src.routers.user import try_merge_user_by_phone
 from src.settings import load_api_settings
 
@@ -152,8 +152,10 @@ def init_app() -> FastAPI:
 
     # Skills
     router.add_api_route("/skills", upsert_skill, methods=["POST"])
+    router.add_api_route("/skills", get_all_skills, methods=["GET"])
     router.add_api_route("/skills/{skill_id}", get_skill_by_id, methods=["GET"])
     router.add_api_route("/skills/levels", upsert_skill_level, methods=["POST"])
+    router.add_api_route("/skills/levels", get_all_skill_levels, methods=["GET"])
     router.add_api_route("/skills/levels/{skill_level_id}", get_skill_level_by_id, methods=["GET"])
 
     api_settings = load_api_settings()

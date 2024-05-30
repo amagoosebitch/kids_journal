@@ -19,11 +19,12 @@ from src.exception_handlers.unauthorized import handle_auth_error
 from src.routers.auth import login
 from src.routers.child import create_child
 from src.routers.employee import (
-    create_employee,
+    upsert_employee,
     get_employees_for_organization,
     get_employees_organization_names_by_phone,
     get_user_by_phone,
     get_user_by_tg_id,
+    link_employee_to_group, unlink_group_from_employee
 )
 from src.routers.groups import (  # add_children_to_group,
     add_group_to_organization,
@@ -86,7 +87,7 @@ def init_app() -> FastAPI:
 
     # Employee
     router.add_api_route(
-        "/organizations/{organization_id}/employee", create_employee, methods=["POST"]
+        "/organizations/{organization_id}/employee", upsert_employee, methods=["POST"]
     )
     router.add_api_route(
         "/organizations/{organization_id}/employee",
@@ -100,6 +101,8 @@ def init_app() -> FastAPI:
         get_employees_organization_names_by_phone,
         methods=["GET"],
     )
+    router.add_api_route("/employees/{employee_id}/groups/{group_id}", link_employee_to_group, methods=["POST"])
+    router.add_api_route("/employees/{employee_id}/groups/{group_id}", unlink_group_from_employee, methods=["DELETE"])
 
     # Child
     router.add_api_route("/{group_id}/child", create_child, methods=["POST"])

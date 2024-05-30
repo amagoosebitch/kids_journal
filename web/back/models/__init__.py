@@ -1,1 +1,3 @@
-# This package is deprecated, models will be replaced to db package
+# This package is deprecated, models should be replaced to db package
+
+from .role import Roles

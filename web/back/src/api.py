@@ -24,7 +24,7 @@ from src.routers.employee import (
     get_employees_organization_names_by_phone,
     get_user_by_phone,
     get_user_by_tg_id,
-    link_employee_to_group, unlink_group_from_employee
+    link_employee_to_group, unlink_group_from_employee, get_groups_for_employee
 )
 from src.routers.groups import (  # add_children_to_group,
     add_group_to_organization,
@@ -101,6 +101,7 @@ def init_app() -> FastAPI:
         get_employees_organization_names_by_phone,
         methods=["GET"],
     )
+    router.add_api_route("/employees/{employee_id}/groups", get_groups_for_employee, methods=["GET"])
     router.add_api_route("/employees/{employee_id}/groups/{group_id}", link_employee_to_group, methods=["POST"])
     router.add_api_route("/employees/{employee_id}/groups/{group_id}", unlink_group_from_employee, methods=["DELETE"])
 

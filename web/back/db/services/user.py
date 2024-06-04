@@ -5,7 +5,7 @@ from typing import Any
 
 import ydb
 
-from models.role import Roles
+import models.role
 from models.user import UserModel, UserModelResponse
 
 
@@ -14,7 +14,7 @@ class UserService:
         self._pool = ydb_pool
         self._db_prefix = db_prefix
 
-    def create_user(self, args_model: UserModel) -> None:
+    def upsert_user(self, args_model: UserModel) -> None:
         args = args_model.model_dump(exclude_none=False, mode="json")
 
         def callee(session: ydb.Session):
@@ -102,7 +102,7 @@ class UserService:
 
         return self._pool.retry_operation_sync(callee)
 
-    def link_teacher_to_groups(self, group_ids: list[str], teacher_id: str):
+    def link_teacher_to_group(self, group_id: str, teacher_id: str):
         def callee(session: ydb.Session):
             session.transaction().execute(
                 """
@@ -111,23 +111,59 @@ class UserService:
                 """.format(
                     db_prefix=self._db_prefix,
                     keys="group_id, teacher_id",
-                    values=", ".join(
-                        [f'("{group_id}", "{teacher_id}")' for group_id in group_ids]
-                    ),
+                    values=f'("{group_id}", "{teacher_id}")'
                 ),
                 commit_tx=True,
             )
 
         return self._pool.retry_operation_sync(callee)
 
-    def get_by_organization_id(self, organization_id: str) -> list[UserModelResponse]:
+    def unlink_group_from_teacher(self, group_id: str, teacher_id: str):
+        def callee(session: ydb.Session):
+            session.transaction().execute(
+                """
+                PRAGMA TablePathPrefix("{db_prefix}");
+                DELETE FROM group_teacher
+                WHERE teacher_id = "{teacher_id}" AND group_id = "{group_id}"
+                """.format(
+                    db_prefix=self._db_prefix,
+                    teacher_id=teacher_id,
+                    group_id=group_id,
+                ),
+                commit_tx=True,
+            )
+
+        return self._pool.retry_operation_sync(callee)
+
+    def get_groups_ids_by_teacher(self, teacher_id: str) -> list[str]:
         def callee(session: ydb.Session):
             return session.transaction().execute(
                 """
                 PRAGMA TablePathPrefix("{db_prefix}");
-                SELECT DISTINCT e.user_id, e.first_name, e.last_name, e.phone_number
-                FROM user as e
-                JOIN group_teacher as gt ON gt.teacher_id = e.user_id
+                SELECT group_id
+                FROM group_teacher
+                WHERE teacher_id = "{teacher_id}"
+                """.format(
+                    db_prefix=self._db_prefix,
+                    teacher_id=teacher_id,
+                ),
+                commit_tx=True,
+            )
+
+        return list(
+            map(
+                lambda x: x["group_id"], self._pool.retry_operation_sync(callee)[0].rows
+            )
+        )
+
+    def get_teachers_by_organization_id(self, organization_id: str) -> list[UserModelResponse]:
+        def callee(session: ydb.Session):
+            return session.transaction().execute(
+                """
+                PRAGMA TablePathPrefix("{db_prefix}");
+                SELECT DISTINCT u.user_id, u.first_name, u.last_name, u.phone_number
+                FROM user as u
+                JOIN group_teacher as gt ON gt.teacher_id = u.user_id
                 JOIN group as g ON g.group_id = gt.group_id
                 JOIN organization as org ON org.organization_id = g.organization_id
                 WHERE org.organization_id = "{organization_id}"
@@ -180,6 +216,7 @@ class UserService:
     def get_parent_by_child_id(
         self, child_id: str
     ) -> tuple[UserModel | None, UserModel | None] | None:
+        # todo: fix with child_parent table usage
         parent_columns = ", ".join(
             f"parent.{column} as {column}"
             for column in [
@@ -235,3 +272,19 @@ class UserService:
         if len(rows) == 1:
             return UserModel.model_validate(rows[0]), None
         return UserModel.model_validate(rows[0]), UserModel.model_validate(rows[1])
+
+    def link_role(self, user_id: str, role: models.Roles):
+        def callee(session: ydb.Session):
+            session.transaction().execute(
+                """
+                PRAGMA TablePathPrefix("{db_prefix}");
+                UPSERT INTO user_role ({keys}) VALUES {values}
+                """.format(
+                    db_prefix=self._db_prefix,
+                    keys="user_id, role",
+                    values=f'("{user_id}", "{role}")'
+                ),
+                commit_tx=True,
+            )
+
+        return self._pool.retry_operation_sync(callee)

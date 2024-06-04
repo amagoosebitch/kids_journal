@@ -275,25 +275,14 @@ def create_tables(session_pool: Any, path: Path):
             ),
         )
 
-        # role
-        session.create_table(
-            str(path / "role"),
-            ydb.TableDescription()
-            .with_primary_key("role_id")
-            .with_columns(
-                ydb.Column("role_id", ydb.PrimitiveType.Utf8),
-                ydb.Column("name", ydb.OptionalType(ydb.PrimitiveType.Utf8)),
-            ),
-        )
-
         # user_role
         session.create_table(
             str(path / "user_role"),
             ydb.TableDescription()
-            .with_primary_keys("user_id", "role_id")
+            .with_primary_keys("user_id", "role")
             .with_columns(
                 ydb.Column("user_id", ydb.PrimitiveType.Utf8),
-                ydb.Column("role_id", ydb.PrimitiveType.Utf8),
+                ydb.Column("role", ydb.PrimitiveType.Utf8),
             ),
         )
 

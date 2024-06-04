@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from fastapi import Depends, Path
 
+import models
 from models.user import UserModel
 from src.dependencies import create_user_service
 
@@ -10,8 +11,8 @@ async def create_parent(
     parent: UserModel,
     user_service=Depends(create_user_service),
 ) -> None:
-    user_service.create_user(parent)
-    # todo: link role
+    user_service.upsert_user(parent)
+    user_service.link_role(user_id=parent.user_id, role=models.Roles.PARENT)
 
 
 async def get_parent_by_tg_id(

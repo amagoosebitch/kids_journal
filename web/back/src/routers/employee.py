@@ -15,6 +15,7 @@ async def upsert_employee(
     user_service=Depends(create_user_service),
     groups_service=Depends(create_group_service),
 ) -> None:
+    # todo link to organization
     user_service.upsert_user(employee)
     user_service.link_role(user_id=employee.user_id, role=models.Roles.EMPLOYEE)
 
@@ -38,8 +39,8 @@ async def unlink_group_from_employee(
 async def get_groups_for_employee(
     employee_id: str = Path(...),
     user_service=Depends(create_user_service),
-) -> None:
-    user_service.get_groups_ids_by_teacher(teacher_id=employee_id)
+) -> list[str]:
+    return user_service.get_groups_ids_by_teacher(teacher_id=employee_id)
 
 
 async def get_user_by_tg_id(

@@ -42,7 +42,11 @@
 }
 
 .groups-title_age {
-  width: 80%;
+  width: 20%;
+}
+
+.groups-title_teach {
+  width: 60%;
 }
 
 .groups-title_label,

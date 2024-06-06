@@ -17,6 +17,8 @@ import CreateActivityPage from "../../pages/createActivity-page/CreateActivityPa
 import { SubjectPage } from "../../pages/subject-page/SubjectPage";
 import CreateSubjectPage from "../../pages/createSubject-page/CreateSubjectPage";
 import CreateOrganization from "../../pages/createOrganization/CreateOrganization";
+import EditActivityPage from "../../pages/editActivity-page/EditActivityPage";
+import ProgressPage from "../../pages/progress-page/ProgressPage";
 
 function App() {
   return (
@@ -62,6 +64,16 @@ function App() {
           <Route
             path={`:organization${AppRoute.CreateSubject}`}
             element={<CreateSubjectPage />}
+          />
+
+          <Route
+              path={`:organization/:group/:lesson${AppRoute.Progress}`}
+              element={<ProgressPage />}
+          />
+
+          <Route
+            path={`:organization/:group/:lesson/:date/:schedule_id`}
+            element={<EditActivityPage />}
           />
 
           <Route

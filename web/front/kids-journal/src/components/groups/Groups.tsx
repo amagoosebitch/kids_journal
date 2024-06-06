@@ -4,6 +4,7 @@ import { ButtonMain } from "../button/ButtonMain";
 import "./Groups.css";
 import { Link, useNavigate } from "react-router-dom";
 import { AuthMiddleware } from "../../middlewares";
+import {employeeInfo} from "../employees/Employees";
 
 export type GroupProps = {
   organization: string | undefined;
@@ -15,6 +16,7 @@ export const groupInfo = [
     organization_id: "",
     name: "",
     age_range: "",
+    teacher: "",
   },
 ];
 
@@ -98,6 +100,7 @@ export const Groups = ({ organization }: GroupProps) => {
             <tr>
               <td className="groups-title_label">Группа</td>
               <td className="groups-title_age">Возраст</td>
+              <td className="groups-title_teach">Воспитатель</td>
             </tr>
           </thead>
           <tbody>
@@ -109,6 +112,7 @@ export const Groups = ({ organization }: GroupProps) => {
                   </Link>
                 </td>
                 <td className="groups-item_age">{group.age_range}</td>
+                <td className="groups-item_teach">{group.group_id}</td>
               </tr>
             ))}
           </tbody>

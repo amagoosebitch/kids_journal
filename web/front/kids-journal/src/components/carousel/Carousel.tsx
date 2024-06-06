@@ -31,6 +31,7 @@ type lessonInfoProps = [
     group_name: string;
     child_names: string[];
     date_day: string;
+    teacher_id: string;
     description: string;
     is_for_child: boolean;
   },
@@ -42,6 +43,7 @@ export const lessonInfo: lessonInfoProps = [
     subject_name: "",
     presentation_id: "",
     group_name: "",
+    teacher_id: "",
     child_names: [""],
     date_day: "",
     description: "",
@@ -123,7 +125,6 @@ export const Carousel = ({ organization, currentDate }: CarouselProps) => {
           });
     }
   }, [groups, currentDate]);
-
   let slidesToShowCurrent = 3;
   if (groups.length === 1) slidesToShowCurrent = 1;
   if (groups.length === 2) slidesToShowCurrent = 2;
@@ -170,6 +171,7 @@ export const Carousel = ({ organization, currentDate }: CarouselProps) => {
 
   const [currentActivity, setCurrentActivity] = useState(lessonInfo);
   const [currentGroup, setCurrentGroup] = useState("");
+  const [currentTeacher, setCurrentTeacher] = useState("");
 
   const doDo = (action: lessonInfoProps, group: string) => {
     setCurrentActivity(action);

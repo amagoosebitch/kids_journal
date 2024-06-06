@@ -10,12 +10,6 @@
   max-width: 872px !important;
 }
 
-.Modal__medium {
-  min-width: 872px;
-  max-width: 872px;
-  width: 100%;
-}
-
 .ModalCloseButton {
   width: 20px;
   height: 20px;
@@ -29,12 +23,29 @@
 }
 
 .Modal {
+  font-family: "Inter", sans-serif;
   display: flex;
+  flex-direction: column;
+  width: 440px !important;
+  height: 394px;
+}
+
+.Modal_header {
+  border-bottom: #CDCDCD solid 1px;
+  padding-bottom: 16px;
+}
+
+.Modal_header-subject_name {
+  font-size: 28px;
+}
+
+.Modal_header-data {
+  font-size: 20px;
 }
 
 .Modal_content {
-  font-family: "Inter", sans-serif;
-  font-size: 20px;
+  font-size: 14px;
+  padding-top: 22px;
   padding-left: 0 !important;
 }
 
@@ -43,10 +54,20 @@
 }
 
 .Modal-name {
-  font-family: "Inter", sans-serif;
   font-size: 40px;
 }
 
-.Modal_content-item:nth-child(odd) {
-  background: var(--color-brown_table);
+.Modal_content-item {
+  display: flex;
+  gap: 5px;
+}
+
+.Modal_footer {
+  position: absolute;
+  margin-top: 322px;
+  bottom: 32px;
+
+  display: flex;
+  gap: 15px;
+  justify-content: space-between;
 }

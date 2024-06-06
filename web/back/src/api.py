@@ -7,9 +7,9 @@ from starlette.middleware.cors import CORSMiddleware
 from routers.presentation import (
     create_presentation,
     get_presentation,
-    get_presentations,
+    get_all_presentations_for_subject,
 )
-from routers.schedule import create_lesson, get_schedule_for_group
+from routers.schedule import upsert_lesson, get_schedule_for_group, get_schedule_for_child_by_date, unlink_lesson_from_child
 from routers.subject import (
     create_subject,
     get_all_subjects_for_organization,
@@ -17,7 +17,7 @@ from routers.subject import (
 )
 from src.exception_handlers.unauthorized import handle_auth_error
 from src.routers.auth import login
-from src.routers.child import create_child
+from src.routers.child import upsert_child
 from src.routers.employee import (
     upsert_employee,
     get_employees_for_organization,
@@ -106,7 +106,7 @@ def init_app() -> FastAPI:
     router.add_api_route("/employees/{employee_id}/groups/{group_id}", unlink_group_from_employee, methods=["DELETE"])
 
     # Child
-    router.add_api_route("/{group_id}/child", create_child, methods=["POST"])
+    router.add_api_route("/{group_id}/child", upsert_child, methods=["POST"])
     router.add_api_route("/{group_id}/child", get_children_by_group_id, methods=["GET"])
 
     # User
@@ -132,7 +132,7 @@ def init_app() -> FastAPI:
         "/subjects/{subject_id}/presentations", create_presentation, methods=["POST"]
     )
     router.add_api_route(
-        "/subjects/{subject_id}/presentations", get_presentations, methods=["GET"]
+        "/subjects/{subject_id}/presentations", get_all_presentations_for_subject, methods=["GET"]
     )
     router.add_api_route(
         "/organizations/{organization_id}/subjects/{subject_id}/{presentation_id}",
@@ -141,8 +141,10 @@ def init_app() -> FastAPI:
     )
 
     # Schedule
-    router.add_api_route("/lessons", create_lesson, methods=["POST"])
+    router.add_api_route("/lessons", upsert_lesson, methods=["POST"])
     router.add_api_route("/lessons/{group_id}", get_schedule_for_group, methods=["GET"])
+    router.add_api_route("/lessons/individual/{child_id}", get_schedule_for_child_by_date, methods=["GET"])
+    router.add_api_route("/lessons/individual/{child_id}", unlink_lesson_from_child, methods=["DELETE"])
 
     api_settings = load_api_settings()
 

@@ -7,7 +7,7 @@ from models.utils import CleverBaseModel as BaseModel
 
 
 class UserModel(BaseModel):
-    user_id: str = uuid4()
+    user_id: str | None = uuid4()
     first_name: str
     middle_name: str | None = None
     last_name: str

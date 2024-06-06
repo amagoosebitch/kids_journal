@@ -166,6 +166,17 @@ def create_tables(session_pool: Any, path: Path):
             ),
         )
 
+        # group_schedule
+        session.create_table(
+            str(path / "group_schedule"),
+            ydb.TableDescription()
+            .with_primary_keys("group_id", "schedule_id")
+            .with_columns(
+                ydb.Column("group_id", ydb.PrimitiveType.Utf8),
+                ydb.Column("schedule_id", ydb.PrimitiveType.Utf8),
+            ),
+        )
+
         # note
         session.create_table(
             str(path / "note"),

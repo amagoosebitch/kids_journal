@@ -7,7 +7,7 @@ from models.utils import CleverBaseModel as BaseModel
 
 
 class OrganizationModel(BaseModel):
-    organization_id: str = uuid4()
+    organization_id: str | None = uuid4()
     name: str
     description: str | None = None
     photo_url: str | None = None

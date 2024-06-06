@@ -1,16 +1,16 @@
 from __future__ import annotations
 
-from datetime import date
+from datetime import date, datetime
 from uuid import uuid4
 
 from models.utils import CleverBaseModel as BaseModel
 
 
 class ScheduleModel(BaseModel):
-    schedule_id: str = uuid4()
+    schedule_id: str | None = uuid4()
     presentation_id: str
-    start_lesson: date
-    end_lesson: date | None = None
+    start_lesson: datetime
+    end_lesson: datetime | None = None
     canceled: bool = False
 
 

@@ -9,7 +9,7 @@ from routers.presentation import (
     get_presentation,
     get_all_presentations_for_subject,
 )
-from routers.schedule import upsert_lesson, get_schedule_for_group, get_schedule_for_child
+from routers.schedule import upsert_lesson, get_schedule_for_group, get_schedule_for_child_by_date, unlink_lesson_from_child
 from routers.subject import (
     create_subject,
     get_all_subjects_for_organization,
@@ -143,7 +143,8 @@ def init_app() -> FastAPI:
     # Schedule
     router.add_api_route("/lessons", upsert_lesson, methods=["POST"])
     router.add_api_route("/lessons/{group_id}", get_schedule_for_group, methods=["GET"])
-    router.add_api_route("/lessons/individual/{child_id}", get_schedule_for_child, methods=["GET"])
+    router.add_api_route("/lessons/individual/{child_id}", get_schedule_for_child_by_date, methods=["GET"])
+    router.add_api_route("/lessons/individual/{child_id}", unlink_lesson_from_child, methods=["DELETE"])
 
     api_settings = load_api_settings()
 

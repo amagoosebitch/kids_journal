@@ -41,14 +41,14 @@ async def get_skill_level_by_id(
 
 async def get_all_skill_levels(
     skill_service=Depends(create_skill_service),
-) -> list[SkillModel]:
+) -> list[SkillLevelModel]:
     return skill_service.get_all_skill_levels()
 
 
 async def upsert_skill_for_child(
+    skill_level_id: str,
     child_id: str,
     skill_id: str = Path(...),
-    skill_level_id: str = Body(...),
     skill_service=Depends(create_skill_service)
 ) -> None:
     skill_service.unlink_from_child(child_id=child_id, skill_id=skill_id)
@@ -58,5 +58,5 @@ async def upsert_skill_for_child(
 async def get_all_skills_for_child(
     child_id: str,
     skill_service=Depends(create_skill_service)
-) -> ChildSkillModel:
+) -> list[ChildSkillModel]:
     return skill_service.get_all_skills_for_child(child_id=child_id)

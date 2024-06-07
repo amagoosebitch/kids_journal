@@ -23,7 +23,8 @@ class SkillService:
                     (
                         "{skill_id}",
                         "{subject_id}",
-                        "{name}"
+                        "{name}",
+                        "{description}"
                     );
                 """.format(
                     db_prefix=self._db_prefix,
@@ -47,9 +48,8 @@ class SkillService:
                 UPSERT INTO skill_level ({keys}) VALUES
                     (
                         "{skill_level_id}",
-                        "{name}"
-                        "{description}",
-
+                        "{name}",
+                        "{description}"
                     );
                 """.format(
                     db_prefix=self._db_prefix,
@@ -170,7 +170,7 @@ class SkillService:
 
         return self._pool.retry_operation_sync(callee)
 
-    def get_all_skills_for_child(self, child_id) -> ChildSkillModel:
+    def get_all_skills_for_child(self, child_id) -> list[ChildSkillModel] | None:
         def callee(session: ydb.Session):
             session.transaction().execute(
                 """
@@ -184,4 +184,7 @@ class SkillService:
                 commit_tx=True,
             )
 
-        return self._pool.retry_operation_sync(callee)
+        rows = self._pool.retry_operation_sync(callee).rows
+        if not rows:
+            return None
+        return [ChildSkillModel.model_validate(rows[i]) for i in range(len(rows))]

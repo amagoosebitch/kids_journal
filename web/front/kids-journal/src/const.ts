@@ -9,6 +9,7 @@ export const AppRoute = {
   Activity: "/activity",
   Subject: "/subject",
   Employees: "/employees",
+  Progress: "/progress",
   CreateActivity: "/createActivity",
   CreateGroups: "/createGroups",
   CreateEmployees: "/createEmployees",
@@ -269,3 +270,6 @@ export const subjectInfo = [
     ],
   },
 ];
+
+
+export let hoho = {}

@@ -1,5 +1,5 @@
 import "./CreateGroups.css";
-import React, { ChangeEventHandler, useState } from "react";
+import React, {ChangeEventHandler, useEffect, useState} from "react";
 import {
   Button,
   CloseButton,
@@ -9,7 +9,8 @@ import {
   Select,
 } from "@chakra-ui/react";
 import { ButtonMain } from "../button/ButtonMain";
-import {ApiRoute, AppRoute} from "../../const";
+import {ApiRoute, AppRoute, hoho} from "../../const";
+import {employeeInfo} from "../employees/Employees";
 
 const optionsAge = [
   { age: "0-3", value: 1 },
@@ -23,6 +24,7 @@ type CreateGroupsProps = {
 
 export const CreateGroups = ({ organization }: CreateGroupsProps) => {
   const [valueAge, setValueAge] = useState("");
+  const [valueTeach, setValueTeach] = useState("");
   const [valueName, setNameInput] = useState("");
 
   const childTemplate = {
@@ -53,6 +55,25 @@ export const CreateGroups = ({ organization }: CreateGroupsProps) => {
     filteredChildren.splice(index, 1);
     setChildren(filteredChildren);
   };
+
+  const [employees, setEmployees] = useState(employeeInfo);
+  useEffect(() => {
+    fetch(`${ApiRoute}/organizations/${organization}/employee`, {
+      method: "GET",
+      headers: { Accept: "application/json" },
+    })
+        .then((response) => {
+          if (response.status === 200 || response.status === 201) {
+            return response;
+          }
+          throw new Error();
+        })
+        .then((response) => response.json())
+        .then((data) => {
+          setEmployees(data);
+        });
+  }, []);
+
 
   const createGroup = () => {
     const headers = new Headers();
@@ -123,14 +144,14 @@ export const CreateGroups = ({ organization }: CreateGroupsProps) => {
               <Select
                 placeholder="Выберите преподавателя"
                 onChange={(event: React.FormEvent<HTMLSelectElement>) =>
-                  setValueAge(event.currentTarget.value)
+                  setValueTeach(event.currentTarget.value)
                 }
                 style={{
                   background: "white",
                 }}
               >
-                {optionsAge.map((option) => (
-                  <option value={option.value}>{option.age}</option>
+                {employees.map((employee, index) => (
+                    employee.role_id === "Воспитатель" && <option value={index}>{employee.name}</option>
                 ))}
               </Select>
             </div>

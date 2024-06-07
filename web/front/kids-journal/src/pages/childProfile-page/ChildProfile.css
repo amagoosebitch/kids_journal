@@ -1,0 +1,110 @@
+@import "../../style/index.css";
+
+.child_profile-container {
+  overflow-y: auto;
+  margin-left: 32px;
+  margin-right: 32px;
+  margin-top: 108px;
+  height: 100%;
+  background: white;
+}
+
+.child__info {
+  display: flex;
+  margin: 40px;
+  border-bottom: #cdcdcd solid 1px;
+}
+
+.child__info-img {
+  width: 324px;
+  height: 398px;
+  background: #d9d9d9;
+  margin-bottom: 40px;
+}
+
+.child__info_block {
+  margin-left: 40px;
+}
+
+.child__info_block-header {
+  border-bottom: #cdcdcd solid 1px;
+}
+
+.child_name {
+  font-size: 32px;
+  font-weight: 450;
+}
+
+.child_group {
+  font-size: 20px;
+  color: #5e5e5e;
+  padding-bottom: 15px;
+}
+
+.child_age,
+.child_parents-title,
+.child_parent,
+.child_teacher-info {
+    font-size: 14px;
+}
+
+.child_parent:nth-child(odd) {
+  padding-top: 10px;
+}
+
+.child_parents-title,
+.child_teacher-title {
+    font-size: 18px;
+    padding-top: 15px;
+    padding-bottom: 15px;
+}
+
+.child__progress {
+  margin: 40px;
+  border-bottom: #cdcdcd solid 1px;
+  height: 478px;
+}
+
+.child__progress-title {
+  font-size: 32px;
+  font-weight: 450;
+  margin-bottom: 24px;
+}
+
+.child__progress_table {
+  width: 100%;
+}
+
+.child__progress_table-title {
+  font-size: 18px;
+  height: 40px;
+  margin-left: 12px;
+  padding-left: 24px;
+}
+
+.children-body {
+  font-size: 14px;
+}
+
+.children-item {
+  width: 100%;
+  height: 52px;
+  padding-left: 24px;
+}
+
+.children-item_name,
+.child__progress_table_topic {
+  padding-left: 24px;
+}
+
+.children-item:nth-child(odd) {
+  background: var(--color-brown_table);
+}
+
+.children__table tbody tr {
+  transition: all 0.3s;
+}
+
+.children__table tbody tr:hover {
+  background-color: var(--color-lightgrey);
+}

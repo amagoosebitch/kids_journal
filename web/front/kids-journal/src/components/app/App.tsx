@@ -19,6 +19,7 @@ import CreateSubjectPage from "../../pages/createSubject-page/CreateSubjectPage"
 import CreateOrganization from "../../pages/createOrganization/CreateOrganization";
 import EditActivityPage from "../../pages/editActivity-page/EditActivityPage";
 import ProgressPage from "../../pages/progress-page/ProgressPage";
+import ChildProfile from "../../pages/childProfile-page/ChildProfile";
 
 function App() {
   return (
@@ -79,6 +80,11 @@ function App() {
           <Route
             path={`:organization${AppRoute.CreateActivity}`}
             element={<CreateActivityPage />}
+          />
+
+          <Route
+              path={`:organization/:group/:childName`}
+              element={<ChildProfile />}
           />
 
           <Route

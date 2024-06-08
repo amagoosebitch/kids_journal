@@ -42,6 +42,26 @@ class UserService:
 
         return self._pool.retry_operation_sync(callee)
 
+    def link_user_to_organization(self, organization_id: str, user_id: str) -> None:
+        def callee(session: ydb.Session):
+            session.transaction().execute(
+                """
+                PRAGMA TablePathPrefix("{db_prefix}");
+                UPSERT INTO organizations_users (organization_id, user_id) VALUES
+                    (
+                        "{organization_id}",
+                        "{user_id}"
+                    );
+                """.format(
+                    db_prefix=self._db_prefix,
+                    organization_id=organization_id,
+                    user_id=user_id
+                ),
+                commit_tx=True,
+            )
+
+        return self._pool.retry_operation_sync(callee)
+
     def get_by_tg_user_id(self, tg_user_id: str) -> UserModel | None:
         def callee(session: ydb.Session):
             return session.transaction().execute(
@@ -158,15 +178,15 @@ class UserService:
 
     def get_teachers_by_organization_id(self, organization_id: str) -> list[UserModelResponse]:
         def callee(session: ydb.Session):
+            # todo fix role
             return session.transaction().execute(
                 """
                 PRAGMA TablePathPrefix("{db_prefix}");
                 SELECT DISTINCT u.user_id, u.first_name, u.last_name, u.phone_number
                 FROM user as u
-                JOIN group_teacher as gt ON gt.teacher_id = u.user_id
-                JOIN group as g ON g.group_id = gt.group_id
-                JOIN organization as org ON org.organization_id = g.organization_id
-                WHERE org.organization_id = "{organization_id}"
+                JOIN organizations_users as ou ON ou.user_id = u.user_id
+                JOIN user_role AS ur ON ur.user_id = u.user_id
+                WHERE ou.organization_id = "{organization_id}" AND ur.role = "employee"
                 """.format(
                     db_prefix=self._db_prefix,
                     organization_id=organization_id,
@@ -182,9 +202,9 @@ class UserService:
         for row in rows:
             result.append(
                 UserModelResponse(
-                    user_id=row["e.user_id"],
-                    name=f'{row["e.first_name"]} {row["e.last_name"]}',
-                    phone_number=row["e.phone_number"],
+                    user_id=row["u.user_id"],
+                    name=f'{row["u.first_name"]} {row["u.last_name"]}',
+                    phone_number=row["u.phone_number"],
                 )
             )
         return result

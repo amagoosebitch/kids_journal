@@ -77,22 +77,15 @@ class SubjectService:
 
         return SubjectModel.model_validate(rows[0])
 
-    def get_all_for_organization(self, organization_id: str) -> list[SubjectModel]:
+    def get_all(self) -> list[SubjectModel]:
         def callee(session: ydb.Session):
             return session.transaction().execute(
                 """
                 PRAGMA TablePathPrefix("{db_prefix}");
-                SELECT distinct s.subject_id as subject_id, s.name as name,
-                s.description as description, s.age_range as age_range
-                FROM subject as s
-                JOIN group_subject as gs
-                ON s.subject_id = gs.subject_id
-                JOIN group as g
-                ON gs.group_id = g.group_id
-                WHERE g.organization_id = "{organization_id}"
+                SELECT *
+                FROM subject
                 """.format(
                     db_prefix=self._db_prefix,
-                    organization_id=organization_id,
                 ),
                 commit_tx=True,
             )

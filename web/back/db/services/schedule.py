@@ -165,13 +165,14 @@ class ScheduleService:
             result.append(
                 ScheduleModelResponse(
                     schedule_id=row["cs.schedule_id"],
-                    date_day=row["s.start_lesson"],
+                    date_day=date_day,
                     presentation_id=row["s.presentation_id"],
+                    is_for_child=True
                 )
             )
         return result
 
-    def get_for_group_by_time(
+    def get_for_group_by_date(
         self, group_id: str, date_day: date
     ) -> list[ScheduleModelResponse] | None:
         def callee(session: ydb.Session):
@@ -201,7 +202,7 @@ class ScheduleService:
                 ScheduleModelResponse(
                     schedule_id=row["s.schedule_id"],
                     is_for_child=False,
-                    date_day=row["s.start_lesson"],
+                    date_day=date_day,
                     presentation_id=row["s.presentation_id"],
                 )
             )

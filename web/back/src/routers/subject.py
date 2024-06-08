@@ -30,7 +30,7 @@ async def get_subject(
 
 
 async def get_all_subjects_for_organization(
-    organization_id: str,
+    organization_id: str = None,
     subject_service: SubjectService = Depends(create_subject_service),
 ) -> list[SubjectModel]:
-    return subject_service.get_all_for_organization(organization_id)
+    return subject_service.get_all()

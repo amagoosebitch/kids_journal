@@ -33,7 +33,7 @@ async def get_schedule_for_group(
     date_day: date,
     schedule_service=Depends(create_schedule_service),
 ) -> list[ScheduleModelResponse]:
-    return schedule_service.get_for_group_by_time(group_id, date_day)
+    return schedule_service.get_for_group_by_date(group_id, date_day)
 
 
 async def get_schedule_for_child_by_date(

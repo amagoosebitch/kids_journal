@@ -208,7 +208,7 @@ def create_tables(session_pool: Any, path: Path):
         session.create_table(
             str(path / "child_skills"),
             ydb.TableDescription()
-            .with_primary_keys("child_id", "skill_id")
+            .with_primary_keys("child_id", "presentation_id")
             .with_columns(
                 ydb.Column("child_id", ydb.PrimitiveType.Utf8),
                 ydb.Column("presentation_id", ydb.PrimitiveType.Utf8),

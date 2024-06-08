@@ -12,7 +12,7 @@ class PresentationService:
         self._pool = ydb_pool
         self._db_prefix = db_prefix
 
-    def create_presentation(self, args_model: PresentationModel) -> None:
+    def upsert_presentation(self, args_model: PresentationModel) -> None:
         args = args_model.model_dump(exclude_none=False, mode="json")
 
         def callee(session: ydb.Session):

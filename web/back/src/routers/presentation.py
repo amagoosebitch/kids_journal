@@ -1,18 +1,22 @@
 from __future__ import annotations
 
-from fastapi import Depends
+from fastapi import Depends, Path
 
 from db.services.presentations import PresentationService
+from db.services.skills import SkillService
 from models.presentations import PresentationModel
-from src.dependencies import create_presentation_service
+from models.skills import SkillModel
+from src.dependencies import create_presentation_service, create_skill_service
+
+import src.routers.skills as skills
 
 
-async def create_presentation(
-    subject_id: str,
+async def upsert_presentation(
     presentation: PresentationModel,
+    subject_id: str = Path(...),
     presentation_service: PresentationService = Depends(create_presentation_service),
 ) -> None:
-    presentation_service.create_presentation(presentation)
+    presentation_service.upsert_presentation(presentation)
 
 
 async def get_presentation(

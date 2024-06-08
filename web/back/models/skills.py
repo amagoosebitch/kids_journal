@@ -20,5 +20,5 @@ class SkillLevelModel(BaseModel):
 
 class ChildSkillModel(BaseModel):
     child_id: str
-    skill_id: str
+    presentation_id: str
     skill_level_id: str

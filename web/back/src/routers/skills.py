@@ -5,26 +5,6 @@ from models.skills import ChildSkillModel
 from src.dependencies import create_skill_service
 
 
-async def upsert_skill(
-    skill: SkillModel,
-    skill_service=Depends(create_skill_service),
-) -> None:
-    skill_service.upsert_skill(skill)
-
-
-async def get_skill_by_id(
-    skill_id: str = Path(...),
-    skill_service=Depends(create_skill_service),
-) -> SkillModel:
-    return skill_service.get_skill_by_id(skill_id)
-
-
-async def get_all_skills(
-    skill_service=Depends(create_skill_service),
-) -> list[SkillModel]:
-    return skill_service.get_all_skills()
-
-
 async def upsert_skill_level(
     skill_level: SkillLevelModel,
     skill_service=Depends(create_skill_service),
@@ -48,11 +28,11 @@ async def get_all_skill_levels(
 async def upsert_skill_for_child(
     skill_level_id: str,
     child_id: str,
-    skill_id: str = Path(...),
+    presentation_id: str = Path(...),
     skill_service=Depends(create_skill_service)
 ) -> None:
-    skill_service.unlink_from_child(child_id=child_id, skill_id=skill_id)
-    skill_service.link_to_child(child_id=child_id, skill_id=skill_id, skill_level_id=skill_level_id)
+    skill_service.unlink_from_child(child_id=child_id, presentation_id=presentation_id)
+    skill_service.link_to_child(child_id=child_id, presentation_id=presentation_id, skill_level_id=skill_level_id)
 
 
 async def get_all_skills_for_child(

@@ -259,19 +259,6 @@ def create_tables(session_pool: Any, path: Path):
             ),
         )
 
-        # # skill
-        # session.create_table(
-        #     str(path / "skill"),
-        #     ydb.TableDescription()
-        #     .with_primary_key("skill_id")
-        #     .with_columns(
-        #         ydb.Column("skill_id", ydb.PrimitiveType.Utf8),
-        #         ydb.Column("subject_id", ydb.OptionalType(ydb.PrimitiveType.Utf8)),
-        #         ydb.Column("name", ydb.OptionalType(ydb.PrimitiveType.Utf8)),
-        #         ydb.Column("description", ydb.OptionalType(ydb.PrimitiveType.Utf8)),
-        #     ),
-        # )
-
         # presentation
         session.create_table(
             str(path / "presentation"),

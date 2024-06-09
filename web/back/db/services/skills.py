@@ -106,9 +106,9 @@ class SkillService:
 
         return self._pool.retry_operation_sync(callee)
 
-    def get_all_skills_for_child(self, child_id) -> list[ChildSkillModel] | None:
+    def get_all_skills_for_child(self, child_id: str) -> list[ChildSkillModel] | None:
         def callee(session: ydb.Session):
-            session.transaction().execute(
+            return session.transaction().execute(
                 """
                 PRAGMA TablePathPrefix("{db_prefix}");
                 SELECT * FROM child_skills

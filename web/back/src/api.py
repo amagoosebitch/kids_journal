@@ -5,7 +5,7 @@ from fastapi import APIRouter, FastAPI
 from starlette.middleware.cors import CORSMiddleware
 
 from routers.presentation import (
-    create_presentation,
+    upsert_presentation,
     get_presentation,
     get_all_presentations_for_subject,
 )
@@ -43,6 +43,8 @@ from src.routers.parent import (
     get_parent_by_tg_id,
     get_parents_by_child_id,
 )
+from src.routers.skills import upsert_skill_level, get_skill_level_by_id, \
+    upsert_skill_for_child, get_all_skills_for_child, get_all_skill_levels
 from src.routers.user import try_merge_user_by_phone
 from src.settings import load_api_settings
 
@@ -108,6 +110,8 @@ def init_app() -> FastAPI:
     # Child
     router.add_api_route("/{group_id}/child", upsert_child, methods=["POST"])
     router.add_api_route("/{group_id}/child", get_children_by_group_id, methods=["GET"])
+    router.add_api_route("/children/{child_id}/skills/{presentation_id}/", upsert_skill_for_child, methods=["POST"])
+    router.add_api_route("/children/{child_id}/skills/", get_all_skills_for_child, methods=["GET"])
 
     # User
     router.add_api_route("/user_merge", try_merge_user_by_phone, methods=["POST"])
@@ -129,7 +133,7 @@ def init_app() -> FastAPI:
 
     # Presentation
     router.add_api_route(
-        "/subjects/{subject_id}/presentations", create_presentation, methods=["POST"]
+        "/subjects/{subject_id}/presentations", upsert_presentation, methods=["POST"]
     )
     router.add_api_route(
         "/subjects/{subject_id}/presentations", get_all_presentations_for_subject, methods=["GET"]
@@ -145,6 +149,11 @@ def init_app() -> FastAPI:
     router.add_api_route("/lessons/{group_id}", get_schedule_for_group, methods=["GET"])
     router.add_api_route("/lessons/individual/{child_id}", get_schedule_for_child_by_date, methods=["GET"])
     router.add_api_route("/lessons/individual/{child_id}", unlink_lesson_from_child, methods=["DELETE"])
+
+    # Skills
+    router.add_api_route("/skills_levels", upsert_skill_level, methods=["POST"])
+    router.add_api_route("/skills_levels", get_all_skill_levels, methods=["GET"])
+    router.add_api_route("/skills_levels/{skill_level_id}", get_skill_level_by_id, methods=["GET"])
 
     api_settings = load_api_settings()
 

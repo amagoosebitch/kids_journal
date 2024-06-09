@@ -10,6 +10,7 @@ from db.services.groups import GroupService
 from db.services.organization import OrganizationService
 from db.services.presentations import PresentationService
 from db.services.schedule import ScheduleService
+from db.services.skills import SkillService
 from db.services.subjects import SubjectService
 from db.services.user import UserService
 from db.settings import YDBSettings
@@ -82,3 +83,10 @@ def create_child_service(
     settings: Annotated[YDBSettings, Depends(ydb_settings)],
 ) -> ChildService:
     return ChildService(pool, settings.database)
+
+
+def create_skill_service(
+    pool: Annotated[Any, Depends(create_pool)],
+    settings: Annotated[YDBSettings, Depends(ydb_settings)],
+) -> SkillService:
+    return SkillService(pool, settings.database)

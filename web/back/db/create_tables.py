@@ -208,10 +208,10 @@ def create_tables(session_pool: Any, path: Path):
         session.create_table(
             str(path / "child_skills"),
             ydb.TableDescription()
-            .with_primary_keys("child_id", "skill_id")
+            .with_primary_keys("child_id", "presentation_id")
             .with_columns(
                 ydb.Column("child_id", ydb.PrimitiveType.Utf8),
-                ydb.Column("skill_id", ydb.PrimitiveType.Utf8),
+                ydb.Column("presentation_id", ydb.PrimitiveType.Utf8),
                 ydb.Column("skill_level_id", ydb.OptionalType(ydb.PrimitiveType.Utf8)),
             )
             .with_indexes(
@@ -256,18 +256,6 @@ def create_tables(session_pool: Any, path: Path):
                 ydb.Column("skill_level_id", ydb.PrimitiveType.Utf8),
                 ydb.Column("name", ydb.OptionalType(ydb.PrimitiveType.Utf8)),
                 ydb.Column("description", ydb.OptionalType(ydb.PrimitiveType.Utf8)),
-            ),
-        )
-
-        # skill
-        session.create_table(
-            str(path / "skill"),
-            ydb.TableDescription()
-            .with_primary_key("skill_id")
-            .with_columns(
-                ydb.Column("skill_id", ydb.PrimitiveType.Utf8),
-                ydb.Column("subject_id", ydb.OptionalType(ydb.PrimitiveType.Utf8)),
-                ydb.Column("name", ydb.OptionalType(ydb.PrimitiveType.Utf8)),
             ),
         )
 

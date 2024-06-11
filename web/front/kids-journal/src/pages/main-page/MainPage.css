@@ -1,13 +1,15 @@
 @import "../../style/index.css";
 
-
 .main__container {
-    display: flex;
-    justify-content: space-between;
-
-    padding-top: 120px;
-
-    padding-left: 44px;
-    padding-right: 44px;
+  display: flex;
+  padding-top: 120px;
+  padding-left: 44px;
+  padding-right: 44px;
 }
-
+.main__container-data {
+  margin: 0 auto;
+}
+.main__container-button {
+  position: absolute;
+  right: 44px;
+}

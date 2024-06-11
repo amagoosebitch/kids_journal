@@ -1,49 +1,71 @@
+from __future__ import annotations
+
 from uuid import UUID
 
 from fastapi import Depends, Path
 
-from models.employees import EmployeeModel, EmployeeResponse
-from src.dependencies import create_employee_service, create_group_service
+import models
+from models.user import UserModel, UserModelResponse
+from src.dependencies import create_group_service, create_user_service
 
 
-def create_employee(
-    employee: EmployeeModel,
+async def upsert_employee(
+    employee: UserModel,
     organization_id: str = Path(...),
-    employee_service=Depends(create_employee_service),
+    user_service=Depends(create_user_service),
     groups_service=Depends(create_group_service),
 ) -> None:
-    employee_service.create_employee(employee)
-    group_ids = [
-        str(group.group_id)
-        for group in groups_service.get_all_for_organization(organization_id)
-    ]
-    if group_ids:
-        employee_service.link_to_groups(group_ids, str(employee.employee_id))
+    user_service.upsert_user(employee)
+    user_service.link_user_to_organization(organization_id=organization_id, user_id=employee.user_id)
+    user_service.link_role(user_id=employee.user_id, role=models.Roles.EMPLOYEE)
 
 
-async def get_employee_by_tg_id(
+async def link_employee_to_group(
+    employee_id: str = Path(...),
+    group_id: str = Path(...),
+    user_service=Depends(create_user_service),
+) -> None:
+    user_service.link_teacher_to_group(teacher_id=employee_id, group_id=group_id)
+
+
+async def unlink_group_from_employee(
+    employee_id: str = Path(...),
+    group_id: str = Path(...),
+    user_service=Depends(create_user_service),
+) -> None:
+    user_service.unlink_group_from_teacher(teacher_id=employee_id, group_id=group_id)
+
+
+async def get_groups_for_employee(
+    employee_id: str = Path(...),
+    user_service=Depends(create_user_service),
+) -> list[str]:
+    return user_service.get_groups_ids_by_teacher(teacher_id=employee_id)
+
+
+async def get_user_by_tg_id(
     tg_id: str,
-    employee_service=Depends(create_employee_service),
-) -> EmployeeModel | None:
-    return employee_service.get_by_tg_user_id(tg_id)
+    user_service=Depends(create_user_service),
+) -> UserModel | None:
+    return user_service.get_by_tg_user_id(tg_id)
 
 
-async def get_employee_by_phone(
+async def get_user_by_phone(
     phone: str,
-    employee_service=Depends(create_employee_service),
-) -> EmployeeModel | None:
-    return employee_service.get_by_phone(phone)
+    user_service=Depends(create_user_service),
+) -> UserModel | None:
+    return user_service.get_by_phone(phone)
 
 
 async def get_employees_for_organization(
     organization_id: str,
-    employee_service=Depends(create_employee_service),
-) -> list[EmployeeResponse]:
-    return employee_service.get_by_organization_id(organization_id)
+    employee_service=Depends(create_user_service),
+) -> list[UserModelResponse]:
+    return employee_service.get_teachers_by_organization_id(organization_id)
 
 
 async def get_employees_organization_names_by_phone(
     phone: str,
-    employee_service=Depends(create_employee_service),
+    employee_service=Depends(create_user_service),
 ) -> list[str]:
     return employee_service.get_organization_name_by_phone(phone)

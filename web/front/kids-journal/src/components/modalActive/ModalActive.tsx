@@ -5,6 +5,9 @@ import { default as ReactModal } from "react-responsive-modal";
 import "react-responsive-modal/styles.css";
 import "./ModalActive.css";
 import { CloseButton } from "@chakra-ui/react";
+import { ApiRoute, AppRoute } from "../../const";
+import { ButtonMain } from "../button/ButtonMain";
+import { useParams } from "react-router-dom";
 
 type IModalSize = "medium";
 
@@ -48,6 +51,7 @@ export const ModalActive = ({
     closeButton: clsx("ModalDefaultCloseButton"),
   };
   const [styles, setStyles] = useState({});
+  const { organization } = useParams();
 
   useEffect(() => {
     const scrollbarWidth =
@@ -78,60 +82,84 @@ export const ModalActive = ({
       styles={styles}
     >
       <div className="Modal">
+        <div className="Modal_header">
+          <div className="Modal_header-subject_name">
+            {currentActivity[0].subject_name}
+          </div>
+          <div className="Modal_header-data">
+            {currentActivity[0].date_day.split("T")[0]}
+          </div>
+        </div>
         <div className="Modal_content">
-          <tr className="Modal_content-item">
-            <td className="la Modal_content-group">Группа</td>
-            <td className="Modal_content-information">{currentGroup}</td>
-          </tr>
-          <tr className="Modal_content-item">
-            <td className="la Modal_content-topic">Предмет</td>
-            <td className="Modal_content-information">
-              {currentActivity[0].subject_name}
-            </td>
-          </tr>
-          <tr className="Modal_content-item">
-            <td className="la Modal_content-topic">Тема</td>
-            <td className="Modal_content-information">
+          <div className="Modal_content-item">
+            <div className="Modal_content-group">Группа:</div>
+            <div className="Modal_content-information">{currentGroup}</div>
+          </div>
+          <div className="Modal_content-item">
+            <div className="Modal_content-topic">Тема:</div>
+            <div className="Modal_content-information">
               {currentActivity[0].presentation_id}
-            </td>
-          </tr>
-          <tr className="Modal_content-item">
-            <td className="la Modal_content-date">Дата</td>
-            <td className="Modal_content-information">
-              {currentActivity[0].date_day.split('T')[0]}
-            </td>
-          </tr>
-          <tr className="Modal_content-item">
-            <td className="la Modal_content-time">Время</td>
-            <td className="Modal_content-information">
-              {currentActivity[0].date_day.split('T')[1]}
-            </td>
-          </tr>
-          <tr className="Modal_content-item">
-            <td className="la Modal_content-description">Описание</td>
-            <td className="Modal_content-information">
+            </div>
+          </div>
+          <div className="Modal_content-item">
+            <div className="Modal_content-time">Время:</div>
+            <div className="Modal_content-information">
+              {currentActivity[0].date_day
+                .split("T")[1]
+                ?.split(":")
+                .slice(0, -1)
+                .join(":")}
+            </div>
+          </div>
+          <div className="Modal_content-item">
+            <div className="Modal_content-description">Описание:</div>
+            <div className="Modal_content-information">
               {currentActivity[0].description}
-            </td>
-          </tr>
-          <tr className="Modal_content-item">
+            </div>
+          </div>
+          <div className="Modal_content-item">
             {currentActivity[0].is_for_child ? (
-              <div>Индивидуальное задание</div>
+              <>
+                <div className="Modal_content-children">Ученики:</div>
+                <div className="Modal_content-information">
+                  {currentActivity[0].child_names.map((child) => (
+                    <div>{child}</div>
+                  ))}
+                </div>
+              </>
             ) : (
               <div>Задание для всей группы</div>
             )}
-          </tr>
-          <tr className="Modal_content-item">
-            {currentActivity[0].is_for_child && (
-              <>
-                <td className="la Modal_content-children">Дети</td>
-                <td className="Modal_content-information">
-                  {currentActivity[0].child_names.map((child) => (
-                    <tr>{child}</tr>
-                  ))}
-                </td>
-              </>
-            )}
-          </tr>
+          </div>
+        </div>
+        <div className="Modal_footer">
+          <div>
+            <ButtonMain
+              height="40px"
+              width="168px"
+              linkButton={`/${organization}/${currentGroup}/${currentActivity[0].subject_name}${AppRoute.Progress}`}
+            >
+              Выставить оценки
+            </ButtonMain>
+          </div>
+          <div>
+            <ButtonMain
+              height="40px"
+              width="145px"
+              linkButton={`/${organization}/${currentGroup}/${
+                currentActivity[0].subject_name
+              }/${currentActivity[0].date_day.split("T")[0]}/${
+                currentActivity[0].schedule_id
+              }`}
+            >
+              Редактировать
+            </ButtonMain>
+          </div>
+          <div>
+            <ButtonMain height="40px" width="98px" linkButton={``}>
+              Удалить
+            </ButtonMain>
+          </div>
         </div>
       </div>
     </ReactModal>

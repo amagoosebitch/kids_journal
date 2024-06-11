@@ -136,7 +136,7 @@ export const AddChild = ({ organization, groupId }: addChildrenProps) => {
 
   return (
     <>
-      <div className="creat__text">Добавление детей в группу</div>
+      <div className="creat__text">Список группы</div>
       <div className="creat__form">
         <div className="add_children">
           <div className="childrenScroll">
@@ -260,18 +260,54 @@ export const AddChild = ({ organization, groupId }: addChildrenProps) => {
               variant="outline"
               onClick={addChild}
             >
-              + Ребенок
+              <svg
+                width="14"
+                height="14"
+                viewBox="0 0 14 14"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M1 7L13 7"
+                  stroke="white"
+                  stroke-width="1.5"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+                <path
+                  d="M7 1L7 13"
+                  stroke="white"
+                  stroke-width="1.5"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+              </svg>
+              Добавить ребенка
             </Button>
           </div>
 
           <div className="add_children-in-group__button">
             <ButtonMain
-              height="44px"
-              width="211px"
+              height="40px"
+              width="160px"
               linkButton={`/${organization}/${groupId}`}
               onClick={() => addToGroup()}
             >
-              Добавить детей в группу
+              Продолжить
+              <svg
+                width="18"
+                height="10"
+                viewBox="0 0 18 10"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M12.707 9L15.9999 5.70711C16.3905 5.31658 16.3905 4.68342 15.9999 4.29289L12.707 1M15.707 5L1.70703 5"
+                  stroke="white"
+                  stroke-width="1.5"
+                  stroke-linecap="round"
+                />
+              </svg>
             </ButtonMain>
           </div>
         </div>

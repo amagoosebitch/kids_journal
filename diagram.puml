@@ -1,0 +1,80 @@
+@startuml
+Title Kids Journal
+autonumber
+skinparam sequenceMessageAlign center
+
+participant  FrontEnd
+
+box "BackEnd" #LightBlue
+participant "API" as API
+end box
+==Авторизация==
+
+FrontEnd->API: Телефон
+note left: Авторизация по телефону
+activate API
+
+alt Телефона нет в БД
+FrontEnd<--API: Клиент с указанными данными не найден
+deactivate API
+activate FrontEnd
+end
+
+==Просмотр расписания==
+FrontEnd->API:Запрос на получение списка уроков по группам а дате
+deactivate FrontEnd
+activate API
+FrontEnd<--API:Список уроков по группам
+deactivate API
+activate FrontEnd
+FrontEnd->FrontEnd:Просмотр уроков
+FrontEnd-->API:Создание новых уроков
+deactivate FrontEnd
+activate API
+FrontEnd<--API:Урок создан
+deactivate API
+activate FrontEnd
+
+==Группы==
+FrontEnd->API:Запрос на получение списка групп по организации
+deactivate FrontEnd
+activate API
+FrontEnd<--API:Список групп организации
+deactivate API
+activate FrontEnd
+FrontEnd->FrontEnd:Просмотр всех групп
+FrontEnd-->API:Добавление новой группы
+deactivate FrontEnd
+activate API
+FrontEnd<--API:Группа создана
+deactivate API
+
+==Группа==
+FrontEnd->API:Запрос на получение конкретной группы организации
+deactivate FrontEnd
+activate API
+FrontEnd<--API:Информация о группе получена
+deactivate API
+activate FrontEnd
+FrontEnd->FrontEnd:Просмотр информации о группе
+FrontEnd-->API:Добавление новой группы
+deactivate FrontEnd
+activate API
+FrontEnd<--API:Группа создана
+deactivate API
+
+==Организация==
+FrontEnd->API:Запрос на получение конкретной группы организации
+deactivate FrontEnd
+activate API
+FrontEnd<--API:Информация о группе получена
+deactivate API
+activate FrontEnd
+FrontEnd->FrontEnd:Просмотр информации о группе
+FrontEnd-->API:Добавление новой группы
+deactivate FrontEnd
+activate API
+FrontEnd<--API:Группа создана
+deactivate API
+
+@enduml

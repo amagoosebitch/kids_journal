@@ -2,8 +2,9 @@ import React, { useEffect, useState } from "react";
 import { AppRoute, ApiRoute, infoGroups } from "../../const";
 import { ButtonMain } from "../button/ButtonMain";
 import "./Groups.css";
-import {Link, useNavigate} from "react-router-dom";
-import {AuthMiddleware} from "../../middlewares";
+import { Link, useNavigate } from "react-router-dom";
+import { AuthMiddleware } from "../../middlewares";
+import {employeeInfo} from "../employees/Employees";
 
 export type GroupProps = {
   organization: string | undefined;
@@ -15,12 +16,13 @@ export const groupInfo = [
     organization_id: "",
     name: "",
     age_range: "",
+    teacher: "",
   },
 ];
 
 export const Groups = ({ organization }: GroupProps) => {
   const navigate = useNavigate();
-  AuthMiddleware(navigate);
+
   const [firstGroups, setFirstGroups] = useState(groupInfo);
   useEffect(() => {
     fetch(`${ApiRoute}/organizations/${organization}/groups`, {
@@ -38,7 +40,6 @@ export const Groups = ({ organization }: GroupProps) => {
         setFirstGroups(data);
       });
   }, []);
-
 
   const [value, setValue] = useState("");
   const filteredGroups = firstGroups.filter((group) => {
@@ -62,10 +63,32 @@ export const Groups = ({ organization }: GroupProps) => {
         </div>
         <div>
           <ButtonMain
-            height="44px"
-            width="211px"
+            height="40px"
+            width="176px"
             linkButton={`/${organization}${AppRoute.CreateGroups}`}
           >
+            <svg
+              width="14"
+              height="14"
+              viewBox="0 0 14 14"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M1 7L13 7"
+                stroke="white"
+                stroke-width="1.5"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+              <path
+                d="M7 1L7 13"
+                stroke="white"
+                stroke-width="1.5"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+            </svg>
             Создать группу
           </ButtonMain>
         </div>
@@ -75,8 +98,9 @@ export const Groups = ({ organization }: GroupProps) => {
         <table className="groups__table">
           <thead className="groups-title">
             <tr>
-              <td className="groups-title_label">Название группы</td>
-              <td className="groups-title_age">Возраст детей</td>
+              <td className="groups-title_label">Группа</td>
+              <td className="groups-title_age">Возраст</td>
+              <td className="groups-title_teach">Воспитатель</td>
             </tr>
           </thead>
           <tbody>
@@ -88,6 +112,7 @@ export const Groups = ({ organization }: GroupProps) => {
                   </Link>
                 </td>
                 <td className="groups-item_age">{group.age_range}</td>
+                <td className="groups-item_teach">{group.group_id}</td>
               </tr>
             ))}
           </tbody>

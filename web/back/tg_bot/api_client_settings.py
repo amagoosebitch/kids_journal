@@ -37,7 +37,9 @@ class ApiClientSettings(BaseSettings):
         return URL(self.url) / self.organization_by_phone.format(phone=phone)
 
     def get_groups_by_organization_url(self, organization: str) -> URL:
-        return URL(self.url) / self.groups_by_organization.format(organization_id=organization)
+        return URL(self.url) / self.groups_by_organization.format(
+            organization_id=organization
+        )
 
     class Config:
         env_prefix = "API_CLIENT_"

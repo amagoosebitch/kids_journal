@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from pathlib import Path
 
 import jwt
@@ -6,10 +8,8 @@ from starlette import status
 from starlette.responses import HTMLResponse, RedirectResponse
 from starlette.templating import Jinja2Templates
 
-from auth.settings import JWTSettings, RedirectSettings, create_redirect_settings
-from db.services.employee import EmployeeService
-from dependencies import create_employee_service, jwt_settings
-from models.employees import EmployeeModel
+from db.services.user import UserService
+from models.user import UserModel
 from src.auth import (
     TelegramAuth,
     TelegramDataError,
@@ -18,6 +18,8 @@ from src.auth import (
     WidgetSize,
     validate_telegram_data,
 )
+from src.auth.settings import JWTSettings, RedirectSettings, create_redirect_settings
+from src.dependencies import create_user_service, jwt_settings
 from src.settings import BotConfig, load_bot_config
 
 templates = Jinja2Templates(Path(__file__).parent.parent / "templates")
@@ -26,7 +28,7 @@ templates = Jinja2Templates(Path(__file__).parent.parent / "templates")
 def _create_jwt_token(
     *,
     jwt_settings: JWTSettings,
-    employee: EmployeeModel | None,
+    employee: UserModel | None,
 ) -> str | None:
     if employee is None:
         return None
@@ -73,7 +75,7 @@ async def login(
     query_params: TelegramAuth = Depends(TelegramAuth),
     config: BotConfig = Depends(load_bot_config),
     jwt_settings: JWTSettings = Depends(jwt_settings),
-    employee_service: EmployeeService = Depends(create_employee_service),
+    employee_service: UserService = Depends(create_user_service),
     redirect_settings: RedirectSettings = Depends(create_redirect_settings),
 ):
     telegram_token = config.telegram_token

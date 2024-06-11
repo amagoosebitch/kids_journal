@@ -17,6 +17,9 @@ import CreateActivityPage from "../../pages/createActivity-page/CreateActivityPa
 import { SubjectPage } from "../../pages/subject-page/SubjectPage";
 import CreateSubjectPage from "../../pages/createSubject-page/CreateSubjectPage";
 import CreateOrganization from "../../pages/createOrganization/CreateOrganization";
+import EditActivityPage from "../../pages/editActivity-page/EditActivityPage";
+import ProgressPage from "../../pages/progress-page/ProgressPage";
+import ChildProfile from "../../pages/childProfile-page/ChildProfile";
 
 function App() {
   return (
@@ -65,15 +68,29 @@ function App() {
           />
 
           <Route
+              path={`:organization/:group/:lesson${AppRoute.Progress}`}
+              element={<ProgressPage />}
+          />
+
+          <Route
+            path={`:organization/:group/:lesson/:date/:schedule_id`}
+            element={<EditActivityPage />}
+          />
+
+          <Route
             path={`:organization${AppRoute.CreateActivity}`}
             element={<CreateActivityPage />}
+          />
+
+          <Route
+              path={`:organization/:group/:childName`}
+              element={<ChildProfile />}
           />
 
           <Route
             path={AppRoute.CreateOrganization}
             element={<CreateOrganization />}
           />
-          <Route path={AppRoute.SignIn} element={<CreateOrganization />} />
         </Routes>
       </Router>
     </div>

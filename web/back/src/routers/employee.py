@@ -1,7 +1,5 @@
 from __future__ import annotations
 
-from uuid import UUID
-
 from fastapi import Depends, Path
 
 import models
@@ -41,20 +39,6 @@ async def get_groups_for_employee(
     user_service=Depends(create_user_service),
 ) -> list[str]:
     return user_service.get_groups_ids_by_teacher(teacher_id=employee_id)
-
-
-async def get_user_by_tg_id(
-    tg_id: str,
-    user_service=Depends(create_user_service),
-) -> UserModel | None:
-    return user_service.get_by_tg_user_id(tg_id)
-
-
-async def get_user_by_phone(
-    phone: str,
-    user_service=Depends(create_user_service),
-) -> UserModel | None:
-    return user_service.get_by_phone(phone)
 
 
 async def get_employees_for_organization(

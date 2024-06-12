@@ -17,13 +17,11 @@ from routers.subject import (
 )
 from src.exception_handlers.unauthorized import handle_auth_error
 from src.routers.auth import login
-from src.routers.child import upsert_child
+from src.routers.child import upsert_child, link_child_to_parent, unlink_child_from_parent
 from src.routers.employee import (
     upsert_employee,
     get_employees_for_organization,
     get_employees_organization_names_by_phone,
-    get_user_by_phone,
-    get_user_by_tg_id,
     link_employee_to_group, unlink_group_from_employee, get_groups_for_employee
 )
 from src.routers.groups import (  # add_children_to_group,
@@ -39,13 +37,12 @@ from src.routers.organization import (
     get_organizations_for_user_by_phone,
 )
 from src.routers.parent import (
-    create_parent,
-    get_parent_by_tg_id,
+    upsert_parent,
     get_parents_by_child_id,
 )
 from src.routers.skills import upsert_skill_level, get_skill_level_by_id, \
     upsert_skill_for_child, get_all_skills_for_child, get_all_skill_levels
-from src.routers.user import try_merge_user_by_phone
+from src.routers.user import try_merge_user_by_phone, get_user_by_tg_id, get_user_by_phone
 from src.settings import load_api_settings
 
 
@@ -81,11 +78,13 @@ def init_app() -> FastAPI:
     router.add_api_route("/login", login, methods=["GET"])
 
     # Parent
-    router.add_api_route("/parents", create_parent, methods=["POST"])
-    router.add_api_route("/parents/{tg_id}", get_parent_by_tg_id, methods=["GET"])
+    router.add_api_route("/parents", upsert_parent, methods=["POST"])
+    router.add_api_route("/parents/{tg_id}", get_user_by_tg_id, methods=["GET"])
     router.add_api_route(
         "/parents/child/{child_id}", get_parents_by_child_id, methods=["GET"]
     )
+    router.add_api_route("/parents/{parent_id}/child/{child_id}", link_child_to_parent, methods=["POST"])
+    router.add_api_route("/parents/{parent_id}/child/{child_id}", unlink_child_from_parent, methods=["DELETE"])
 
     # Employee
     router.add_api_route(

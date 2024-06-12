@@ -42,6 +42,27 @@ class UserService:
 
         return self._pool.retry_operation_sync(callee)
 
+    def get_by_user_id(self, user_id: str) -> UserModel | None:
+        def callee(session: ydb.Session):
+            return session.transaction().execute(
+                """
+                PRAGMA TablePathPrefix("{db_prefix}");
+                SELECT *
+                FROM user
+                WHERE user_id = "{user_id}"
+                """.format(
+                    db_prefix=self._db_prefix,
+                    user_id=user_id,
+                ),
+                commit_tx=True,
+            )
+
+        rows = self._pool.retry_operation_sync(callee)[0].rows
+        if not rows:
+            return None
+
+        return UserModel.model_validate(rows[0])
+
     def link_user_to_organization(self, organization_id: str, user_id: str) -> None:
         def callee(session: ydb.Session):
             session.transaction().execute(
@@ -233,65 +254,25 @@ class UserService:
             )
         )
 
-    def get_parent_by_child_id(
+    def get_parents_ids_by_child_id(
         self, child_id: str
-    ) -> tuple[UserModel | None, UserModel | None] | None:
-        # todo: fix with child_parent table usage
-        parent_columns = ", ".join(
-            f"parent.{column} as {column}"
-            for column in [
-                "parent_id",
-                "name",
-                "first_name",
-                "last_name",
-                "email",
-                "gender",
-                "phone_number",
-                "freq_notifications",
-                "tg_user_id",
-            ]
-        )
-
-        def callee_1(session: ydb.Session):
+    ) -> list[UserModel]:
+        def callee(session: ydb.Session):
             return session.transaction().execute(
                 """
                 PRAGMA TablePathPrefix("{db_prefix}");
-                SELECT {parent_columns}
-                FROM parent
-                JOIN child on child.parent_1_id = parent.parent_id
+                SELECT parent_id
+                FROM child_parent
                 WHERE child_id = "{child_id}"
                 """.format(
                     db_prefix=self._db_prefix,
-                    parent_columns=parent_columns,
                     child_id=child_id,
                 ),
                 commit_tx=True,
             )
 
-        def callee_2(session: ydb.Session):
-            return session.transaction().execute(
-                """
-                PRAGMA TablePathPrefix("{db_prefix}");
-                SELECT {parent_columns}
-                FROM parent
-                JOIN child on child.parent_2_id = parent.parent_id
-                WHERE child_id = "{child_id}"
-                """.format(
-                    db_prefix=self._db_prefix,
-                    parent_columns=parent_columns,
-                    child_id=child_id,
-                ),
-                commit_tx=True,
-            )
-
-        rows = self._pool.retry_operation_sync(callee_1)[0].rows or []
-        rows.extend(self._pool.retry_operation_sync(callee_2)[0].rows or [])
-        print(rows)
-        if not rows:
-            return None
-        if len(rows) == 1:
-            return UserModel.model_validate(rows[0]), None
-        return UserModel.model_validate(rows[0]), UserModel.model_validate(rows[1])
+        rows = self._pool.retry_operation_sync(callee)[0].rows
+        return [rows[i]["parent_id"] for i in range(len(rows))]
 
     def link_role(self, user_id: str, role: models.Roles):
         def callee(session: ydb.Session):

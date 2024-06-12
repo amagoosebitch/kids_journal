@@ -80,6 +80,39 @@ class ChildService:
 
         return self._pool.retry_operation_sync(callee)
 
+    def link_to_parent(self, parent_id: str, child_id: str) -> None:
+        def callee(session: ydb.Session):
+            session.transaction().execute(
+                """
+                PRAGMA TablePathPrefix("{db_prefix}");
+                UPSERT INTO child_parent {keys} VALUES {values}
+                """.format(
+                    db_prefix=self._db_prefix,
+                    keys="(parent_id, child_id)",
+                    values=f'("{parent_id}", "{child_id}")',
+                ),
+                commit_tx=True,
+            )
+
+        return self._pool.retry_operation_sync(callee)
+
+    def unlink_from_parent(self, parent_id: str, child_id: str):
+        def callee(session: ydb.Session):
+            session.transaction().execute(
+                """
+                PRAGMA TablePathPrefix("{db_prefix}");
+                DELETE FROM child_parent
+                WHERE child_id = "{child_id}" AND parent_id = "{parent_id}"
+                """.format(
+                    db_prefix=self._db_prefix,
+                    child_id=child_id,
+                    parent_id=parent_id
+                ),
+                commit_tx=True,
+            )
+
+        return self._pool.retry_operation_sync(callee)
+
     def get_child_by_id(self, child_id: str):
         def callee(session: ydb.Session):
             return session.transaction().execute(

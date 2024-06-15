@@ -7,6 +7,8 @@ import { AppRoute } from "../../const";
 import "./MainPage.css";
 import { Carousel } from "../../components/carousel/Carousel";
 import { useParams } from "react-router-dom";
+import { store } from "../../store";
+import { fetchGroupsAction } from "../../store/api-actions";
 
 function MainPage(): JSX.Element {
   const { organization } = useParams();

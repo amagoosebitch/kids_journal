@@ -5,7 +5,6 @@ import { Link } from "react-router-dom";
 
 import "./GroupInfo.css";
 import { Modal } from "../modal/Modal";
-import { groupInfo } from "../groups/Groups";
 
 export type GroupInfoProps = {
   groupId: string | undefined;
@@ -23,20 +22,14 @@ export const parent = {
 };
 
 export const child = {
+  child_id: "",
   name: "",
   birth_date: new Date(),
-  parent_1: {
-    name: "",
-    phone_number: "",
-  },
-  parent_2: {
-    name: "",
-    phone_number: "",
-  },
 };
 
 export const GroupInfo = ({ organization, groupId }: GroupInfoProps) => {
   const [children, setChildren] = useState([child]);
+  const [parents, setParents] = useState([parent]);
   useEffect(() => {
     fetch(`${ApiRoute}/${groupId}/child`, {
       method: "GET",
@@ -54,6 +47,26 @@ export const GroupInfo = ({ organization, groupId }: GroupInfoProps) => {
       });
   }, []);
   const [groups, setGroups] = useState(infoGroups);
+
+ const curParent = (currChild: string) => {
+    fetch(`${ApiRoute}/parents/child/${currChild}`, {
+      method: "GET",
+      headers: { Accept: "application/json" },
+    })
+        .then((response) => {
+          if (response.status === 200 || response.status === 201) {
+            return response;
+          }
+          throw new Error();
+        })
+        .then((response) => response.json())
+        .then((data) => {
+          setParents(data);
+        });
+    return parents;
+  };
+
+
 
   const currentGroup = groups.filter((group) => {
     if (groupId !== undefined)
@@ -78,8 +91,6 @@ export const GroupInfo = ({ organization, groupId }: GroupInfoProps) => {
   const handleModalClose = () => {
     setIsOpenModal(false);
   };
-
-  console.log(children);
 
   return (
     <>
@@ -134,7 +145,7 @@ export const GroupInfo = ({ organization, groupId }: GroupInfoProps) => {
                 <tr
                   className="children-item"
                   onClick={() =>
-                    doDo(child.name, child.parent_1, child.parent_2)
+                    doDo(child.name, parents[0], parents[1])
                   }
                 >
                   <td className="children-item_name">
@@ -147,10 +158,10 @@ export const GroupInfo = ({ organization, groupId }: GroupInfoProps) => {
                       new Date(child.birth_date).getFullYear()}
                   </td>
                   <td className="children-item_number">
-                    {child.parent_1.phone_number}
+                    {curParent(child.child_id)[0].phone_number}
                   </td>
                   <td className="children-item_parent">
-                    {child.parent_1.name}
+                    {parents[0].name}
                   </td>
                 </tr>
               </>

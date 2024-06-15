@@ -79,7 +79,6 @@ export default function EditActivityPage() {
       })
       .then((response) => response.json())
       .then((data) => {
-        console.log("data", data, group)
         if (data.length !== 0 && group !== undefined)
           setAllInfo(data);
       });

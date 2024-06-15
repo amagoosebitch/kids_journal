@@ -9,8 +9,10 @@ import {
   Select,
 } from "@chakra-ui/react";
 import { ButtonMain } from "../button/ButtonMain";
-import {ApiRoute, AppRoute, hoho} from "../../const";
+import {ApiRoute, AppRoute, hoho, testOrganization} from "../../const";
 import {employeeInfo} from "../employees/Employees";
+import {useAppDispatch, useAppSelector} from "../../hooks/useAppDispatch";
+import {postAllData, postGroup} from "../../features/groupsSlice";
 
 const optionsAge = [
   { age: "0-3", value: 1 },
@@ -23,6 +25,11 @@ type CreateGroupsProps = {
 };
 
 export const CreateGroups = ({ organization }: CreateGroupsProps) => {
+  const data1 = useAppSelector((state) => {
+    return state.groups;
+  });
+  console.log("data1", data1)
+
   const [valueAge, setValueAge] = useState("");
   const [valueTeach, setValueTeach] = useState("");
   const [valueName, setNameInput] = useState("");
@@ -58,7 +65,7 @@ export const CreateGroups = ({ organization }: CreateGroupsProps) => {
 
   const [employees, setEmployees] = useState(employeeInfo);
   useEffect(() => {
-    fetch(`${ApiRoute}/organizations/${organization}/employee`, {
+    fetch(`${ApiRoute}/organizations/${testOrganization}/employee`, {
       method: "GET",
       headers: { Accept: "application/json" },
     })
@@ -78,12 +85,14 @@ export const CreateGroups = ({ organization }: CreateGroupsProps) => {
   const createGroup = () => {
     const headers = new Headers();
     headers.append("Content-Type", "application/json");
-    const body = JSON.stringify({
-      organization_id: organization,
+
+    const value = {
+      organization_id: testOrganization,
       age_range: optionsAge[Number(valueAge) - 1].age,
       name: valueName,
-      group_id: valueName,
-    });
+    }
+
+    const body = JSON.stringify(value)
 
     const requestOptions = {
       method: "POST",
@@ -151,7 +160,7 @@ export const CreateGroups = ({ organization }: CreateGroupsProps) => {
                 }}
               >
                 {employees.map((employee, index) => (
-                    employee.role_id === "Воспитатель" && <option value={index}>{employee.name}</option>
+                    <option value={index}>{employee.name}</option>
                 ))}
               </Select>
             </div>

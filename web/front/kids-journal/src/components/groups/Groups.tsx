@@ -1,48 +1,48 @@
 import React, { useEffect, useState } from "react";
-import { AppRoute, ApiRoute, infoGroups } from "../../const";
+import { AppRoute } from "../../const";
 import { ButtonMain } from "../button/ButtonMain";
 import "./Groups.css";
-import { Link, useNavigate } from "react-router-dom";
-import { AuthMiddleware } from "../../middlewares";
-import {employeeInfo} from "../employees/Employees";
+import { Link } from "react-router-dom";
+import {useAppDispatch, useAppSelector} from "../../hooks/useAppDispatch";
+import {getAllData} from "../../features/groupsSlice";
+import {LoaderScreen} from "../../pages/loading-screen/LoaderScreen";
 
 export type GroupProps = {
   organization: string | undefined;
 };
 
-export const groupInfo = [
-  {
-    group_id: "",
-    organization_id: "",
-    name: "",
-    age_range: "",
-    teacher: "",
-  },
-];
-
 export const Groups = ({ organization }: GroupProps) => {
-  const navigate = useNavigate();
-
-  const [firstGroups, setFirstGroups] = useState(groupInfo);
-  useEffect(() => {
-    fetch(`${ApiRoute}/organizations/${organization}/groups`, {
-      method: "GET",
-      headers: { Accept: "application/json" },
-    })
-      .then((response) => {
-        if (response.status === 200 || response.status === 201) {
-          return response;
-        }
-        throw new Error();
-      })
-      .then((response) => response.json())
-      .then((data) => {
-        setFirstGroups(data);
-      });
-  }, []);
-
   const [value, setValue] = useState("");
-  const filteredGroups = firstGroups.filter((group) => {
+  const dispatch = useAppDispatch();
+  const data = useAppSelector((state) => {
+    return state.groups;
+  });
+
+  useEffect(() => {
+    dispatch(getAllData())
+  }, [])
+
+
+  // const [firstGroups, setFirstGroups] = useState(groupInfo);
+  // useEffect(() => {
+  //
+  //   fetch(`${ApiRoute}/organizations/${testOrganization}/groups`, {
+  //     method: "GET",
+  //     headers: { Accept: "application/json" },
+  //   })
+  //     .then((response) => {
+  //       if (response.status === 200 || response.status === 201) {
+  //         return response;
+  //       }
+  //       throw new Error();
+  //     })
+  //     .then((response) => response.json())
+  //     .then((data) => {
+  //       setFirstGroups(data);
+  //     });
+  // }, []);
+
+  const filteredGroups = data.groups.filter((group) => {
     return group.name.toLowerCase().includes(value.toLowerCase());
   });
 

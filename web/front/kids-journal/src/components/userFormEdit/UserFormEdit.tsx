@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { Multiselect } from "multiselect-react-dropdown";
 import { ApiRoute } from "../../const";
 import { useParams } from "react-router-dom";
+import {childInfo, groupInfo} from "../userForm/UserForm";
 
 type UserData = {
   group: string;
@@ -15,31 +16,6 @@ type UserData = {
 type UserFormProps = UserData & {
   updateFields: (fields: Partial<UserData>) => void;
 };
-
-export const groupInfo = [
-  {
-    group_id: "",
-    organization_id: "",
-    name: "",
-    age_range: "",
-  },
-];
-
-export const childInfo = [
-  {
-    child_id: "",
-    name: "",
-  },
-];
-
-export const childrenInfo = [
-  {
-    group_id: "",
-    organization_id: "",
-    name: "",
-    age_range: "",
-  },
-];
 
 const childrenData = [
   { id: 1, name: "Болтов Егор" },

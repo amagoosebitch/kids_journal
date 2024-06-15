@@ -58,10 +58,9 @@ export default function CreateActivityPage() {
         subject_id: data.subject,
         presentation_id: data.topic,
         start_lesson: data.date,
-        child_id: data.listChildren.map(
+        child_ids: data.listChildren.map(
           (child: { name: string; id: string }) => child.name,
         ),
-        description: data.description,
       });
       console.log(lesson);
 

@@ -85,8 +85,6 @@ export const AddChild = ({ organization, groupId }: addChildrenProps) => {
       let body_parent_1 = JSON.stringify({
         first_name: child.firstNameParent,
         last_name: child.surnameParent,
-        name: child.firstNameParent + " " + child.surnameParent,
-        parent_id: child.firstNameParent + " " + child.surnameParent,
         phone_number: child.telParent,
       });
 
@@ -101,8 +99,6 @@ export const AddChild = ({ organization, groupId }: addChildrenProps) => {
       let body_parent_2 = JSON.stringify({
         first_name: child.firstNameParentTWO,
         last_name: child.surnameParentTWO,
-        name: child.firstNameParentTWO + " " + child.surnameParentTWO,
-        parent_id: child.firstNameParentTWO + " " + child.surnameParentTWO,
         phone_number: child.telParentTWO,
       });
 
@@ -116,12 +112,8 @@ export const AddChild = ({ organization, groupId }: addChildrenProps) => {
 
       let body_child = JSON.stringify({
         first_name: child.firstNameChild,
-        last_name: child.surnameChild,
-        name: child.firstNameChild + " " + child.surnameChild,
-        child_id: child.firstNameChild + " " + child.surnameChild,
+        middle_name: child.surnameChild,
         birth_date: new Date(child.dataChild),
-        parent_1_id: child.firstNameParent + " " + child.surnameParent,
-        parent_2_id: child.firstNameParentTWO + " " + child.surnameParentTWO,
       });
 
       let requestOptions3 = {

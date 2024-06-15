@@ -113,7 +113,7 @@ export const Header = () => {
         <ul className="header__nav-list">
           <li className="header__nav-item">
             <Link
-                to={`/${value?.label}/activity`}
+                to={`/${organization}/activity`}
                 className="nav-links"
                 onClick={closeMobileMenu}
             >
@@ -122,7 +122,7 @@ export const Header = () => {
           </li>
           <li className="header__nav-item">
             <Link
-              to={`/${value?.label}/employees`}
+              to={`/${organization}/employees`}
               className="nav-links"
               onClick={closeMobileMenu}
             >
@@ -131,7 +131,7 @@ export const Header = () => {
           </li>
           <li className="header__nav-item">
             <Link
-                to={`/${value?.label}/groups`}
+                to={`/${organization}/groups`}
                 className="nav-links"
                 onClick={closeMobileMenu}
             >

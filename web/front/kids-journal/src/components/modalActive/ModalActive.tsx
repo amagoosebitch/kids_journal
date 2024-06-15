@@ -14,12 +14,9 @@ type IModalSize = "medium";
 type lessonInfoProps = [
   {
     schedule_id: string;
-    subject_name: string;
     presentation_id: string;
-    group_name: string;
-    child_names: string[];
+    child_ids: string[];
     date_day: string;
-    description: string;
     is_for_child: boolean;
   },
 ];
@@ -84,7 +81,7 @@ export const ModalActive = ({
       <div className="Modal">
         <div className="Modal_header">
           <div className="Modal_header-subject_name">
-            {currentActivity[0].subject_name}
+            {currentActivity[0].schedule_id}
           </div>
           <div className="Modal_header-data">
             {currentActivity[0].date_day.split("T")[0]}
@@ -112,17 +109,11 @@ export const ModalActive = ({
             </div>
           </div>
           <div className="Modal_content-item">
-            <div className="Modal_content-description">Описание:</div>
-            <div className="Modal_content-information">
-              {currentActivity[0].description}
-            </div>
-          </div>
-          <div className="Modal_content-item">
             {currentActivity[0].is_for_child ? (
               <>
                 <div className="Modal_content-children">Ученики:</div>
                 <div className="Modal_content-information">
-                  {currentActivity[0].child_names.map((child) => (
+                  {currentActivity[0].child_ids.map((child) => (
                     <div>{child}</div>
                   ))}
                 </div>
@@ -137,7 +128,7 @@ export const ModalActive = ({
             <ButtonMain
               height="40px"
               width="168px"
-              linkButton={`/${organization}/${currentGroup}/${currentActivity[0].subject_name}${AppRoute.Progress}`}
+              linkButton={`/${organization}/${currentGroup}/${currentActivity[0].schedule_id}${AppRoute.Progress}`}
             >
               Выставить оценки
             </ButtonMain>
@@ -147,7 +138,7 @@ export const ModalActive = ({
               height="40px"
               width="145px"
               linkButton={`/${organization}/${currentGroup}/${
-                currentActivity[0].subject_name
+                currentActivity[0].schedule_id
               }/${currentActivity[0].date_day.split("T")[0]}/${
                 currentActivity[0].schedule_id
               }`}

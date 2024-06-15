@@ -1,7 +1,7 @@
 import { FormWrapper } from "./FormWrapper";
 import { Input, Select } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
-import { ApiRoute } from "../../const";
+import { ApiRoute, testOrganization } from "../../const";
 import { useParams } from "react-router-dom";
 
 type DescriptionDate = {
@@ -16,7 +16,6 @@ type DescriptionFormProps = DescriptionDate & {
 
 export const infoSubject = [
   {
-    organization_id: "",
     subject_id: "",
     name: "",
     description: "",
@@ -29,6 +28,9 @@ export const infoTopic = [
     presentation_id: "",
     name: "",
     description: "",
+    photo_url: "",
+    file_url: "",
+    subject_id: "",
   },
 ];
 
@@ -45,7 +47,7 @@ export function DescriptionForm({
 
   const [curSubject, setCurSubject] = useState("");
   useEffect(() => {
-    fetch(`${ApiRoute}/organizations/${organization}/subjects`, {
+    fetch(`${ApiRoute}/organizations/${testOrganization}/subjects`, {
       method: "GET",
       headers: { Accept: "application/json" },
     })
@@ -82,7 +84,7 @@ export function DescriptionForm({
   }, [curSubject]);
 
   const handleSubjectName = (e: string) => {
-    return subjects[Number(e)].name;
+    return subjects[Number(e)].subject_id;
   };
 
   const handleTopicName = (e: string) => {

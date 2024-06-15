@@ -20,8 +20,14 @@ import CreateOrganization from "../../pages/createOrganization/CreateOrganizatio
 import EditActivityPage from "../../pages/editActivity-page/EditActivityPage";
 import ProgressPage from "../../pages/progress-page/ProgressPage";
 import ChildProfile from "../../pages/childProfile-page/ChildProfile";
+import { useAppSelector } from "../../hooks/useAppDispatch";
+import { LoaderScreen } from "../../pages/loading-screen/LoaderScreen";
 
 function App() {
+  // const isDataLoading = useAppSelector((state) => state.isDataLoading);
+  // if (isDataLoading) {
+  //   return <LoaderScreen />;
+  // }
   return (
     <div className="app_container">
       <Router>
@@ -68,8 +74,8 @@ function App() {
           />
 
           <Route
-              path={`:organization/:group/:lesson${AppRoute.Progress}`}
-              element={<ProgressPage />}
+            path={`:organization/:group/:lesson${AppRoute.Progress}`}
+            element={<ProgressPage />}
           />
 
           <Route
@@ -83,8 +89,8 @@ function App() {
           />
 
           <Route
-              path={`:organization/:group/:childName`}
-              element={<ChildProfile />}
+            path={`:organization/:group/:childName`}
+            element={<ChildProfile />}
           />
 
           <Route

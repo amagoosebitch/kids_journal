@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { ButtonMain } from "../button/ButtonMain";
-import { ApiRoute, AppRoute, infoEmployees } from "../../const";
+import {ApiRoute, AppRoute, infoEmployees, testOrganization} from "../../const";
 
 import "./Employees.css";
 
@@ -10,10 +10,8 @@ export type EmployeesProps = {
 
 export const employeeInfo = [
   {
-    group_id: "",
     organization_id: "",
     name: "",
-    role_id: "",
     phone_number: "",
   },
 ];
@@ -21,7 +19,7 @@ export const employeeInfo = [
 export const Employees = ({ organization }: EmployeesProps) => {
   const [employees, setEmployees] = useState(employeeInfo);
   useEffect(() => {
-    fetch(`${ApiRoute}/organizations/${organization}/employee`, {
+    fetch(`${ApiRoute}/organizations/${testOrganization}/employee`, {
       method: "GET",
       headers: { Accept: "application/json" },
     })
@@ -37,6 +35,8 @@ export const Employees = ({ organization }: EmployeesProps) => {
       });
   }, []);
 
+  console.log(employees)
+
   return (
     <>
       <div className="employees_title">
@@ -47,6 +47,28 @@ export const Employees = ({ organization }: EmployeesProps) => {
             width="211px"
             linkButton={`/${organization}${AppRoute.CreateEmployees}`}
           >
+            <svg
+                width="14"
+                height="14"
+                viewBox="0 0 14 14"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                  d="M1 7L13 7"
+                  stroke="white"
+                  stroke-width="1.5"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+              />
+              <path
+                  d="M7 1L7 13"
+                  stroke="white"
+                  stroke-width="1.5"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+              />
+            </svg>
             Добавить сотрудника
           </ButtonMain>
         </div>
@@ -65,7 +87,7 @@ export const Employees = ({ organization }: EmployeesProps) => {
             {employees.map((employe) => (
               <tr className="employees-item">
                 <td className="employees-item_name">{employe.name}</td>
-                <td className="employees-item_role_id">{employe.role_id}</td>
+                <td className="employees-item_role_id">{employe.name}</td>
                 <td className="employees-item_phone_number">
                   {employe.phone_number}
                 </td>

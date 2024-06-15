@@ -1,8 +1,9 @@
 import { FormWrapperEdit } from "./FormWrapperEdit";
 import { Input, Select } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
-import { ApiRoute } from "../../const";
+import {ApiRoute, testOrganization} from "../../const";
 import { useParams } from "react-router-dom";
+import {infoSubject, infoTopic} from "../userForm/DescriptionForm";
 
 type DescriptionDate = {
   subject: string;
@@ -14,38 +15,18 @@ type DescriptionFormProps = DescriptionDate & {
   updateFields: (fields: Partial<DescriptionDate>) => void;
 };
 
-export const infoSubject = [
-  {
-    organization_id: "",
-    subject_id: "",
-    name: "",
-    description: "",
-    age_range: "",
-  },
-];
-
-export const infoTopic = [
-  {
-    presentation_id: "",
-    name: "",
-    description: "",
-  },
-];
-
 export function DescriptionFormEdit({
   subject,
   topic,
   description,
   updateFields,
 }: DescriptionFormProps) {
-  const { organization } = useParams();
-
   const [subjects, setSubjects] = useState(infoSubject);
   const [presentations, setPresentations] = useState(infoTopic);
 
   const [curSubject, setCurSubject] = useState("");
   useEffect(() => {
-    fetch(`${ApiRoute}/organizations/${organization}/subjects`, {
+    fetch(`${ApiRoute}/organizations/${testOrganization}/subjects`, {
       method: "GET",
       headers: { Accept: "application/json" },
     })
@@ -82,7 +63,7 @@ export function DescriptionFormEdit({
   }, [curSubject]);
 
   const handleSubjectName = (e: string) => {
-    return subjects[Number(e)].name;
+    return subjects[Number(e)].subject_id;
   };
 
   const handleTopicName = (e: string) => {

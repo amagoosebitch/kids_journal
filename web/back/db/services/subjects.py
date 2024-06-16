@@ -107,4 +107,4 @@ class SubjectService:
                 commit_tx=True,
             )
 
-        return self._pool.retry_operation_sync(callee)
+        self._pool.retry_operation_sync(callee)

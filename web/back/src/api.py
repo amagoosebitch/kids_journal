@@ -81,7 +81,7 @@ def init_app() -> FastAPI:
         methods=["GET"],
     )
     router.add_api_route("/groups/{group_id}", get_group, methods=["GET"])
-    router.add_api_route("/groups/{group_id}", delete_group, methods=["DELETE"])
+    router.add_api_route("/groups_/{group_id}", delete_group, methods=["DELETE"])
     # router.add_api_route(
     #     "/groups/link_children", add_children_to_group, methods=["POST"]
     # )
@@ -175,7 +175,7 @@ def init_app() -> FastAPI:
     router.add_api_route(
         "/organizations/{organization_id}/subjects", create_subject, methods=["POST"]
     )
-    router.add_api_route("subjects/{subject_id}", delete_subject, methods=["DELETE"])
+    router.add_api_route("/subjects/{subject_id}", delete_subject, methods=["DELETE"])
 
     # Presentation
     router.add_api_route(

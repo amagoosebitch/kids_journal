@@ -105,7 +105,7 @@ class GroupService:
                 commit_tx=True,
             )
 
-        return self._pool.retry_operation_sync(callee)
+        self._pool.retry_operation_sync(callee)
 
     def get_children_by_group_id(self, group_id: str) -> list[ChildModelResponse]:
         def callee(session: ydb.Session):

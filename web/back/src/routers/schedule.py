@@ -53,6 +53,6 @@ async def unlink_lesson_from_child(
 async def delete_lesson(
     schedule_id: str, schedule_service=Depends(create_schedule_service)
 ) -> None:
-    schedule_service.delete_by_id(lesson_id=schedule_id)
+    schedule_service.delete_by_id(schedule_id=schedule_id)
     schedule_service.remove_all_child_pairs(schedule_id)
     schedule_service.remove_all_group_pairs(schedule_id)

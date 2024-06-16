@@ -27,3 +27,10 @@ async def get_parents_by_child_id(
     user_service=Depends(create_user_service),
 ) -> tuple[UserModel | None, UserModel | None] | None:
     return user_service.get_parent_by_child_id(child_id)
+
+
+async def delete_parent(
+    parent_id: str,
+    user_service=Depends(create_user_service),
+) -> None:
+    return user_service.delete_by_id(user_id=parent_id)

@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import ydb
 
-from models.skills import SkillModel, SkillLevelModel, ChildSkillModel
+from models.skills import ChildSkillModel, SkillLevelModel, SkillModel
 
 
 class SkillService:
@@ -11,9 +11,7 @@ class SkillService:
         self._db_prefix = db_prefix
 
     def upsert_skill_level(self, args_model: SkillLevelModel) -> None:
-        args = args_model.model_dump(
-            exclude_none=False, mode="json"
-        )
+        args = args_model.model_dump(exclude_none=False, mode="json")
 
         def callee(session: ydb.Session):
             session.transaction().execute(
@@ -99,7 +97,7 @@ class SkillService:
                 """.format(
                     db_prefix=self._db_prefix,
                     child_id=child_id,
-                    presentation_id=presentation_id
+                    presentation_id=presentation_id,
                 ),
                 commit_tx=True,
             )
@@ -124,3 +122,19 @@ class SkillService:
         if not rows:
             return None
         return [ChildSkillModel.model_validate(rows[i]) for i in range(len(rows))]
+
+    def delete_by_id(self, skill_level_id: str) -> None:
+        def callee(session: ydb.Session):
+            return session.transaction().execute(
+                """
+                PRAGMA TablePathPrefix("{db_prefix}");
+                delete
+                FROM skill_level
+                WHERE skill_level_id = "{skill_level_id}"
+                """.format(
+                    db_prefix=self._db_prefix, skill_level_id=skill_level_id
+                ),
+                commit_tx=True,
+            )
+
+        return self._pool.retry_operation_sync(callee)

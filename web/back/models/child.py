@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from datetime import datetime, date
+from datetime import date, datetime
 from uuid import uuid4
 
 from models.entity import Gender

@@ -77,7 +77,9 @@ class PresentationService:
         result = self._make_result_from_rows(rows)
         return result
 
-    def _make_result_from_rows(self, rows: list[dict]) -> list[PresentationModel] | None:
+    def _make_result_from_rows(
+        self, rows: list[dict]
+    ) -> list[PresentationModel] | None:
         if not rows:
             return None
         result = []
@@ -93,3 +95,19 @@ class PresentationService:
                 )
             )
         return result
+
+    def delete_by_id(self, presentation_id: str) -> None:
+        def callee(session: ydb.Session):
+            return session.transaction().execute(
+                """
+                PRAGMA TablePathPrefix("{db_prefix}");
+                delete
+                FROM presentation
+                WHERE presentation_id = "{presentation_id}"
+                """.format(
+                    db_prefix=self._db_prefix, presentation_id=presentation_id
+                ),
+                commit_tx=True,
+            )
+
+        return self._pool.retry_operation_sync(callee)

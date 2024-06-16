@@ -70,9 +70,7 @@ class ScheduleService:
 
         return self._pool.retry_operation_sync(callee)
 
-    def create_group_schedule_pair(
-        self, schedule_id: str, group_id: str
-    ) -> None:
+    def create_group_schedule_pair(self, schedule_id: str, group_id: str) -> None:
         def callee(session: ydb.Session):
             session.transaction().execute(
                 """
@@ -130,7 +128,7 @@ class ScheduleService:
                 """.format(
                     db_prefix=self._db_prefix,
                     schedule_id=schedule_id,
-                    child_id=child_id
+                    child_id=child_id,
                 ),
                 commit_tx=True,
             )
@@ -167,7 +165,7 @@ class ScheduleService:
                     schedule_id=row["cs.schedule_id"],
                     date_day=date_day,
                     presentation_id=row["s.presentation_id"],
-                    is_for_child=True
+                    is_for_child=True,
                 )
             )
         return result
@@ -211,3 +209,19 @@ class ScheduleService:
     @classmethod
     def _get_time_str(cls, date_day: date, delta: timedelta) -> str:
         return _format_date_time(str(date_day + delta))
+
+    def delete_by_id(self, schedule_id: str):
+        def callee(session: ydb.Session):
+            return session.transaction().execute(
+                """
+                PRAGMA TablePathPrefix("{db_prefix}");
+                delete
+                FROM schedule
+                WHERE schedule_id = "{schedule_id}"
+                """.format(
+                    db_prefix=self._db_prefix, schedule_id=schedule_id
+                ),
+                commit_tx=True,
+            )
+
+        return self._pool.retry_operation_sync(callee)

@@ -13,9 +13,9 @@ def _format_date_time(date_time: str | None) -> str | None:
         date_time = date_time.split("T")[0]
         return f'CAST("{date_time}" as Date)'
     date_time = date_time.split(".")[0]
-    if '+' in date_time:
-        ind = date_time.find('+')
-        date_time = date_time[:ind] + date_time[ind + 6:]
+    if "+" in date_time:
+        ind = date_time.find("+")
+        date_time = date_time[:ind] + date_time[ind + 6 :]
     if date_time[-1] == "Z":
         return f'CAST("{date_time}" as Datetime)'
     return f'CAST("{date_time}Z" as Datetime)'
@@ -24,7 +24,7 @@ def _format_date_time(date_time: str | None) -> str | None:
 def _format_date_time_to_date(date_time: str | None) -> str | None:
     if date_time is None:
         return None
-    date_time = date_time.split('T')[0]
+    date_time = date_time.split("T")[0]
     return f'CAST("{date_time}" as Date)'
 
 

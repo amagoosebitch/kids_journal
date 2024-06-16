@@ -122,3 +122,19 @@ class OrganizationService:
         row["registration_date"] = _format_unix_time(row["registration_date"])
         row["updated_date"] = _format_unix_time(row["updated_date"])
         return OrganizationModel.model_validate(row)
+
+    def delete_by_id(self, organization_id: str) -> None:
+        def callee(session: ydb.Session):
+            return session.transaction().execute(
+                """
+                PRAGMA TablePathPrefix("{db_prefix}");
+                delete
+                FROM organization
+                WHERE organization_id = "{organization_id}"
+                """.format(
+                    db_prefix=self._db_prefix, organization_id=organization_id
+                ),
+                commit_tx=True,
+            )
+
+        return self._pool.retry_operation_sync(callee)

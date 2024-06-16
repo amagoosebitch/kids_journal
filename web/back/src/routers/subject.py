@@ -34,3 +34,9 @@ async def get_all_subjects_for_organization(
     subject_service: SubjectService = Depends(create_subject_service),
 ) -> list[SubjectModel]:
     return subject_service.get_all()
+
+
+async def delete_subject(
+    subject_id: str, subject_service=Depends(create_subject_service)
+) -> None:
+    return subject_service.delete_by_id(subject_id=subject_id)

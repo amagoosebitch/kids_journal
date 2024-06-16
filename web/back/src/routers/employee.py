@@ -16,7 +16,9 @@ async def upsert_employee(
     groups_service=Depends(create_group_service),
 ) -> None:
     user_service.upsert_user(employee)
-    user_service.link_user_to_organization(organization_id=organization_id, user_id=employee.user_id)
+    user_service.link_user_to_organization(
+        organization_id=organization_id, user_id=employee.user_id
+    )
     user_service.link_role(user_id=employee.user_id, role=models.Roles.EMPLOYEE)
 
 
@@ -69,3 +71,9 @@ async def get_employees_organization_names_by_phone(
     employee_service=Depends(create_user_service),
 ) -> list[str]:
     return employee_service.get_organization_name_by_phone(phone)
+
+
+async def delete_employee(
+    employee_id: str, employee_service=Depends(create_user_service)
+) -> None:
+    return employee_service.delete_by_id(employee_id=employee_id)

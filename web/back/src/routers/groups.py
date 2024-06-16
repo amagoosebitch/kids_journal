@@ -43,3 +43,9 @@ async def get_children_by_group_id(
     group_id: str, group_service: GroupService = Depends(create_group_service)
 ) -> list[ChildModelResponse]:
     return group_service.get_children_by_group_id(group_id)
+
+
+async def delete_group(
+    group_id: str, group_service: GroupService = Depends(create_group_service)
+) -> None:
+    return group_service.delete_by_id(group_id=group_id)

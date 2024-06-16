@@ -101,3 +101,19 @@ class ChildService:
         if len(rows) > 1:
             raise ValueError("Duplicated id in db table")
         return ChildModel.model_validate(rows[0])
+
+    def delete_by_id(self, child_id: str):
+        def callee(session: ydb.Session):
+            return session.transaction().execute(
+                """
+                PRAGMA TablePathPrefix("{db_prefix}");
+                delete
+                FROM child
+                WHERE child_id = "{child_id}"
+                """.format(
+                    db_prefix=self._db_prefix, child_id=child_id
+                ),
+                commit_tx=True,
+            )
+
+        return self._pool.retry_operation_sync(callee)

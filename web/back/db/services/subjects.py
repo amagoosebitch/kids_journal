@@ -92,3 +92,19 @@ class SubjectService:
 
         results = self._pool.retry_operation_sync(callee)[0].rows
         return [SubjectModel.model_validate(result) for result in results]
+
+    def delete_by_id(self, subject_id: str) -> None:
+        def callee(session: ydb.Session):
+            return session.transaction().execute(
+                """
+                PRAGMA TablePathPrefix("{db_prefix}");
+                delete
+                FROM subject
+                WHERE subject_id = "{subject_id}"
+                """.format(
+                    db_prefix=self._db_prefix, subject_id=subject_id
+                ),
+                commit_tx=True,
+            )
+
+        return self._pool.retry_operation_sync(callee)

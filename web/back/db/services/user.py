@@ -55,7 +55,7 @@ class UserService:
                 """.format(
                     db_prefix=self._db_prefix,
                     organization_id=organization_id,
-                    user_id=user_id
+                    user_id=user_id,
                 ),
                 commit_tx=True,
             )
@@ -131,7 +131,7 @@ class UserService:
                 """.format(
                     db_prefix=self._db_prefix,
                     keys="group_id, teacher_id",
-                    values=f'("{group_id}", "{teacher_id}")'
+                    values=f'("{group_id}", "{teacher_id}")',
                 ),
                 commit_tx=True,
             )
@@ -176,7 +176,9 @@ class UserService:
             )
         )
 
-    def get_teachers_by_organization_id(self, organization_id: str) -> list[UserModelResponse]:
+    def get_teachers_by_organization_id(
+        self, organization_id: str
+    ) -> list[UserModelResponse]:
         def callee(session: ydb.Session):
             # todo fix role
             return session.transaction().execute(
@@ -302,7 +304,23 @@ class UserService:
                 """.format(
                     db_prefix=self._db_prefix,
                     keys="user_id, role",
-                    values=f'("{user_id}", "{role}")'
+                    values=f'("{user_id}", "{role}")',
+                ),
+                commit_tx=True,
+            )
+
+        return self._pool.retry_operation_sync(callee)
+
+    def delete_by_id(self, user_id: str) -> None:
+        def callee(session: ydb.Session):
+            return session.transaction().execute(
+                """
+                PRAGMA TablePathPrefix("{db_prefix}");
+                delete
+                FROM user
+                WHERE user_id = "{user_id}"
+                """.format(
+                    db_prefix=self._db_prefix, user_id=user_id
                 ),
                 commit_tx=True,
             )

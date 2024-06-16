@@ -18,14 +18,10 @@ async def upsert_lesson(
     schedule_service.upsert_schedule(schedule)
     if child_ids:
         schedule_service.remove_all_child_pairs(schedule.schedule_id)
-        schedule_service.create_child_schedule_pairs(
-            schedule.schedule_id, child_ids
-        )
+        schedule_service.create_child_schedule_pairs(schedule.schedule_id, child_ids)
     if group_id:
         schedule_service.remove_all_group_pairs(schedule.schedule_id)
-        schedule_service.create_group_schedule_pair(
-            schedule.schedule_id, group_id
-        )
+        schedule_service.create_group_schedule_pair(schedule.schedule_id, group_id)
 
 
 async def get_schedule_for_group(
@@ -45,9 +41,18 @@ async def get_schedule_for_child_by_date(
 
 
 async def unlink_lesson_from_child(
-        schedule_id: str,
-        child_id: str,
-        schedule_service=Depends(create_schedule_service),
+    schedule_id: str,
+    child_id: str,
+    schedule_service=Depends(create_schedule_service),
 ) -> None:
-    schedule_service.unlink_schedule_from_child(schedule_id=schedule_id, child_id=child_id)
+    schedule_service.unlink_schedule_from_child(
+        schedule_id=schedule_id, child_id=child_id
+    )
 
+
+async def delete_lesson(
+    schedule_id: str, schedule_service=Depends(create_schedule_service)
+) -> None:
+    schedule_service.delete_by_id(lesson_id=schedule_id)
+    schedule_service.remove_all_child_pairs(schedule_id)
+    schedule_service.remove_all_group_pairs(schedule_id)

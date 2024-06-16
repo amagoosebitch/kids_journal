@@ -33,3 +33,10 @@ async def get_organization(
     organization_service=Depends(create_organization_service),
 ) -> OrganizationModel | None:
     return organization_service.get_by_id(organization_id)
+
+
+async def delete_organization(
+    organization_id: str,
+    organization_service=Depends(create_organization_service),
+) -> None:
+    return organization_service.delete_by_id(organization_id=organization_id)

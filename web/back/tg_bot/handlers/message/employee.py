@@ -64,7 +64,7 @@ async def handle_single_child_report(
 ):
     if "group_page" not in context.chat_data:
         context.chat_data["group_page"] = 0
-    group_ids = ["маленькие дети", "Солнышки"]  # Пиздец
+    group_ids = ["Лучший сад", "Привет", "Солнце"]  # Пиздец
 
     group_page = context.chat_data["group_page"]
     if group_page > len(group_ids):

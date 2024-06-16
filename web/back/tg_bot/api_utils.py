@@ -74,7 +74,7 @@ def get_group_by_id(group_id: str) -> GroupModel | None:
     return GroupModel.model_validate(response)
 
 
-def try_merge_user_by_phone(phone: str, tg_id: int) -> UserModel | UserModel | None:
+def try_merge_user_by_phone(phone: str, tg_id: int) -> UserModel | None:
     response = requests.post(
         api_settings.get_user_url(),
         json={"phone_number": phone, "tg_user_id": str(tg_id)},

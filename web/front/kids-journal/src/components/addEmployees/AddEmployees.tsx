@@ -3,7 +3,7 @@ import { Input, Select } from "@chakra-ui/react";
 import { ButtonMain } from "../button/ButtonMain";
 import "./AddEmployees.css";
 import { InputPhone } from "../input-phone/InputPhone";
-import { ApiRoute, AppRoute } from "../../const";
+import {ApiRoute, AppRoute, testOrganization} from "../../const";
 
 const options = [
   { label: "Садик №1", value: 1 },
@@ -32,9 +32,7 @@ export const AddEmployees = ({ organization }: addEmployeeProps) => {
     let employee = JSON.stringify({
       first_name: valueName,
       last_name: valueSurname,
-      name: valueName + " " + valueSurname,
-      employee_id: valueName + " " + valueSurname,
-      role_id: optionsJob[Number(valueJob) - 1].job,
+      /*role_id: optionsJob[Number(valueJob) - 1].job,*/
       phone_number: valueTel,
     });
 
@@ -45,7 +43,7 @@ export const AddEmployees = ({ organization }: addEmployeeProps) => {
     };
 
     fetch(
-      ApiRoute + `/organizations/${organization}/employee`,
+      ApiRoute + `/organizations/${testOrganization}/employee`,
       requestOptions1,
     );
   };
@@ -111,6 +109,20 @@ export const AddEmployees = ({ organization }: addEmployeeProps) => {
                 linkButton={`/${organization}${AppRoute.Employees}`}
               >
                 Добавить сотрудника
+                <svg
+                    width="18"
+                    height="10"
+                    viewBox="0 0 18 10"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                      d="M12.707 9L15.9999 5.70711C16.3905 5.31658 16.3905 4.68342 15.9999 4.29289L12.707 1M15.707 5L1.70703 5"
+                      stroke="white"
+                      stroke-width="1.5"
+                      stroke-linecap="round"
+                  />
+                </svg>
               </ButtonMain>
             </div>
           </div>

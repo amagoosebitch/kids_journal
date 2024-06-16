@@ -5,7 +5,6 @@ import { Link } from "react-router-dom";
 
 import "./GroupInfo.css";
 import { Modal } from "../modal/Modal";
-import { groupInfo } from "../groups/Groups";
 
 export type GroupInfoProps = {
   groupId: string | undefined;
@@ -23,20 +22,14 @@ export const parent = {
 };
 
 export const child = {
+  child_id: "",
   name: "",
   birth_date: new Date(),
-  parent_1: {
-    name: "",
-    phone_number: "",
-  },
-  parent_2: {
-    name: "",
-    phone_number: "",
-  },
 };
 
 export const GroupInfo = ({ organization, groupId }: GroupInfoProps) => {
   const [children, setChildren] = useState([child]);
+  const [parents, setParents] = useState([parent]);
   useEffect(() => {
     fetch(`${ApiRoute}/${groupId}/child`, {
       method: "GET",
@@ -54,6 +47,26 @@ export const GroupInfo = ({ organization, groupId }: GroupInfoProps) => {
       });
   }, []);
   const [groups, setGroups] = useState(infoGroups);
+
+ const curParent = (currChild: string) => {
+    fetch(`${ApiRoute}/parents/child/${currChild}`, {
+      method: "GET",
+      headers: { Accept: "application/json" },
+    })
+        .then((response) => {
+          if (response.status === 200 || response.status === 201) {
+            return response;
+          }
+          throw new Error();
+        })
+        .then((response) => response.json())
+        .then((data) => {
+          setParents(data);
+        });
+    return parents;
+  };
+
+
 
   const currentGroup = groups.filter((group) => {
     if (groupId !== undefined)
@@ -79,19 +92,39 @@ export const GroupInfo = ({ organization, groupId }: GroupInfoProps) => {
     setIsOpenModal(false);
   };
 
-  console.log(children);
-
   return (
     <>
       <div className="group_title">
         <div className="group_name">Группа {groupId}</div>
         <div>
           <ButtonMain
-            height="44px"
-            width="211px"
+            height="40px"
+            width="224px"
             linkButton={`/${organization}/${groupId}${AppRoute.AddChild}`}
           >
-            Добавить ребенка
+            <svg
+                width="14"
+                height="14"
+                viewBox="0 0 14 14"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                  d="M1 7L13 7"
+                  stroke="white"
+                  stroke-width="1.5"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+              />
+              <path
+                  d="M7 1L7 13"
+                  stroke="white"
+                  stroke-width="1.5"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+              />
+            </svg>
+            Редактировать группу
           </ButtonMain>
         </div>
       </div>
@@ -112,7 +145,7 @@ export const GroupInfo = ({ organization, groupId }: GroupInfoProps) => {
                 <tr
                   className="children-item"
                   onClick={() =>
-                    doDo(child.name, child.parent_1, child.parent_2)
+                    doDo(child.name, parents[0], parents[1])
                   }
                 >
                   <td className="children-item_name">
@@ -125,10 +158,10 @@ export const GroupInfo = ({ organization, groupId }: GroupInfoProps) => {
                       new Date(child.birth_date).getFullYear()}
                   </td>
                   <td className="children-item_number">
-                    {child.parent_1.phone_number}
+                    {curParent(child.child_id)[0].phone_number}
                   </td>
                   <td className="children-item_parent">
-                    {child.parent_1.name}
+                    {parents[0].name}
                   </td>
                 </tr>
               </>

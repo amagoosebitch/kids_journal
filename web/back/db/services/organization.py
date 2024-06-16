@@ -1,5 +1,6 @@
 from typing import Any
 
+import ydb
 from pydantic import ValidationError
 
 from db.utils import _format_time, _format_unix_time
@@ -7,7 +8,7 @@ from models.organizations import OrganizationModel
 
 
 class OrganizationService:
-    def __init__(self, ydb_pool, db_prefix):
+    def __init__(self, ydb_pool: ydb.SessionPool, db_prefix: str):
         self._pool = ydb_pool
         self._db_prefix = db_prefix
 
@@ -28,7 +29,7 @@ class OrganizationService:
         args["registration_date"] = _format_time(args["registration_date"])
         args["updated_date"] = _format_time(args["updated_date"])
 
-        def callee(session: Any):
+        def callee(session: ydb.Session):
             session.transaction().execute(
                 """
                 PRAGMA TablePathPrefix("{db_prefix}");
@@ -54,7 +55,7 @@ class OrganizationService:
         return self._pool.retry_operation_sync(callee)
 
     def get_all(self) -> list[OrganizationModel]:
-        def callee(session: Any):
+        def callee(session: ydb.Session):
             return session.transaction().execute(
                 """
                 PRAGMA TablePathPrefix("{db_prefix}");
@@ -81,7 +82,7 @@ class OrganizationService:
         return response
 
     def get_names_for_user(self, phone_number: str) -> list[str]:
-        def callee(session: Any):
+        def callee(session: ydb.Session):
             return session.transaction().execute(
                 """
                 PRAGMA TablePathPrefix("{db_prefix}");
@@ -101,7 +102,7 @@ class OrganizationService:
         return list(map(lambda x: x["o.name"], results))
 
     def get_by_id(self, organization_id: str) -> OrganizationModel:
-        def callee(session: Any):
+        def callee(session: ydb.Session):
             return session.transaction().execute(
                 """
                 PRAGMA TablePathPrefix("{db_prefix}");
@@ -114,13 +115,26 @@ class OrganizationService:
                 commit_tx=True,
             )
 
-        row = self._pool.retry_operation_sync(callee)[0][0]
+        row = self._pool.retry_operation_sync(callee)[0].rows[0]
 
         row["start_education_time"] = _format_unix_time(row["start_education_time"])
         row["end_education_time"] = _format_unix_time(row["end_education_time"])
         row["registration_date"] = _format_unix_time(row["registration_date"])
         row["updated_date"] = _format_unix_time(row["updated_date"])
-        try:
-            return OrganizationModel.model_validate(row)
-        except ValidationError:
-            return None
+        return OrganizationModel.model_validate(row)
+
+    def delete_by_id(self, organization_id: str) -> None:
+        def callee(session: ydb.Session):
+            return session.transaction().execute(
+                """
+                PRAGMA TablePathPrefix("{db_prefix}");
+                delete
+                FROM organization
+                WHERE organization_id = "{organization_id}"
+                """.format(
+                    db_prefix=self._db_prefix, organization_id=organization_id
+                ),
+                commit_tx=True,
+            )
+
+        return self._pool.retry_operation_sync(callee)

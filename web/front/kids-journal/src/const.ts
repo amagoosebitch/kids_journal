@@ -9,6 +9,7 @@ export const AppRoute = {
   Activity: "/activity",
   Subject: "/subject",
   Employees: "/employees",
+  Progress: "/progress",
   CreateActivity: "/createActivity",
   CreateGroups: "/createGroups",
   CreateEmployees: "/createEmployees",
@@ -18,7 +19,11 @@ export const AppRoute = {
   Error: "/*",
 };
 
+export const TIMEOUT_SHOW_ERROR = 2000;
+
 export const LoginUrl = "https://d5de0lctsr23htkj7hlj.apigw.yandexcloud.net/login";
+
+export const testOrganization = "3ff0a6a4-0634-4d9a-8239-52bfa7bfe776"
 
 export enum AuthorizationStatus {
   Auth = "AUTH",
@@ -28,7 +33,7 @@ export enum AuthorizationStatus {
 
 export const infoOrganization = [
   {
-    name: "Добрый Мир",
+    name: "Добрый_Мир",
     id: "1",
   }
 ];
@@ -269,3 +274,6 @@ export const subjectInfo = [
     ],
   },
 ];
+
+
+export let hoho = {}

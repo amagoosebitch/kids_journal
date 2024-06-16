@@ -2,7 +2,7 @@ import { FormWrapper } from "./FormWrapper";
 import { Checkbox, Input, Select } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import { Multiselect } from "multiselect-react-dropdown";
-import { ApiRoute } from "../../const";
+import { ApiRoute, testOrganization } from "../../const";
 import { useParams } from "react-router-dom";
 
 type UserData = {
@@ -29,6 +29,7 @@ export const childInfo = [
   {
     child_id: "",
     name: "",
+    birth_date: "",
   },
 ];
 
@@ -58,7 +59,7 @@ export function UserForm({
 
   const [groups, setGroups] = useState(groupInfo);
   useEffect(() => {
-    fetch(`${ApiRoute}/organizations/${organization}/groups`, {
+    fetch(`${ApiRoute}/organizations/${testOrganization}/groups`, {
       method: "GET",
       headers: { Accept: "application/json" },
     })
@@ -76,7 +77,7 @@ export function UserForm({
 
   const [curGroup, setCurGroup] = useState("");
   const handleGroupsName = (e: string) => {
-    return groups[Number(e)].name;
+    return groups[Number(e)].group_id;
   };
 
   const [chilgren, setChilgren] = useState(childInfo);

@@ -1,4 +1,3 @@
-
 from fastapi import Depends
 
 from db.services.groups import GroupService
@@ -31,7 +30,13 @@ async def get_subject(
 
 
 async def get_all_subjects_for_organization(
-    organization_id: str,
+    organization_id: str = None,
     subject_service: SubjectService = Depends(create_subject_service),
 ) -> list[SubjectModel]:
-    return subject_service.get_all_for_organization(organization_id)
+    return subject_service.get_all()
+
+
+async def delete_subject(
+    subject_id: str, subject_service=Depends(create_subject_service)
+) -> None:
+    return subject_service.delete_by_id(subject_id=subject_id)

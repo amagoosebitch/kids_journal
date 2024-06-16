@@ -3,7 +3,7 @@ import { Header } from "../../components/header/Header";
 import { ButtonMain } from "../../components/button/ButtonMain";
 import { useParams } from "react-router-dom";
 import { Input, Select, Textarea } from "@chakra-ui/react";
-import { infoGroups, ApiRoute, AppRoute, subjectInfo } from "../../const";
+import {infoGroups, ApiRoute, AppRoute, subjectInfo, testOrganization} from "../../const";
 import "./CreateSubject.css";
 
 type CreateSubjectPageProps = {};
@@ -16,7 +16,6 @@ const optionsAge = [
 
 export const infoSubject = [
   {
-    organization_id: "",
     subject_id: "",
     name: "",
     description: "",
@@ -35,7 +34,7 @@ function CreateSubjectPage({}: CreateSubjectPageProps): JSX.Element {
 
   const [subjectsCur, setsubjectsCur] = useState(infoSubject);
   useEffect(() => {
-    fetch(`${ApiRoute}/organizations/${organization}/subjects`, {
+    fetch(`${ApiRoute}/organizations/${testOrganization}/subjects`, {
       method: "GET",
       headers: { Accept: "application/json" },
     })
@@ -60,14 +59,17 @@ function CreateSubjectPage({}: CreateSubjectPageProps): JSX.Element {
       ? subjectsCur[Number(valueName)].name
       : valueName;
 
+    let idSubjectForm = !isIndividual
+      ? subjectsCur[Number(valueName)].subject_id
+      : valueName;
+
     if (isIndividual) {
       let subject = JSON.stringify({
         organization_id: organization,
-        subject_id: nameSubjectForm,
+        subject_id: idSubjectForm,
         name: nameSubjectForm,
         age_range: optionsAge[Number(valueAge) - 1].age,
       });
-      console.log(subject);
 
       let requestOptions = {
         method: "POST",
@@ -76,18 +78,16 @@ function CreateSubjectPage({}: CreateSubjectPageProps): JSX.Element {
       };
 
       fetch(
-        ApiRoute + `/organizations/${organization}/subjects`,
+        ApiRoute + `/organizations/${testOrganization}/subjects`,
         requestOptions,
       );
     }
 
     let presentation = JSON.stringify({
-      presentation_id: valueTopic,
       name: valueTopic,
       description: valueDescription,
+      subject_id: idSubjectForm,
     });
-
-    console.log(nameSubjectForm, presentation);
 
     let requestOptions1 = {
       method: "POST",
@@ -96,7 +96,7 @@ function CreateSubjectPage({}: CreateSubjectPageProps): JSX.Element {
     };
 
     fetch(
-      ApiRoute + `/subjects/${nameSubjectForm}/presentations`,
+      ApiRoute + `/subjects/${idSubjectForm}/presentations`,
       requestOptions1,
     );
   }
